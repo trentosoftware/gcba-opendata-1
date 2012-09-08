@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  fecha: MyString
+  barrio: MyString
+  seccion: MyString
+  manzana: MyString
+  parcela: MyString
+  smp: MyString
+  calle: MyString
+  nro: MyString
+  calle2: MyString
+  chapa_visible: MyString
+  tipo1: MyString
+  tipo2: MyString
+  pisos: MyString
+  nombre: MyString
+
+two:
+  fecha: MyString
+  barrio: MyString
+  seccion: MyString
+  manzana: MyString
+  parcela: MyString
+  smp: MyString
+  calle: MyString
+  nro: MyString
+  calle2: MyString
+  chapa_visible: MyString
+  tipo1: MyString
+  tipo2: MyString
+  pisos: MyString
+  nombre: MyString
