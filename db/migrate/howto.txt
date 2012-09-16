@@ -1,0 +1,27 @@
+*** csv *** (BORRAR EL HEADER DEL ARCHIVO)
+"2008-04-21"|"CABALLITO"|"45"|"019"|"009"|"45-019-009"|"ARANGUREN, JUAN F., Dr."|"856"|""|"SI"|"E"|"CASA"|"3"|""
+
+*** En rails console ***
+ParcelasData.create (:fecha => "2008-04-21", :barrio => "CABALLITO", :seccion => "45", :manzana => "019", :parcela => "009", :smp => "45-019-009", :calle => "ARANGUREN, JUAN F., Dr.", :nro => "856", :calle2 => "", :chapa_visible => "SI", :tipo1 => "E", :tipo2 => "CASA", :pisos => "3", :nombre => "")
+
+*** En sqlite3 ***
+1|2008-04-21|CABALLITO|45|019|009|45-019-009|ARANGUREN, JUAN F., Dr.|856||SI|E|CASA|3||2012-09-16 16:26:31.674972|2012-09-16 16:26:31.674972
+
+*** USANDO sed ***
+tail uso-suelo-2008-csv | sed 's/\"//g' | sed -e "s/^/ParcelasData\.create \:fecha => '/" | sed "s/|/', \:barrio => '/" | sed "s/|/', \:seccion => '/" | sed "s/|/', \:manzana =>'/" | sed "s/|/', \:parcela => '/" | sed "s/|/', \:smp => '/" | sed "s/|/', \:calle => '/" | sed "s/|/', \:nro => '/" | sed "s/|/', \:calle2 => '/" | sed "s/|/', \:chapa_visible => '/" | sed "s/|/', \:tipo1 => '/" | sed "s/|/', \:tipo2 => '/" | sed "s/|/', \:pisos => '/" | sed "s/|/', \:nombre => '/" | sed "s/$/'/"
+
+*** OUTPUT ***
+ParcelasData.create :fecha => '2008-08-05', :barrio => 'PALERMO', :seccion => '21', :manzana =>'054', :parcela => '011A', :smp = '21-054-011A', :calle => 'GODOY CRUZ', :nro => '2915', :calle2 => '', :chapa_visible => 'SI', :tipo1 => 'E', :tipo2 => 'VIVIEND', :pisos => '7', :nombre => ''
+
+*** FINAL ***
+
+*** PARA CREAR EL IMPORT USANDO awk ***
+awk '{printf "%d|%s|\"2012-09-16 16:26:31.674972\"|\"2012-09-16 16:26:31.674972\"\n", NR, $0}' < uso-suelo-2008-csv > uso-suelo-2008-csv2
+
+*** COMO SUPERUSUARIO DE POSTGREE ***
+psql -d 'gcba-opendata-dev'
+copy parcelas_data from '/path/to/csv/uso-suelo-2008-csv2' DELIMITERS '|' csv;
+
+*** REGISTROS NO IMPORTADOS ***
+(csv:30743) -> "||80100|8010|801|80|ENSEÑANZA|ENSEÑANZA INICIAL, PRIMARIA Y SECUNDARIA|0|13746|"
+
