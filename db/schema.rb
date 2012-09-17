@@ -33,13 +33,11 @@ ActiveRecord::Schema.define(:version => 20120916211957) do
   end
 
   create_table "parcelas_geometry", :force => true do |t|
-    t.string   "seccion"
-    t.string   "manzana"
-    t.string   "parcela"
-    t.string   "smp"
-    t.text     "geometry"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string "seccion"
+    t.string "manzana"
+    t.string "parcela"
+    t.string "smp"
+    t.text   "geometry"
   end
 
 end

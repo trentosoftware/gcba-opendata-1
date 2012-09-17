@@ -7,7 +7,6 @@ class CreateParcelasGeometry < ActiveRecord::Migration
       t.string :smp
       t.text :geometry
 
-      t.timestamps
     end
   end
 end
