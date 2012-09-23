@@ -5,4 +5,9 @@ class ApplicationController < ActionController::Base
   def index
     ParcelasData.where("user_name = '#{user_name}' AND password = '#{password}'").first
   end
+
+  def parcelas_by_seccion
+
+    ParcelasData.where("user_name = '#{user_name}' AND password = '#{password}'").first
+  end
 end
