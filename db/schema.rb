@@ -28,17 +28,17 @@ ActiveRecord::Schema.define(:version => 20120923222436) do
     t.string   "tipo2"
     t.string   "pisos"
     t.string   "nombre"
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
-    t.integer  "parcelas_geometry_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "parcelas_geometry", :force => true do |t|
-    t.string "seccion"
-    t.string "manzana"
-    t.string "parcela"
-    t.string "smp"
-    t.text   "geometry"
+    t.string  "seccion"
+    t.string  "manzana"
+    t.string  "parcela"
+    t.string  "smp"
+    t.text    "geometry"
+    t.integer "parcelas_data_id"
   end
 
 end
