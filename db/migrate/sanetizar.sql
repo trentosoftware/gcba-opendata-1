@@ -17,6 +17,9 @@ delete from parcelas_data where char_length(manzana) > 4 or char_length(manzana)
 --BORRO LAS TUPLAS DONDE PARCELAS TIENEN MAS DE UNA PARCELA
 DELETE from parcelas_data where char_length(substring(parcela from '\+')) > 0;
 
+--BORRO LAS TUPLAS QUE TIENEN SMP REPETIDO (437 tuplas)
+delete from parcelas_geometry where smp in (select smp from parcelas_geometry group by smp having count(smp) > 1);
+
 --LLEVO A PARCELAS_DATA AL MISMO CASE QUE PARCELAS_GEOMETRY
 update parcelas_data set smp = lower(smp), parcela = lower(parcela), manzana=lower(manzana);
 
