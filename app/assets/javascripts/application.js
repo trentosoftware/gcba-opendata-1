@@ -11,5 +11,8 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require bootstrap
 //= require d3.v2
+//= requite underscore
+//= require app/sidebar
 //= require app/application

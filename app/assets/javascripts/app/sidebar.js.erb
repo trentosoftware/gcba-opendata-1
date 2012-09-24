@@ -1,0 +1,17 @@
+var Sidebar = function(){
+
+    var sidebarSelector = '#sidebar'
+
+    return {
+        populateBarrio : function(properties){
+            var html = [];
+
+            html.push("<div>"+properties["BARRIOS"]+"</div>");
+            html.push("<div>"+properties["PERIMETRO"]+"</div>");
+            html.push("<div>"+properties["AREA"]+"</div>");
+            html.push("<a href='/comunas/list/"+properties["COMUNA"]+"'>Ver detalle</a>");
+
+            $(sidebarSelector).html(html.join(""));
+        }
+    };
+}();

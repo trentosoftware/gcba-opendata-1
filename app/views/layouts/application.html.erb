@@ -1,11 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Parcelas</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
+<div class="navbar">
+  <div class="navbar-inner">
+    <a class="brand" href="#">Mira bolo</a>
+    <ul class="nav">
+      <li class="active"><a href="#">Home</a></li>
+    </ul>
+    <form class="navbar-search pull-right">
+      <input type="text" class="search-query" placeholder="Search">
+    </form>
+  </div>
+
+</div>
+
 <%= yield %>
 <%= javascript_include_tag "application" %>
 </body>
