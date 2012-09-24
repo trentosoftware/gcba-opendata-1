@@ -1,6 +1,6 @@
-class CreateParcelasGeometry < ActiveRecord::Migration
+class CreateParcelasGeometries < ActiveRecord::Migration
   def change
-    create_table :parcelas_geometry do |t|
+    create_table :parcelas_geometries do |t|
       t.string :seccion
       t.string :manzana
       t.string :parcela

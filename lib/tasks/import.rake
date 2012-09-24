@@ -14,7 +14,7 @@ namespace :import do
     output.close
     raise "Cannot import parcelas data" if not $?.success?
 
-    cmd = 'psql -d \'gcba-opendata-dev\' -h localhost -U gcba -c "copy parcelas_geometry(seccion,manzana,parcela,smp,geometry) from \'' + s.chomp + '/db/migrate/insert_geometry_data2.csv\' DELIMITERS \'#\' csv quote \'\'\'\' encoding \'utf-8\'"'
+    cmd = 'psql -d \'gcba-opendata-dev\' -h localhost -U gcba -c "copy parcelas_geometries(seccion,manzana,parcela,smp,geometry) from \'' + s.chomp + '/db/migrate/insert_geometry_data2.csv\' DELIMITERS \'#\' csv quote \'\'\'\' encoding \'utf-8\'"'
 
     puts 'importing parcelas geometries...'
     output = IO.popen(cmd)
