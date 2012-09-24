@@ -6,7 +6,16 @@ class ApplicationController < ActionController::Base
 
   def parcelas_by_seccion
     seccion = params[:seccion]
-    resp = ParcelasGeometry.where("seccion = '#{seccion}'").first
-    render :json => resp.to_json(:include => :parcelas_data)
+    geometries = ParcelasGeometry.where("seccion = '#{seccion}'").first(100)
+    render :json => add_geo_json_header(geometries)
+  end
+
+  private
+
+  def add_geo_json_header geometries
+    json_response = {}
+    json_response['type'] = 'FeatureCollection'
+    json_response['features'] = geometries.as_json(:include => :parcelas_data)
+    json_response
   end
 end
