@@ -1,0 +1,82 @@
+var Map = function(){
+
+    var comunaClickedHandler,
+        comunaTransitionEnded,
+        comunasEndpoint;
+
+    var canvasWidth = 960,
+        canvasHeight = 500,
+        centered;
+
+    var comunasScale =  600000,
+            comunasTranslate = [-11000, 96100 ];
+
+    comunasEndpoint = function (){
+        return 'comunas/list/2';
+    }
+
+    comunaTransitionEnded = function (node){
+        Sidebar.populateBarrio(node.properties);
+    }
+
+    comunaClickedHandler = function(node, path, g){
+            var x = 0,
+                    y = 0,
+                    k = 1;
+
+            if (node && centered !== node) {
+                var centroid = path.centroid(node);
+                x = -centroid[0];
+                y = -centroid[1];
+                k = 4;
+                centered = node;
+            } else {
+                centered = null;
+            }
+
+            g.selectAll("path")
+                    .classed("active", centered && function(node) { return node === centered; });
+
+            g.transition()
+                    .duration(1000)
+                    .attr("transform", "scale(" + k + ")translate(" + x + "," + y + ")")
+                    .style("stroke-width", 1.5 / k + "px")
+                    .each("end", function(){ comunaTransitionEnded(node) });
+    }
+
+    return {
+         drawComunas : function(){
+
+             var projection = d3.geo.mercator()
+                     .scale(comunasScale)
+                     .translate(comunasTranslate);
+
+
+             var path = d3.geo.path()
+                     .projection(projection);
+
+             var svg = d3.select("#chart").append("svg")
+                     .attr("width", canvasWidth)
+                     .attr("height", canvasHeight);
+
+             svg.append("rect")
+                     .attr("class", "background")
+                     .attr("width", canvasWidth)
+                     .attr("height", canvasHeight)
+                     .on("click", comunaClickedHandler);
+
+             var g = svg.append("g")
+                     .attr("transform", "translate(" + canvasWidth / 2 + "," + canvasHeight / 2 + ")")
+                     .append("g")
+                     .attr("id", "states");
+
+             d3.json(comunasEndpoint(), function(json) {
+                 g.selectAll("path")
+                         .data(json.features)
+                         .enter().append("path")
+                         .attr("d", path)
+                         .on("click", function(d){ comunaClickedHandler(d, path, g) });
+             });
+         }
+    };
+}();
