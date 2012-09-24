@@ -11,3 +11,19 @@
  *= require_self
  *= require_tree .
  */
+
+
+.background {
+    fill: none;
+    pointer-events: all;
+}
+
+#states {
+    fill: #aaa;
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+#states .active {
+    fill: steelblue;
+}
