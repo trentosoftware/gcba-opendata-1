@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120916191326) do
+ActiveRecord::Schema.define(:version => 20120923222436) do
 
   create_table "parcelas_data", :force => true do |t|
     t.string   "fecha"
@@ -30,7 +30,15 @@ ActiveRecord::Schema.define(:version => 20120916191326) do
     t.string   "nombre"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
-    t.string   "geometry"
+  end
+
+  create_table "parcelas_geometry", :force => true do |t|
+    t.string  "seccion"
+    t.string  "manzana"
+    t.string  "parcela"
+    t.string  "smp"
+    t.text    "geometry"
+    t.integer "parcelas_data_id"
   end
 
 end

@@ -1,0 +1,1 @@
+copy parcelas_geometry (seccion, manzana, parcela, smp, geometry) from '/home/santi-pc/Desktop/insert_geometry_data2.csv' DELIMITERS '#';
