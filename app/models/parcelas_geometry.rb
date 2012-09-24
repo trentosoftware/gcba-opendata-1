@@ -1,5 +1,5 @@
 class ParcelasGeometry < ActiveRecord::Base
   attr_accessible :manzana, :parcela, :seccion, :smp, :geometry, :parcelas_data
 
-  belongs_to :parcelas_data, :foreign_key => 'pgm'
+  has_many :parcelas_data, :class_name => 'ParcelasData', :foreign_key => 'smp', :primary_key => 'smp'
 end

@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   def parcelas_by_seccion
     seccion = params[:seccion]
-    resp = ParcelasData.where("seccion = '#{seccion}'")
-    render :json => resp.to_json(:include => :parcelas_geometries)
+    resp = ParcelasGeometry.where("seccion = '#{seccion}'")
+    render :json => resp.to_json(:include => :parcelas_data)
   end
 end

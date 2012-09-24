@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120916211957) do
+ActiveRecord::Schema.define(:version => 20120924154608) do
 
   create_table "parcelas_data", :force => true do |t|
     t.string   "fecha"
@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(:version => 20120916211957) do
     t.datetime "updated_at",    :null => false
   end
 
+  add_index "parcelas_data", ["smp"], :name => "index_parcelas_data_on_smp"
+
   create_table "parcelas_geometries", :force => true do |t|
     t.string "seccion"
     t.string "manzana"
@@ -39,5 +41,7 @@ ActiveRecord::Schema.define(:version => 20120916211957) do
     t.string "smp"
     t.text   "geometry"
   end
+
+  add_index "parcelas_geometries", ["smp"], :name => "index_parcelas_geometries_on_smp", :unique => true
 
 end
