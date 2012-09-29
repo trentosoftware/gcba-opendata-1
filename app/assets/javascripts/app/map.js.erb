@@ -10,11 +10,11 @@ var Map = function(){
         canvasHeight = 500,
         centered;
 
-    var comunasScale =  6000000,
-            comunasTranslate = [972500, -615500 ];
+    var comunasScale =  600000,
+            comunasTranslate = [-11000, 96100 ];
 
     comunasEndpoint = function (){
-        return '<%= url.secciones_json_path(:seccion => '002') %>';
+        return '<%= url.comunas_all_path() %>';
     }
 
     comunaTransitionEnded = function (node){
@@ -47,7 +47,7 @@ var Map = function(){
     }
 
     return {
-         drawComunas : function(){
+         drawComunas : function() {
 
              var projection = d3.geo.mercator()
                      .scale(comunasScale)
@@ -79,6 +79,18 @@ var Map = function(){
                          .attr("d", path)
                          .on("click", function(d){ comunaClickedHandler(d, path, g) });
              });
+         },
+
+         drawParcelas : function(){
+             var canvasWidth = 960,
+                     canvasHeight = 500,
+                     centered;
+
+             var comunasScale =  6000000,
+                     comunasTranslate = [972500, -615500 ];
+         },
+
+         drawSeccion : function() {
          }
     };
 }();
