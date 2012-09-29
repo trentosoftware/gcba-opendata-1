@@ -42,6 +42,4 @@ ActiveRecord::Schema.define(:version => 20120924154608) do
     t.text   "geometry"
   end
 
-  add_index "parcelas_geometries", ["smp"], :name => "index_parcelas_geometries_on_smp", :unique => true
-
 end
