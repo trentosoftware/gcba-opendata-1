@@ -3,7 +3,7 @@ Parcelas::Application.routes.draw do
   # first created -> highest priority.
 
   root :to => "application#index"
-  match 'parcelas-por-seccion/:seccion' => 'application#parcelas_by_seccion'
+  match 'parcelas-por-seccion/:seccion' => 'application#parcelas_by_seccion', :as => 'secciones_json'
 
   match '/comunas/list/:id' => 'comunas#list'
 

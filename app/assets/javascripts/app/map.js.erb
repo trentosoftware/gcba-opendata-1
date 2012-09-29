@@ -1,3 +1,5 @@
+<% url = Parcelas::Application.routes.url_helpers %>
+
 var Map = function(){
 
     var comunaClickedHandler,
@@ -8,11 +10,11 @@ var Map = function(){
         canvasHeight = 500,
         centered;
 
-    var comunasScale =  600000,
-            comunasTranslate = [-11000, 96100 ];
+    var comunasScale =  6000000,
+            comunasTranslate = [972500, -615500 ];
 
     comunasEndpoint = function (){
-        return 'comunas/list/2';
+        return '<%= url.secciones_json_path(:seccion => '002') %>';
     }
 
     comunaTransitionEnded = function (node){
