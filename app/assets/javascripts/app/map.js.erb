@@ -17,6 +17,10 @@ var Map = function(){
         return '<%= url.comunas_all_path() %>';
     }
 
+    parcelasEndpoint = function(){
+       return '<%= url.secciones_json_path(:seccion => '002') %>';
+    },
+
     comunaTransitionEnded = function (node){
         Sidebar.populateBarrio(node.properties);
     }
@@ -54,7 +58,7 @@ var Map = function(){
         });
     }
 
-    doDrawComunasOverGoogleMap = function(center, geoJson){
+    doDrawParcelasOverGoogleMap = function(center, geoJson){
         var $map = $("#map");
         var map = new google.maps.Map($map[0], {
             zoom: 12,
@@ -78,7 +82,7 @@ var Map = function(){
                 var googleMapProjection = function (coordinates) {
                     var googleCoordinates = new google.maps.LatLng(coordinates[1], coordinates[0]);
                     var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
-                    return [pixelCoordinates.x, pixelCoordinates.y];
+                    return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
                 }
 
                 path = d3.geo.path().projection(googleMapProjection);
@@ -95,10 +99,10 @@ var Map = function(){
 
     return {
 
-         drawComunasOverGoogleMap : function(){
-             $.getJSON(comunasEndpoint(), function(data){
+         drawParcelasOverGoogleMap : function(){
+             $.getJSON(parcelasEndpoint(), function(data){
                  getGeoAddress("Buenos Aires", function(center) {
-                    doDrawComunasOverGoogleMap(center, data);
+                    doDrawParcelasOverGoogleMap(center, data);
                 })
              });
          },
