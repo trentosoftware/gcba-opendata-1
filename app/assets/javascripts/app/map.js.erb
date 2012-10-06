@@ -70,9 +70,10 @@ var Map = function(){
         var overlay = new google.maps.OverlayView();
         overlay.onAdd = function () {
 
-            var layer = d3.select(this.getPanes().overlayLayer).append("div").attr("class", "SvgOverlay");
+            var layer = d3.select(this.getPanes().overlayMouseTarget).append("div").attr("class", "SvgOverlay");
             var svg = layer.append("svg");
             var adminDivisions = svg.append("g").attr("class", "AdminDivisions");
+
 
             overlay.draw = function () {
                 var markerOverlay = this;
@@ -90,7 +91,17 @@ var Map = function(){
                         .data(geoJson.features)
                         .attr("d", path) // update existing paths
                         .enter().append("svg:path")
-                        .attr("d", path);
+                        .attr("d", path)
+                        .on("click", function(d){
+                            if (_(d.properties.parcelas_data).size() > 0) {
+                                alert(_(d.properties.parcelas_data).pluck('tipo2'));
+                            }
+                        });
+
+                google.maps.event.addDomListener(document.getElementsByTagName("path"), 'click', function() {
+                    google.maps.event.trigger(me, 'click');
+                });
+
             };
         };
 

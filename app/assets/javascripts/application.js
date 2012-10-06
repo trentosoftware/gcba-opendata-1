@@ -13,7 +13,7 @@
 //= require jquery
 //= require bootstrap
 //= require d3.v2
-//= requite underscore
+//= require underscore
 //= require app/sidebar
 //= require app/map
 //= require app/application
