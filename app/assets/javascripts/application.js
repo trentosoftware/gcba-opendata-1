@@ -17,3 +17,4 @@
 //= require app/sidebar
 //= require app/map
 //= require app/application
+//= require app/searchbox

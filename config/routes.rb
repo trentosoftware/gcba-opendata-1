@@ -4,7 +4,7 @@ Parcelas::Application.routes.draw do
 
   root :to => "application#index"
   match 'parcelas-por-seccion/:seccion' => 'application#parcelas_by_seccion', :as => 'secciones_json'
-  match 'parcelas-by-category/:category' => 'application#parcelas_by_category'
+  match 'parcelas-by-category/:category' => 'application#parcelas_by_category', :as => 'categorias_json'
 
   match '/comunas/list' => 'comunas#list', :as => 'comunas_all'
 

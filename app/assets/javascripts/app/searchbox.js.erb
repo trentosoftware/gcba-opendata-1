@@ -1,0 +1,44 @@
+<% url = Parcelas::Application.routes.url_helpers %>
+
+var Searchbox = function(){
+
+    //functions
+    var registerHandlers,
+        doSearch,
+        getSearchEndpoint,
+        setMapModule,
+        getMapModule,
+        mapModule;
+
+    getSearchEndpoint = function(query){
+        return "parcelas-by-category/" + encodeURIComponent(query);
+    }
+
+    doSearch = function(query){
+        $.getJSON(getSearchEndpoint(query), getMapModule().drawOverGoogleMap);
+    }
+
+    registerHandlers = function(){
+        $("#searchbar").keyup(function(event){
+            if(event.keyCode == 13){
+                doSearch(this.value);
+            }
+        });
+    }
+
+    getMapModule = function(){
+        return mapModule;
+    }
+
+    setMapModule = function(module){
+        mapModule = module;
+    }
+
+    return {
+        init : function(mapModule){
+            setMapModule(mapModule);
+            registerHandlers();
+
+        }
+    }
+}();
