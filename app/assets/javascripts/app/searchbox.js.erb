@@ -15,6 +15,7 @@ var Searchbox = function(){
     }
 
     doSearch = function(query){
+        $("#loading").show();
         $.getJSON(getSearchEndpoint(query), getMapModule().drawOverGoogleMap);
     }
 
