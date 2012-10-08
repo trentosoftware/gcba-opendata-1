@@ -56,7 +56,7 @@ var Map = function(){
 
                 // Turn the overlay projection into a d3 projection
                 var googleMapProjection = function (coordinates) {
-                    var googleCoordinates = new google.maps.LatLng(coordinates[1], coordinates[0]);
+                    var googleCoordinates = new google.maps.LatLng(coordinates[1] + 0.0005, coordinates[0] - 0.0006);
                     var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
                     return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
                 }
