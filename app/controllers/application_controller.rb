@@ -10,6 +10,13 @@ class ApplicationController < ActionController::Base
     render :json => add_geo_json_header(geometries)
   end
 
+  def parcelas_by_category
+    category = params[:category]
+    cat = params[:category].upcase
+    geometries = ParcelasGeometry.joins(:parcelas_data).where("tipo2 like ?", "%#{cat}%").limit(1000)
+    render :json => add_geo_json_header(geometries)
+  end
+
   private
 
   def add_geo_json_header geometries
@@ -18,4 +25,5 @@ class ApplicationController < ActionController::Base
     json_response['features'] = geometries.as_json(:include => :parcelas_data)
     json_response
   end
+
 end
