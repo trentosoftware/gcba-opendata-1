@@ -11,8 +11,8 @@
  *= require_self
  *= require bootstrap
  *= require_tree .
+ *= require app/map
  */
-
 
 .background {
     fill: none;
