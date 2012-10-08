@@ -1,0 +1,26 @@
+.full-screen-overlay
+{
+    height:100%;
+    width:100%;
+    position:fixed;
+    left:0;
+    top:0;
+    z-index:1 !important;
+    background-color:black;
+
+    filter: alpha(opacity=85); /* internet explorer */
+    -khtml-opacity: 0.85;      /* khtml, old safari */
+    -moz-opacity: 0.85;       /* mozilla, netscape */
+    opacity: 0.85;           /* fx, safari, opera */
+}
+
+.loading-indicator
+{
+    height:100%;
+    width:100%;
+    position:fixed;
+    left:0;
+    top:0;
+    z-index:1 !important;
+    background: url(<%= asset_path 'loading.gif' %>) center no-repeat;
+}
