@@ -1,4 +1,10 @@
 $(document).ready(function(){
+
+    _.templateSettings = {
+        interpolate: /\{\{\=(.+?)\}\}/g,
+        evaluate: /\{\{(.+?)\}\}/g
+    };
+
     Map.init();
     Searchbox.init(Map);
 });

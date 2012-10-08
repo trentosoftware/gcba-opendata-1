@@ -1,8 +1,6 @@
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span3" id="sidebar">
-      <div id="details">
-      </div>
     </div>
     <div class="span9">
       <div id="map-wrap">
@@ -12,3 +10,20 @@
     </div>
   </div>
 </div>
+
+<script type="x-tmpl" id="parcela_template">
+
+  {{ _.each(items,function(item,key,list){ }}
+    <dl class="dl-horizontal"><dt>Nombre</dt><dd>{{= item.nombre}}</dd></dl>
+    <dl class="dl-horizontal"><dt>Calle</dt><dd>{{= item.calle}} {{= item.nro}}</dd></dl>
+    <dl class="dl-horizontal"><dt>Categoria</dt><dd>{{= item.tipo2}}</dd></dl>
+    <hr />
+  {{ }); }}
+
+</script>
+
+<script type="x-tmpl" id="no_details_template">
+
+  <h4>No hay detalles para la parcela seleccionada</h4>
+
+</script>

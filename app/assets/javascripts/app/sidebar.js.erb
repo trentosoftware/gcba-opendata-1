@@ -2,16 +2,18 @@ var Sidebar = function(){
 
     var sidebarSelector = '#sidebar'
 
+    var parcela_template = '#parcela_template'
+
     return {
-        populateBarrio : function(properties){
-            var html = [];
+        displayParcela : function(parcelas){
 
-            html.push("<div>"+properties["BARRIOS"]+"</div>");
-            html.push("<div>"+properties["PERIMETRO"]+"</div>");
-            html.push("<div>"+properties["AREA"]+"</div>");
-            html.push("<a href='/comunas/list/"+properties["COMUNA"]+"'>Ver detalle</a>");
-
-            $(sidebarSelector).html(html.join(""));
+            if (_(parcelas.properties.parcelas_data).size() > 0) {
+                var template = $("#parcela_template").html();
+                $("#sidebar").html(_.template(template, {items: parcelas.properties.parcelas_data}));
+            }else{
+                var template = $("#no_details_template").html();
+                $("#sidebar").html(_.template(template));
+            }
         }
     };
 }();
