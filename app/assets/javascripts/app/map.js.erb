@@ -2,9 +2,14 @@
 
 var Map = function(){
 
-    var comunaClickedHandler,
+    var buenosAiresLocation,
+        comunaClickedHandler,
         comunaTransitionEnded,
         comunasEndpoint;
+
+    var parcelasEndpoint,
+        getGeoAddress,
+        doDrawParcelasOverGoogleMap;
 
     var canvasWidth = 960,
         canvasHeight = 500,
@@ -111,10 +116,16 @@ var Map = function(){
     return {
 
          drawParcelasOverGoogleMap : function(){
+             var that = this;
              $.getJSON(parcelasEndpoint(), function(data){
-                 getGeoAddress("Buenos Aires", function(center) {
-                    doDrawParcelasOverGoogleMap(center, data);
-                })
+                    doDrawParcelasOverGoogleMap(that.buenosAiresLocation, data);
+             });
+         },
+
+         init : function(){
+             var that = this;
+             getGeoAddress("Buenos Aires", function(center){
+                that.buenosAiresLocation = center;
              });
          },
 
