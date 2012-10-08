@@ -3,6 +3,8 @@
     height: 700px;
 }
 
+#map img { max-width:none; }
+
 .SvgOverlay {
     position: relative;
     width: 500px;
