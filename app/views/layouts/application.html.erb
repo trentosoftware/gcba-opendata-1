@@ -6,18 +6,14 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-<div class="navbar">
+<div class="navbar navbar-static-top navbar-inverse">
   <div class="navbar-inner">
-    <a class="brand" href="/">Mira bolo</a>
-    <ul class="nav">
-      <li class="active"><a href="#">Home</a></li>
-    </ul>
+    <a class="brand" href="/">Navega Buenos Aires</a>
     <div class="navbar-search pull-right">
       <div class="input-append">
-      <input id="searchbar" type="text" class="search-query" placeholder="Estoy buscando...">
-      <button class="btn" type="button">Go!</button>
-        </div>
-    </div>
+        <input id="searchbar" type="text" class="span3">
+        <a id="searchButton"  class="btn">Search</a>
+      </div>
     </div>
   </div>
 
@@ -25,7 +21,9 @@
 
 <%= yield %>
 
-<footer class="navbar navbar-fixed-bottom">Powered by TRENTO</footer>
+<div class="navbar navbar-fixed-bottom navbar-inverse" style="height:30px;">
+  <div class="navbar-inner">Powered by TRENTO</div>
+</div>
 <%= javascript_include_tag 'http://maps.googleapis.com/maps/api/js?sensor=false' %>
 <%= javascript_include_tag "application" %>
 </body>

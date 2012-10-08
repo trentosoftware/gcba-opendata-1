@@ -24,6 +24,10 @@ var Searchbox = function(){
                 doSearch(this.value);
             }
         });
+
+        $("#searchButton").click(function(){
+           doSearch($("#searchbar").val());
+        });
     }
 
     getMapModule = function(){

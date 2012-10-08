@@ -1,6 +1,6 @@
 #map {
-    width: 900px;
-    height: 700px;
+    min-width: 900px;
+    min-height: 700px;
 }
 
 #map img { max-width:none; }
