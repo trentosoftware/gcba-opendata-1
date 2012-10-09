@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
     cat = params[:category].upcase
     condition = "tipo2 like ?", "%#{cat}%"
 
-    geometries = ParcelasGeometry.includes(:parcelas_data).where("parcelas_data.tipo2 like ?", "%#{cat}%")
+    geometries = ParcelasGeometry.includes(:parcelas_data).where("parcelas_data.tipo2 like ? or nombre like ?", "%#{cat}%", "%#{cat}%")
 
     response = add_geo_json_header(geometries)
 
