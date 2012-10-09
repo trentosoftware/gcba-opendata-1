@@ -13,6 +13,8 @@ var Map = function(){
         canvasHeight = 500,
         centered;
 
+    var clickedElement;
+
     parcelasEndpoint = function(){
        return '<%= url.secciones_json_path(:seccion => '019') %>';
     }
@@ -29,6 +31,20 @@ var Map = function(){
         $.getJSON(parcelasEndpoint(), function(data){
             doDrawParcelasOverGoogleMap(center, data);
         });
+    }
+
+    parcelaClicked = function(parcela, e, s){
+        if(typeof(clickedElement) !== 'undefined' && clickedElement != null){
+            clickedElement.style("stroke", "orange");
+            clickedElement.style("fill", "orange");
+        }
+
+        clickedElement = d3.select(this);
+
+        clickedElement.style("stroke", "blue");
+        clickedElement.style("fill", "blue");
+
+        Sidebar.displayParcela(parcela);
     }
 
     doDrawParcelasOverGoogleMap = function(center, geoJson){
@@ -67,7 +83,7 @@ var Map = function(){
                         .attr("d", path) // update existing paths
                         .enter().append("svg:path")
                         .attr("d", path)
-                        .on("click", Sidebar.displayParcela);
+                        .on("click", parcelaClicked);
 
                 google.maps.event.addDomListener(document.getElementsByTagName("path"), 'click', function() {
                     google.maps.event.trigger(me, 'click');
