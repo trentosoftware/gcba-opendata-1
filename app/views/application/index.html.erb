@@ -18,12 +18,22 @@
 
 
 <script type="x-tmpl" id="parcela_template">
+  <fieldset>
+    <legend>Detalles</legend>
+    <div style="text-align:center;">
+        <img class="parcela-image" src="http://fotos.usig.buenosaires.gob.ar//getFoto?smp={{= items[0].smp}}&i=1&w=243&h=195"
+        onerror="this.onerror = null; this.src = 'assets/no_photo.png'"/>
+    </div>
+    </fieldset>
+  <fieldset>
+    <legend>En el lugar</legend>
   {{ _.each(items,function(item,key,list){ }}
     <dl class="dl-horizontal"><dt>Nombre</dt><dd>{{= item.nombre}}</dd></dl>
     <dl class="dl-horizontal"><dt>Calle</dt><dd>{{= item.calle}} {{= item.nro}}</dd></dl>
     <dl class="dl-horizontal"><dt>Categoria</dt><dd>{{= item.tipo2}}</dd></dl>
     <hr />
   {{ }); }}
+  </fieldset>
 </script>
 
 <script type="x-tmpl" id="no_details_template">

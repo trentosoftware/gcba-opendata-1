@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   def parcelas_by_seccion
     seccion = params[:seccion]
-    geometries = ParcelasGeometry.where("seccion = '#{seccion}'")
+    geometries = ParcelasGeometry.where("seccion = '#{seccion}'").limit(100)
     render :json => add_geo_json_header(geometries)
   end
 
