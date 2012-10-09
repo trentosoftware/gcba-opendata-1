@@ -6,7 +6,11 @@ var Sidebar = function(){
             if (_(parcelas.properties.parcelas_data).size() > 0) {
                 var template = $("#parcela_template").html();
 
-                var sanitazedItems = _.map(parcelas.properties.parcelas_data, function(item){ item.smp = item.smp.substring(1); return item; });
+                var sanitazedItems = _.map(parcelas.properties.parcelas_data, function(item){
+                    var newParcela = cloneParcela(item);
+                    newParcela.smp = newParcela.smp.substring(1);
+                    return newParcela;
+                });
                 $("#sidebar").html(_.template(template, {items: sanitazedItems}));
             }else{
                 var template = $("#no_details_template").html();
