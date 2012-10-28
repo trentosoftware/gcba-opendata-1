@@ -23,12 +23,26 @@
     </div>
     <div class="modal-body">
       <fieldset>
-        {{ _.each(items,function(item,key,list){ }}
-        <dl class="dl-horizontal"><dt>Nombre</dt><dd>{{= item.nombre}}</dd></dl>
-        <dl class="dl-horizontal"><dt>Calle</dt><dd>{{= item.calle}} {{= item.nro}}</dd></dl>
-        <dl class="dl-horizontal"><dt>Categoria</dt><dd>{{= item.tipo2}}</dd></dl>
-        <hr />
-        {{ }); }}
+        <div id="myCarousel" class="carousel slide">
+            <!-- Carousel items -->
+            <div class="carousel-inner">
+                {{ _.each(items,function(item,key,list){ }}
+                {{ if(key == 0){ }}
+                        <div class="item active">
+                    {{ } else { }}
+                        <div class="item">
+                    {{ } }}
+                        <dl class="dl-horizontal"><dt>Nombre</dt><dd>{{= item.nombre}}</dd></dl>
+                        <dl class="dl-horizontal"><dt>Calle</dt><dd>{{= item.calle}} {{= item.nro}}</dd></dl>
+                        <dl class="dl-horizontal"><dt>Categoria</dt><dd>{{= item.tipo2}}</dd></dl>
+                    </div>
+                {{ }); }}
+            </div>
+
+              <!-- Carousel nav -->
+              <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+              <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+        </div>
       </fieldset>
       <div style="text-align:center;">
         <img class="parcela-image" src="http://fotos.usig.buenosaires.gob.ar//getFoto?smp={{= items[0].smp}}&i=0&w=243&h=195"
