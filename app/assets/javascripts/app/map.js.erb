@@ -11,7 +11,11 @@ var Map = function(){
         parcelaClicked,
         mapViewPortChanged,
         getParcelaLatLong,
-        showParcelaInfoBox;
+        showParcelaInfoBox,
+        removeOpenedInfobox,
+        showSearchInfobox,
+        createInfoboxWithHTML,
+        emptyParcelaClicked;
 
     var canvasWidth = 960,
         canvasHeight = 500,
@@ -41,8 +45,12 @@ var Map = function(){
        return '<%= url.secciones_json_path(:seccion => '019') %>';
     }
 
-    showParcelaInfoBox = function(parcelas, latLong){
+    showSearchInfobox = function(latLong){
+        var html = _.template($("#parcela_template").html());
 
+    }
+
+    removeOpenedInfobox = function(){
         if(typeof(temporalMarker) !== 'undefined'){
             temporalMarker.setMap(null);
         }
@@ -50,6 +58,10 @@ var Map = function(){
         if(typeof(openedBox) !== 'undefined'){
             openedBox.close();
         }
+    }
+
+    showParcelaInfoBox = function(parcelas, latLong){
+        removeOpenedInfobox();
 
         var template = $("#parcela_template").html();
 
@@ -61,6 +73,10 @@ var Map = function(){
 
         var html = _.template(template, {items: sanitazedItems});
 
+        createInfoboxWithHTML(html, latLong);
+    }
+
+    createInfoboxWithHTML = function(html, latLong) {
         var boxText = document.createElement("div");
         boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: white; padding: 5px;";
         boxText.innerHTML = html;
@@ -89,6 +105,10 @@ var Map = function(){
 
         openedBox = new InfoBox(myOptions);
         openedBox.open(window.map, temporalMarker);
+    }
+
+    emptyParcelaClicked = function(point){
+        showSearchInfobox(getParcelaLatLong(point));
     }
 
     parcelaClicked = function(parcela, e){
