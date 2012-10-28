@@ -2,7 +2,7 @@
 
 var Map = function(){
 
-    var buenosAiresLocation;
+    var buenosAiresLocation = new google.maps.LatLng(-34.61997232, -58.45);
 
     var parcelasEndpoint,
         getGeoAddress,
@@ -25,7 +25,6 @@ var Map = function(){
         getIsMapDragging,
         setIsMapDragging,
         getMapCenter,
-        setMapCenter;
 
     parcelasEndpoint = function(){
        return '<%= url.secciones_json_path(:seccion => '019') %>';
@@ -36,12 +35,6 @@ var Map = function(){
 
         geocoder.geocode( { 'address': address}, function(results, status) {
             callback(results[0].geometry.location);
-        });
-    }
-
-    drawParcelasOverGoogleMap = function(center){
-        $.getJSON(parcelasEndpoint(), function(data){
-            doDrawParcelasOverGoogleMap(center, data);
         });
     }
 
@@ -59,14 +52,14 @@ var Map = function(){
         Sidebar.displayParcela(parcela);
     }
 
-    doDrawParcelasOverGoogleMap = function(center, geoJson){
+    drawParcelasOverGoogleMap = function(geoJson){
         var $map = $("#map");
         var that = this;
 
         var map = new google.maps.Map($map[0], {
-            zoom: 12,
+            zoom: 13,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            center: center,
+            center: getMapCenter(),
             styles:[{"stylers": [{"saturation": -75},{"lightness": 75}]}]
         });
 
@@ -164,22 +157,13 @@ var Map = function(){
         return buenosAiresLocation;
     }
 
-    setMapCenter = function(center){
-        buenosAiresLocation = center;
-    }
-
-
     return {
         init : function(){
-            var that = this;
-            getGeoAddress("Buenos Aires", function(center){
-                setMapCenter(center);
-                drawParcelasOverGoogleMap(center);
-            });
+            $.getJSON(parcelasEndpoint(), drawParcelasOverGoogleMap);
         },
 
          drawOverGoogleMap : function(geoJson){
-            doDrawParcelasOverGoogleMap(getMapCenter(), geoJson);
+             drawParcelasOverGoogleMap(geoJson);
          }
     };
 }();

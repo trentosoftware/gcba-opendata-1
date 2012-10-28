@@ -11,10 +11,9 @@ var Sidebar = function(){
                     newParcela.smp = newParcela.smp.substring(1);
                     return newParcela;
                 });
-                $("#sidebar").html(_.template(template, {items: sanitazedItems}));
-            }else{
-                var template = $("#no_details_template").html();
-                $("#sidebar").html(_.template(template));
+                $("#modal-placeholder").html(_.template(template, {items: sanitazedItems}));
+
+                $("#parcela-modal").modal()
             }
         }
     };
