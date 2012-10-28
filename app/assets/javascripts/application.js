@@ -15,7 +15,7 @@
 //= require d3.v2
 //= require underscore
 //= require app/utils
-//= require app/sidebar
 //= require app/map
 //= require app/application
 //= require app/searchbox
+//= require app/infoxbox

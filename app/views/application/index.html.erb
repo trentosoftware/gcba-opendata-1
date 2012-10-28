@@ -16,14 +16,13 @@
 </div>
 
 <script type="x-tmpl" id="parcela_template">
-  <div id="parcela-modal" class="modal hide fade">
+  <div id="parcela-modal">
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       <h3>Detalles</h3>
     </div>
     <div class="modal-body">
       <fieldset>
-        <div id="myCarousel" class="carousel slide">
+        <div id="parcela-carousel" class="carousel slide">
             <!-- Carousel items -->
             <div class="carousel-inner">
                 {{ _.each(items,function(item,key,list){ }}
@@ -32,16 +31,17 @@
                     {{ } else { }}
                         <div class="item">
                     {{ } }}
-                        <dl class="dl-horizontal"><dt>Nombre</dt><dd>{{= item.nombre}}</dd></dl>
+                        <dl class="dl-horizontal"><dt>Nombre</dt><dd>{{ if(item.nombre) { print(item.nombre); } else { print("Sin informaci&oacute;n"); } }}</dd></dl>
                         <dl class="dl-horizontal"><dt>Calle</dt><dd>{{= item.calle}} {{= item.nro}}</dd></dl>
                         <dl class="dl-horizontal"><dt>Categoria</dt><dd>{{= item.tipo2}}</dd></dl>
                     </div>
                 {{ }); }}
             </div>
-
+             {{ if(items.length > 1) { }}
               <!-- Carousel nav -->
-              <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-              <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+              <a class="carousel-control left" href="#"  data-slide="prev">&lsaquo;</a>
+              <a class="carousel-control right" href="#" data-slide="next">&rsaquo;</a>
+              {{ } }}
         </div>
       </fieldset>
       <div style="text-align:center;">
