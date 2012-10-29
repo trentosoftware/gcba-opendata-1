@@ -4,7 +4,7 @@
 #   Ensure the SQLite 3 gem is defined in your Gemfile
 #   gem 'sqlite3'
 development:
-  adapter: postgresql
+  adapter: postgis
   encoding: unicode
   database: gcba-opendata-dev
   pool: 5
@@ -12,6 +12,8 @@ development:
   password: gcba
   host: localhost
   port: 5432
+  encoding: utf8
+  template: template_postgis2
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -23,7 +25,7 @@ test:
   timeout: 5000
 
 production:
-  adapter: postgresql
+  adapter: postgis
   encoding: unicode
   database: gcba-opendata-prod
   pool: 5
@@ -31,3 +33,5 @@ production:
   password: gcba
   host: localhost
   port: 5432
+  encoding: utf8
+  template: template_postgis2

@@ -35,11 +35,20 @@ ActiveRecord::Schema.define(:version => 20120924154608) do
   add_index "parcelas_data", ["smp"], :name => "index_parcelas_data_on_smp"
 
   create_table "parcelas_geometries", :force => true do |t|
-    t.string "seccion"
-    t.string "manzana"
-    t.string "parcela"
-    t.string "smp"
-    t.text   "geometry"
+    t.string  "seccion"
+    t.string  "manzana"
+    t.string  "parcela"
+    t.string  "obs"
+    t.string  "weblink"
+    t.string  "parc_esq"
+    t.string  "rot_par"
+    t.string  "rot_sec"
+    t.string  "sm"
+    t.string  "partida"
+    t.string  "smp"
+    t.spatial "geometry", :limit => {:srid=>9807, :type=>"multi_polygon"}
   end
+
+  add_index "parcelas_geometries", ["geometry"], :name => "index_parcelas_geometries_on_geometry", :spatial => true
 
 end

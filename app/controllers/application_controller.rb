@@ -4,6 +4,25 @@ class ApplicationController < ActionController::Base
   def index
   end
 
+  def nearest_parcelas
+    lat = params[:lat].to_f
+    long = params[:long].to_f
+    search_criteria = params[:category]
+    #ST_AsGeoJSON(ST_Transform(geometry,4326)) as geometry, smp
+    res = ParcelasGeometry.find_by_sql ['select * ' +
+                                      'from parcelas_geometries' +
+                                      ' order by ST_Transform(geometry, 4326) <-> ST_Point(?,?) limit ?',
+                                  long, lat, 500]
+
+    #response = res.to_a.map! do |e|
+    #  e
+    #end
+    #while row = results.fetch_row do
+    #   puts row
+    #end
+    render :json => res.to_a
+  end
+
   def parcelas_by_seccion
     seccion = params[:seccion]
     geometries = ParcelasGeometry.where("seccion = '#{seccion}'").limit(100)

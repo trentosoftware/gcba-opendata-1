@@ -26,6 +26,11 @@ gem 'jquery-rails'
 group :test do
   gem 'sqlite3'
 end
+
+gem 'rgeo'
+gem 'rgeo-geojson'
+gem 'activerecord-postgis-adapter'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
