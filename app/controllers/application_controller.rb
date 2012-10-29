@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
     #while row = results.fetch_row do
     #   puts row
     #end
-    render :json => res.to_a
+    render :json => add_geo_json_header(res)
   end
 
   def parcelas_by_seccion

@@ -18,13 +18,6 @@ var Searchbox = function(){
         $("#loading").show();
         $.getJSON(getSearchEndpoint(query), function(data){
             getMapModule().drawOverGoogleMap(data);
-
-            if (_(data.features).size() > 0) {
-                $("#sidebar").html("");
-            } else{
-                var template = $("#no_results_template").html();
-                $("#sidebar").html(_.template(template));
-            }
         });
     }
 

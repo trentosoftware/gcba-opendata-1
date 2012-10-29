@@ -25,8 +25,8 @@ var Map = function(){
         temporalMarker,
         openedBox;
 
-    var currentZoomLevel,
-        currentMapCenter;
+    var currentZoomLevel = 14,
+        currentMapCenter = buenosAiresLocation;
 
     var idleSkipped = false,
         isMapDragging = false;
@@ -42,7 +42,8 @@ var Map = function(){
         setCurrentZoomLevel;
 
     parcelasEndpoint = function(){
-       return '<%= url.secciones_json_path(:seccion => '019') %>';
+       var url = '<%= url.pcercanas_json_path(:category => 'asd') %>';
+       return url + '?lat=' + getCurrentMapCenter().lat() + '&long=' + getCurrentMapCenter().lng();
     }
 
     showSearchInfobox = function(latLong){
@@ -217,6 +218,7 @@ var Map = function(){
         setCurrentMapCenter(centerLatLong);
         setCurrentZoomLevel(zoomLevel);
 
+        //$.getJSON(parcelasEndpoint(), drawParcelasOverGoogleMap);
         // TODO query the respective controller method
     };
 
@@ -255,6 +257,7 @@ var Map = function(){
     getMapCenter = function(){
         return buenosAiresLocation;
     }
+
 
     return {
         init : function(){

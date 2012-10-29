@@ -12,7 +12,8 @@ class CreateParcelasGeometries < ActiveRecord::Migration
       t.string :sm
       t.string :partida
       t.string :smp
-      t.geometry :geometry, :type => :multi_polygon, :srid => 9807
+      t.geometry :geometry, :type => :polygon, :srid => 4326
+      #9807
     end
   end
 end

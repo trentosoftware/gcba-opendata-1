@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(:version => 20120924154608) do
     t.string  "sm"
     t.string  "partida"
     t.string  "smp"
-    t.spatial "geometry", :limit => {:srid=>9807, :type=>"multi_polygon"}
+    t.spatial "geometry", :limit => {:srid=>4326, :type=>"polygon"}
   end
 
   add_index "parcelas_geometries", ["geometry"], :name => "index_parcelas_geometries_on_geometry", :spatial => true
