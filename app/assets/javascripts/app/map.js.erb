@@ -15,7 +15,8 @@ var Map = function(){
         removeOpenedInfobox,
         showSearchInfobox,
         createInfoboxWithHTML,
-        emptyParcelaClicked;
+        emptyParcelaClicked,
+        createGoogleLatLong;
 
     var canvasWidth = 960,
         canvasHeight = 500,
@@ -58,7 +59,7 @@ var Map = function(){
     }
 
     showSearchInfobox = function(latLong){
-        var html = _.template($("#location-search-box-template").html());
+        var html = _.template($("#location-search-box-template").html())();
 
         removeOpenedInfobox();
         createInfoboxWithHTML(html, latLong);
@@ -122,10 +123,10 @@ var Map = function(){
     }
 
     emptyParcelaClicked = function(point){
-        showSearchInfobox(getParcelaLatLong(point));
+        showSearchInfobox(createGoogleLatLong(point.lat(), point.lng()));
     }
 
-    parcelaClicked = function(parcela, e){
+    parcelaClicked = function(parcela, a, b, c, d){
         if(typeof(clickedElement) !== 'undefined' && clickedElement != null){
             clickedElement.style("stroke", "orange");
             clickedElement.style("fill", "orange");
@@ -137,10 +138,16 @@ var Map = function(){
         clickedElement.style("fill", "blue");
 
         showParcelaInfoBox(parcela, getParcelaLatLong(parcela));
+
+        d3.event.stopPropagation();
+    }
+
+    createGoogleLatLong = function(lat, long){
+        return new google.maps.LatLng(lat, long);
     }
 
     getParcelaLatLong = function(parcela){
-        return new google.maps.LatLng(parcela.geometry.coordinates[0][0][1], parcela.geometry.coordinates[0][0][0] - 0.0006);
+        return createGoogleLatLong(parcela.geometry.coordinates[0][0][1], parcela.geometry.coordinates[0][0][0] - 0.0006);
     }
 
     drawParcelasOverGoogleMap = function(geoJson){
@@ -223,8 +230,8 @@ var Map = function(){
 
         overlay.setMap(window.__map);
 
-        google.maps.event.addDomListener(window.__map, 'click', function(event, e, s) {
-            // Complete with search infobox invocation
+        google.maps.event.addDomListener(window.__map, 'click', function(data) {
+            emptyParcelaClicked(data.latLng);
         });
 
         $("#loading").hide();
