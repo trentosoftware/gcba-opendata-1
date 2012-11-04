@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
 
     response['features'].each do |elem|
       elem['properties']['parcelas_data'].reject! do |el|
-        el['tipo2'].upcase.index(cat).nil? or el['nombre'].upcase.index(cat).nil?
+        el['tipo2'].upcase.index(cat).nil? and el['nombre'].upcase.index(cat).nil?
       end
     end
 
