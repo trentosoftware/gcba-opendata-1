@@ -10,7 +10,6 @@ class ParcelasGeometry < ActiveRecord::Base
     ret = super(:only => included_attrs, :include => :parcelas_data)
     ret['geometry'] = RGeo::GeoJSON.encode(ret['geometry'])
     ret['properties'] = {}
-    puts ret
     ret['properties']['parcelas_data'] = ret[:parcelas_data]
     ret.delete(:parcelas_data)
     ret['type'] = 'Feature'

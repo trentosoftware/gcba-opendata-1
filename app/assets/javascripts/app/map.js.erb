@@ -29,7 +29,8 @@ var Map = function(){
         currentMapCenter = buenosAiresLocation;
 
     var idleSkipped = false,
-        isMapDragging = false;
+        isMapDragging = false,
+        rendering = false;
 
     var getIdleSkipped,
         setIdleSkipped,
@@ -39,10 +40,20 @@ var Map = function(){
         setCurrentMapCenter,
         getCurrentMapCenter,
         getCurrentZoomLevel,
-        setCurrentZoomLevel;
+        setCurrentZoomLevel,
+        setIsRendering,
+        getIsRendering;
+
+    setIsRendering = function(isRendering){
+        rendering = isRendering;
+    }
+
+    getIsRendering = function(){
+        return rendering;
+    }
 
     parcelasEndpoint = function(){
-       var url = '<%= url.pcercanas_json_path(:category => 'asd') %>';
+       var url = '<%= url.pcercanas_json_path(:category => 'lavadero de ropa') %>';
        return url + '?lat=' + getCurrentMapCenter().lat() + '&long=' + getCurrentMapCenter().lng();
     }
 
@@ -85,7 +96,7 @@ var Map = function(){
         boxText.innerHTML = html;
 
         var temporalMarker = new google.maps.Marker({
-            map: window.map,
+            map: window.__map,
             position: latLong,
             visible: false
         });
@@ -107,7 +118,7 @@ var Map = function(){
         }
 
         openedBox = new InfoBox(myOptions);
-        openedBox.open(window.map, temporalMarker);
+        openedBox.open(window.__map, temporalMarker);
     }
 
     emptyParcelaClicked = function(point){
@@ -133,11 +144,13 @@ var Map = function(){
     }
 
     drawParcelasOverGoogleMap = function(geoJson){
+        setIsRendering(true);
+
         var $map = $("#map");
         var that = this;
 
-        window.map = new google.maps.Map($map[0], {
-            zoom: 13,
+        window.__map = new google.maps.Map($map[0], {
+            zoom: getCurrentZoomLevel(),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             center: getMapCenter(),
             styles:[{"stylers": [{"saturation": -75},{"lightness": 75}]}]
@@ -170,41 +183,47 @@ var Map = function(){
                         .on("click", parcelaClicked);
 
                 google.maps.event.addDomListener(document.getElementsByTagName("path"), 'click', function(event) {
-                    google.maps.event.trigger(window.map, 'click', event);
+                    google.maps.event.trigger(window.__map, 'click', event);
                 });
             };
         };
 
-        google.maps.event.addListener(map, 'idle', function() {
+        google.maps.event.addListener(window.__map, 'idle', function() {
+
+            if(getIsRendering()){
+                setIsRendering(false);
+                return;
+            }
+
             if (getIsMapDragging()) {
                 setIdleSkipped(true);
                 return;
             }
 
             setIdleSkipped(false);
-            mapViewPortChanged(map);
+            mapViewPortChanged(window.__map);
         });
 
-        google.maps.event.addListener(window.map, 'dragstart', function() {
+        google.maps.event.addListener(window.__map, 'dragstart', function() {
             setIsMapDragging(true);
         });
 
-        google.maps.event.addListener(window.map, 'dragend', function() {
+        google.maps.event.addListener(window.__map, 'dragend', function() {
             setIsMapDragging(false);
             if (getIdleSkipped() == true) {
 
-                mapViewPortChanged(map);
+                mapViewPortChanged(window.__map);
                 setIdleSkipped(false);
             }
         });
 
-        google.maps.event.addListener(window.map, 'bounds_changed', function() {
+        google.maps.event.addListener(window.__map, 'bounds_changed', function() {
             setIdleSkipped(false);
         });
 
-        overlay.setMap(window.map);
+        overlay.setMap(window.__map);
 
-        google.maps.event.addDomListener(window.map, 'click', function(event, e, s) {
+        google.maps.event.addDomListener(window.__map, 'click', function(event, e, s) {
             // Complete with search infobox invocation
         });
 
@@ -219,7 +238,6 @@ var Map = function(){
         setCurrentZoomLevel(zoomLevel);
 
         //$.getJSON(parcelasEndpoint(), drawParcelasOverGoogleMap);
-        // TODO query the respective controller method
     };
 
     setCurrentZoomLevel = function(zoomLevel){

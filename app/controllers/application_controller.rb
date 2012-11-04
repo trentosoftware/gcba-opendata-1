@@ -5,22 +5,31 @@ class ApplicationController < ActionController::Base
   end
 
   def nearest_parcelas
+    category = params[:category]
+    cat = params[:category].upcase
+    condition = "tipo2 like ?", "%#{cat}%"
+
     lat = params[:lat].to_f
     long = params[:long].to_f
     search_criteria = params[:category]
-    #ST_AsGeoJSON(ST_Transform(geometry,4326)) as geometry, smp
-    res = ParcelasGeometry.find_by_sql ['select * ' +
-                                      'from parcelas_geometries' +
-                                      ' order by ST_Transform(geometry, 4326) <-> ST_Point(?,?) limit ?',
-                                  long, lat, 500]
 
-    #response = res.to_a.map! do |e|
-    #  e
-    #end
-    #while row = results.fetch_row do
-    #   puts row
-    #end
-    render :json => add_geo_json_header(res)
+    res = ParcelasGeometry.find_by_sql ['select * ' +
+                                      'from parcelas_geometries as parg inner join parcelas_data as pard ' +
+                                            'on pard.smp = parg.smp' +
+                                      ' where pard.tipo2 like ? or pard.nombre like ? ' +
+                                            'order by ST_Transform(parg.geometry, 4326) <-> ST_Point(?,?) ' +
+                                            ' limit ?',
+                                        "%#{cat}%", "%#{cat}%", long, lat, 500]
+
+    response = add_geo_json_header(res)
+
+    response['features'].each do |elem|
+      elem['properties']['parcelas_data'].reject! do |el|
+        el['tipo2'].upcase.index(cat).nil? or el['nombre'].upcase.index(cat).nil?
+      end
+    end
+
+    render :json => response
   end
 
   def parcelas_by_seccion
@@ -44,8 +53,6 @@ class ApplicationController < ActionController::Base
       end
     end
 
-
-    puts response
     #geometries = ParcelasGeometry.joins(:parcelas_data).where(condition).limit(1000)
     render :json => add_geo_json_header(geometries)
   end
