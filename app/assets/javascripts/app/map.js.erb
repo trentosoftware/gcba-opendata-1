@@ -16,7 +16,8 @@ var Map = function(){
         showSearchInfobox,
         createInfoboxWithHTML,
         emptyParcelaClicked,
-        createGoogleLatLong;
+        createGoogleLatLong,
+        createMap;
 
     var canvasWidth = 960,
         canvasHeight = 500,
@@ -150,11 +151,8 @@ var Map = function(){
         return createGoogleLatLong(parcela.geometry.coordinates[0][0][1], parcela.geometry.coordinates[0][0][0] - 0.0006);
     }
 
-    drawParcelasOverGoogleMap = function(geoJson){
-        setIsRendering(true);
-
+    createMap = function(){
         var $map = $("#map");
-        var that = this;
 
         window.__map = new google.maps.Map($map[0], {
             zoom: getCurrentZoomLevel(),
@@ -162,38 +160,6 @@ var Map = function(){
             center: getMapCenter(),
             styles:[{"stylers": [{"saturation": -75},{"lightness": 75}]}]
         });
-
-        var overlay = new google.maps.OverlayView();
-        overlay.onAdd = function () {
-
-            var layer = d3.select(this.getPanes().overlayMouseTarget).append("div").attr("class", "SvgOverlay");
-            var svg = layer.append("svg");
-            var adminDivisions = svg.append("g").attr("class", "AdminDivisions");
-
-            overlay.draw = function () {
-                var markerOverlay = this;
-                var overlayProjection = markerOverlay.getProjection();
-
-                // Turn the overlay projection into a d3 projection
-                var googleMapProjection = function (coordinates) {
-                    var googleCoordinates = new google.maps.LatLng(coordinates[1] + 0.0005, coordinates[0] - 0.0006);
-                    var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
-                    return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
-                }
-
-                path = d3.geo.path().projection(googleMapProjection);
-                adminDivisions.selectAll("path")
-                        .data(geoJson.features)
-                        .attr("d", path) // update existing paths
-                        .enter().append("svg:path")
-                        .attr("d", path)
-                        .on("click", parcelaClicked);
-
-                google.maps.event.addDomListener(document.getElementsByTagName("path"), 'click', function(event) {
-                    google.maps.event.trigger(window.__map, 'click', event);
-                });
-            };
-        };
 
         google.maps.event.addListener(window.__map, 'idle', function() {
 
@@ -228,11 +194,53 @@ var Map = function(){
             setIdleSkipped(false);
         });
 
-        overlay.setMap(window.__map);
-
         google.maps.event.addDomListener(window.__map, 'click', function(data) {
             emptyParcelaClicked(data.latLng);
         });
+    }
+
+    drawParcelasOverGoogleMap = function(geoJson){
+        setIsRendering(true);
+
+        if(window.__map == undefined){
+            createMap();
+        }
+
+        var overlay = new google.maps.OverlayView();
+        overlay.onAdd = function () {
+
+            $(".SvgOverlay").remove();
+
+            var layer = d3.select(this.getPanes().overlayMouseTarget).append("div").attr("class", "SvgOverlay");
+            var svg = layer.append("svg");
+            var adminDivisions = svg.append("g").attr("class", "AdminDivisions");
+
+            overlay.draw = function () {
+                var markerOverlay = this;
+                var overlayProjection = markerOverlay.getProjection();
+
+                // Turn the overlay projection into a d3 projection
+                var googleMapProjection = function (coordinates) {
+                    var googleCoordinates = new google.maps.LatLng(coordinates[1] + 0.0005, coordinates[0] - 0.0006);
+                    var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
+                    return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
+                }
+
+                path = d3.geo.path().projection(googleMapProjection);
+                adminDivisions.selectAll("path")
+                        .data(geoJson.features)
+                        .attr("d", path) // update existing paths
+                        .enter().append("svg:path")
+                        .attr("d", path)
+                        .on("click", parcelaClicked);
+            };
+        };
+
+        overlay.setMap(window.__map);
+
+        google.maps.event.trigger(window.__map, 'resize');
+
+        removeOpenedInfobox();
 
         $("#loading").hide();
     }
@@ -244,7 +252,7 @@ var Map = function(){
         setCurrentMapCenter(centerLatLong);
         setCurrentZoomLevel(zoomLevel);
 
-        //$.getJSON(parcelasEndpoint(), drawParcelasOverGoogleMap);
+       $.getJSON(parcelasEndpoint(), drawParcelasOverGoogleMap);
     };
 
     setCurrentZoomLevel = function(zoomLevel){
