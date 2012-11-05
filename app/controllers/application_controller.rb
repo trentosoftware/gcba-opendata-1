@@ -4,6 +4,35 @@ class ApplicationController < ActionController::Base
   def index
   end
 
+  def nearest_manzanas
+    category = params[:category]
+    cat = params[:category].upcase
+    condition = "tipo2 like ?", "%#{cat}%"
+
+    lat = params[:lat].to_f
+    long = params[:long].to_f
+    search_criteria = params[:category]
+
+    res = ParcelasGeometry.find_by_sql ['select * ' +
+                                      'from manzanas_geometries as parm inner join parcelas_data as pard ' +
+                                            'on pard.manzana = parm.manz' +
+                                      ' where pard.tipo2 like ? or pard.nombre like ? ' +
+                                            'order by ST_Transform(parm.geometry, 4326) <-> ST_Point(?,?) ' +
+                                            ' limit ?',
+                                        "%#{cat}%", "%#{cat}%", long, lat, 100]
+
+    response = add_geo_json_header(res)
+
+    response['features'].each do |elem|
+      elem['properties']['parcelas_data'].reject! do |el|
+        el['tipo2'].upcase.index(cat).nil? and el['nombre'].upcase.index(cat).nil?
+      end
+    end
+
+    render :json => response
+
+  end
+
   def nearest_parcelas
     category = params[:category]
     cat = params[:category].upcase
@@ -19,7 +48,7 @@ class ApplicationController < ActionController::Base
                                       ' where pard.tipo2 like ? or pard.nombre like ? ' +
                                             'order by ST_Transform(parg.geometry, 4326) <-> ST_Point(?,?) ' +
                                             ' limit ?',
-                                        "%#{cat}%", "%#{cat}%", long, lat, 500]
+                                        "%#{cat}%", "%#{cat}%", long, lat, 50]
 
     response = add_geo_json_header(res)
 
@@ -65,5 +94,13 @@ class ApplicationController < ActionController::Base
     json_response['features'] = geometries.as_json(:include => :parcelas_data)
     json_response
   end
+
+  def add_geo_json_header2 geometries
+    json_response = {}
+    json_response['type'] = 'FeatureCollection'
+    json_response['features'] = geometries.as_json()
+    json_response
+  end
+
 
 end

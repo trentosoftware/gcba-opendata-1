@@ -6,7 +6,7 @@ namespace :import do
     s = output.readlines.first
     output.close
 
-    cmd = 'psql -d \'gcba-opendata-dev\' -h localhost -U gcba -c "copy parcelas_data(id,fecha,barrio,seccion,manzana,parcela,smp,calle,nro,calle2,chapa_visible,tipo1,tipo2,pisos,nombre,created_at,updated_at) from \'' + s.chomp + '/db/migrate/uso-suelo-2008-csv2\' DELIMITERS \'|\' csv"'
+    cmd = 'psql -d \'gcba-opendata-dev\' -h localhost -U gcba -c "copy parcelas_data(id,fecha,barrio,seccion,manzana,parcela,smp,calle,nro,calle2,chapa_visible,tipo1,tipo2,pisos,nombre,created_at,updated_at) from \'' + s.chomp + '/db/migrate/uso-suelo-2008-csv2\' DELIMITERS \'|\' csv ENCODING \'latin1\'"'
     puts 'importing parcelas data...'
     output = IO.popen(cmd)
     puts output.readlines

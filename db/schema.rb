@@ -11,7 +11,38 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120924154608) do
+ActiveRecord::Schema.define(:version => 20121104230940) do
+
+  create_table "barrios_geometries", :force => true do |t|
+    t.integer "gid"
+    t.string  "barrio"
+    t.decimal "perimetro"
+    t.decimal "area"
+    t.integer "comuna"
+    t.spatial "geometry",  :limit => {:srid=>4326, :type=>"multi_polygon"}
+  end
+
+  create_table "manzanas_geometries", :force => true do |t|
+    t.integer "gid"
+    t.string  "sec"
+    t.string  "manz"
+    t.string  "sm"
+    t.string  "obs2"
+    t.string  "sourcethm"
+    t.decimal "area_feet"
+    t.decimal "perimeter_"
+    t.decimal "acres"
+    t.decimal "hectares"
+    t.decimal "area_feet__9"
+    t.decimal "perimeter___10"
+    t.decimal "area_feet__11"
+    t.decimal "perimeter___12"
+    t.decimal "area"
+    t.decimal "perimeter"
+    t.spatial "geometry",       :limit => {:srid=>4326, :type=>"multi_polygon"}
+  end
+
+  add_index "manzanas_geometries", ["manz"], :name => "index_manzanas_geometries_on_manz"
 
   create_table "parcelas_data", :force => true do |t|
     t.string   "fecha"
@@ -32,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20120924154608) do
     t.datetime "updated_at",    :null => false
   end
 
+  add_index "parcelas_data", ["manzana"], :name => "index_parcelas_data_on_manzana"
   add_index "parcelas_data", ["smp"], :name => "index_parcelas_data_on_smp"
 
   create_table "parcelas_geometries", :force => true do |t|
@@ -46,7 +78,7 @@ ActiveRecord::Schema.define(:version => 20120924154608) do
     t.string  "sm"
     t.string  "partida"
     t.string  "smp"
-    t.spatial "geometry", :limit => {:srid=>4326, :type=>"polygon"}
+    t.spatial "geometry", :limit => {:srid=>4326, :type=>"multi_polygon"}
   end
 
   add_index "parcelas_geometries", ["geometry"], :name => "index_parcelas_geometries_on_geometry", :spatial => true

@@ -148,7 +148,7 @@ var Map = function(){
     }
 
     getParcelaLatLong = function(parcela){
-        return createGoogleLatLong(parcela.geometry.coordinates[0][0][1], parcela.geometry.coordinates[0][0][0] - 0.0006);
+        return createGoogleLatLong(parcela.geometry.coordinates[0][0][0][1], parcela.geometry.coordinates[0][0][0][0] - 0.0006);
     }
 
     createMap = function(){
