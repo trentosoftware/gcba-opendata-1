@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
     long = params[:long].to_f
     search_criteria = params[:category]
 
+    #ManzanasGeometry.find()
+
     res = ParcelasGeometry.find_by_sql ['select * ' +
                                       'from manzanas_geometries as parm inner join parcelas_data as pard ' +
                                             'on pard.manzana = parm.manz' +
@@ -42,21 +44,11 @@ class ApplicationController < ActionController::Base
     long = params[:long].to_f
     search_criteria = params[:category]
 
-    res = ParcelasGeometry.find_by_sql ['select * ' +
-                                      'from parcelas_geometries as parg inner join parcelas_data as pard ' +
-                                            'on pard.smp = parg.smp' +
-                                      ' where pard.tipo2 like ? or pard.nombre like ? ' +
-                                            'order by ST_Transform(parg.geometry, 4326) <-> ST_Point(?,?) ' +
-                                            ' limit ?',
-                                        "%#{cat}%", "%#{cat}%", long, lat, 50]
+    res = ParcelasGeometry.includes(:parcelas_data).where(
+        ["parcelas_data.tipo2 like ? or parcelas_data.nombre like ?", "%#{cat}%", "%#{cat}%"]).order(
+        "ST_Transform(parcelas_geometries.geometry, 4326) <-> ST_Point(#{long},#{lat})").limit(100)
 
     response = add_geo_json_header(res)
-
-    response['features'].each do |elem|
-      elem['properties']['parcelas_data'].reject! do |el|
-        el['tipo2'].upcase.index(cat).nil? and el['nombre'].upcase.index(cat).nil?
-      end
-    end
 
     render :json => response
   end
