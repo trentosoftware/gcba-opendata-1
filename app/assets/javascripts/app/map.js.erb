@@ -115,7 +115,6 @@ var Map = function(){
         openedBox.open(window.__map, temporalMarker);
 
         google.maps.event.addListener(openedBox, 'domready', function() {
-            debugger;
             $("a.carousel-control.left").click(function() {
                 $("#parcela-carousel").carousel("prev");
             });

@@ -14,14 +14,27 @@ var Searchbox = function(){
     }
 
     registerHandlers = function(){
-        $(".search-bar").keyup(function(event){
-            if(event.keyCode == 13){
+        $('body').on('keyup',".search-bar", function(event){
+            var searchButton = $(this).closest('div').find('.search-button');
+
+            if(this.value.length > 2){
+                searchButton.removeClass("disabled");
+            } else{
+                searchButton.addClass("disabled");
+            }
+
+            if(event.keyCode == 13 && this.value.length > 2){
                 doSearch(this.value);
             }
         });
 
-        $(".search-button").click(function(){
-           doSearch($("#search-bar").val());
+        $('html').on('click', '.search-button', function(){
+            var searchBar = $(this).closest('div').find('.search-bar');
+            var query = searchBar.val();
+
+            if(query.length > 2){
+                doSearch(query);
+            }
         });
     }
 
