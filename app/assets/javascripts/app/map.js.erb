@@ -283,6 +283,7 @@ var Map = function(){
         }
 
         $("#loading").hide();
+        $('.navbar-search').show();
     }
 
     return {
@@ -295,6 +296,10 @@ var Map = function(){
         search : function(query){
             var endpoint = getEndpointWithQuery(query);
             $("#loading").show();
+            
+            // the z-index of the loader is not enough to be on the top of everything
+            // because this component has the focus
+            $('.navbar-search').hide();
 
             $.getJSON(endpoint, function(data){
                 updateViewport(data, query);
