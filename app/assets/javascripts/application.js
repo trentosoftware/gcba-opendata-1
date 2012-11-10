@@ -18,6 +18,6 @@
 //= require app/utils
 //= require app/map
 //= require app/searchbox
-//= require app/infoxbox
+//= require infoxbox
 //= require app/application
 
