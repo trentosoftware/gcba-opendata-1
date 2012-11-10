@@ -113,6 +113,16 @@ var Map = function(){
 
         openedBox = new InfoBox(myOptions);
         openedBox.open(window.__map, temporalMarker);
+
+        google.maps.event.addListener(openedBox, 'domready', function() {
+            debugger;
+            $("a.carousel-control.left").click(function() {
+                $("#parcela-carousel").carousel("prev");
+            });
+            $("a.carousel-control.right").click(function() {
+                $("#parcela-carousel").carousel("next");
+            });
+        });
     }
 
     emptyParcelaClicked = function(point){
