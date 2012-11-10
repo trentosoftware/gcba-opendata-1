@@ -66,21 +66,18 @@ class ApplicationController < ActionController::Base
   end
 
   def parcelas_by_category
-    category = params[:category]
     cat = params[:category].upcase
+    limit = params[:limit].to_i
+
     condition = "tipo2 like ?", "%#{cat}%"
 
-    geometries = ParcelasGeometry.includes(:parcelas_data).where("parcelas_data.tipo2 like ? or nombre like ?", "%#{cat}%", "%#{cat}%")
+    raise 'search category must have at least 4 characters' if cat.size < 4
+    raise 'search limit must be under 200' if limit > 200
+
+    geometries = ParcelasGeometry.includes(:parcelas_data).where("parcelas_data.tipo2 like ? or nombre like ?", "%#{cat}%", "%#{cat}%").limit(limit)
 
     response = add_geo_json_header(geometries)
 
-    response['features'].each do |elem|
-      elem['properties']['parcelas_data'].reject! do |el|
-        el['tipo2'].index(cat).nil?
-      end
-    end
-
-    #geometries = ParcelasGeometry.joins(:parcelas_data).where(condition).limit(1000)
     render :json => add_geo_json_header(geometries)
   end
 

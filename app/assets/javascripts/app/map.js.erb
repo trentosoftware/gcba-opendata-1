@@ -55,7 +55,9 @@ var Map = function(){
     }
 
     parcelasEndpoint = function(){
-       var url = '<%= url.pcercanas_json_path(:category => 'lavadero de ropa', :limit => 100) %>';
+       var url = '<%= url.pcercanas_json_path(:category => '__cat', :limit => '__limit') %>';
+        url = url.replace('__cat', encodeURIComponent('lavadero de ropa'));
+        url = url.replace('__limit', 100);
        return url + '?lat=' + getCurrentMapCenter().lat() + '&long=' + getCurrentMapCenter().lng();
     }
 

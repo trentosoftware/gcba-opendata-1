@@ -4,7 +4,7 @@ Parcelas::Application.routes.draw do
 
   root :to => "application#index"
   #match 'parcelas-por-seccion/:seccion' => 'application#parcelas_by_seccion', :as => 'secciones_json'
-  #match 'parcelas-by-category/:category' => 'application#parcelas_by_category', :as => 'categorias_json'
+  match 'parcelas-by-category/:category/limit/:limit' => 'application#parcelas_by_category', :as => 'categorias_json'
   match 'nearest_parcelas/:category/limit/:limit' => 'application#nearest_parcelas', :as => 'pcercanas_json'
   #match 'nearest_manzana/:category' => 'application#nearest_manzanas', :as => 'mcercanas_json'
 
