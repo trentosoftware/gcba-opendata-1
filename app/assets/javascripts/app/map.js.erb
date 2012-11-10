@@ -277,10 +277,14 @@ var Map = function(){
         search : function(query){
             var $loadingIndicator = $("#loading");
             var endpoint = getEndpointWithQuery(query);
+            // the z-index of the loader is not enough to be on the top of everything
+            // beause this component has the focus
+            $('.navbar-search').hide();
 
             $loadingIndicator.show();
             $.getJSON(endpoint, function(data){
                 drawParcelasOverGoogleMap(data);
+                $('.navbar-search').show();
                 $loadingIndicator.hide();
             });
         }
