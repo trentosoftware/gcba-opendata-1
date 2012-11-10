@@ -202,10 +202,6 @@ var Map = function(){
     drawParcelasOverGoogleMap = function(geoJson){
         setIsRendering(true);
 
-        if(window.__map == undefined){
-            createMap();
-        }
-
         var overlay = new google.maps.OverlayView();
         overlay.onAdd = function () {
 
@@ -251,8 +247,6 @@ var Map = function(){
 
         setCurrentMapCenter(centerLatLong);
         setCurrentZoomLevel(zoomLevel);
-
-       $.getJSON(parcelasEndpoint(), drawParcelasOverGoogleMap);
     };
 
     setCurrentZoomLevel = function(zoomLevel){
@@ -294,7 +288,9 @@ var Map = function(){
 
     return {
         init : function(){
-            $.getJSON(parcelasEndpoint(), drawParcelasOverGoogleMap);
+            if(window.__map == undefined){
+                createMap();
+            }
         },
 
          drawOverGoogleMap : function(geoJson){

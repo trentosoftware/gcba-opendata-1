@@ -11,7 +11,7 @@ var Searchbox = function(){
         mapModule;
 
     getSearchEndpoint = function(query){
-        return "parcelas-by-category/" + encodeURIComponent(query);
+        getMapModule().search(encodeURIComponent(query));
     }
 
     doSearch = function(query){
