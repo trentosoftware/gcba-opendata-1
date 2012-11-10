@@ -276,9 +276,9 @@ var Map = function(){
         var resultCount = data.features.length;
 
         if(resultCount == 0){
-            $('#status-bar-message').text('No hubo resultados para la busqueda "' + query + '"');
+            StatusBar.showErrorMessage('No hubo resultados para la busqueda "' + query + '"');
         } else{
-            $('#status-bar-message').text('Mostrando ' + resultCount + ' resultado' + (resultCount == 1 ? '' : 's') + ' para la busqueda "' + query + '"');
+            StatusBar.showInfoMessage('Mostrando ' + resultCount + ' resultado' + (resultCount == 1 ? '' : 's') + ' para la busqueda "' + query + '"');
             drawParcelasOverGoogleMap(data);
         }
 

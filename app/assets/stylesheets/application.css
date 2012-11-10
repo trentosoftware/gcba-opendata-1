@@ -13,18 +13,3 @@
  *= require app/map
  *= require app/application
  */
-
-.background {
-    fill: none;
-    pointer-events: all;
-}
-
-#states {
-    fill: #aaa;
-    stroke: #fff;
-    stroke-width: 1.5px;
-}
-
-#states .active {
-    fill: steelblue;
-}

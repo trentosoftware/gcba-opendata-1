@@ -1,0 +1,50 @@
+var StatusBar = function(){
+    var closeBarButtonSelector = '.close-bar-button';
+
+    var statusBarContainerSelector = '#status-bar',
+        statusBarTextSelector = '#status-bar-message';
+
+    var errorContainerClass = 'alert alert-error',
+        errorTextClass = 'text-error';
+
+    var infoContainerClass = 'alert alert-info',
+        infoTextClass = 'text-info';
+
+    var showMessageWithClasses,
+        registerHandlers;
+
+    showMessageWithClasses = function(message, containerClass, textClass){
+        var $statusBar = $(statusBarContainerSelector),
+                $statusText = $(statusBarTextSelector);
+
+        $statusBar.removeClass();
+        $statusBar.addClass(containerClass);
+
+        $statusText.removeClass();
+        $statusText.addClass(textClass);
+
+        $statusText.text(message);
+
+        $statusBar.show();
+    }
+
+    registerHandlers = function(){
+        $(closeBarButtonSelector).click(function(){
+            $(statusBarContainerSelector).hide();
+        });
+    }
+
+    return {
+        showErrorMessage : function(message){
+            showMessageWithClasses(message, errorContainerClass,  errorTextClass);
+        },
+
+        showInfoMessage : function(message){
+            showMessageWithClasses(message, infoContainerClass, infoTextClass);
+        },
+
+        init: function(){
+            registerHandlers();
+        }
+    }
+}();

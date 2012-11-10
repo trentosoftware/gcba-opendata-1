@@ -14,8 +14,10 @@
 //= require bootstrap
 //= require d3.v2
 //= require underscore
+//= require app/statusBar
 //= require app/utils
 //= require app/map
-//= require app/application
 //= require app/searchbox
 //= require app/infoxbox
+//= require app/application
+
