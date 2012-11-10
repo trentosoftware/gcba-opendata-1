@@ -22,6 +22,14 @@
 
 <%= yield %>
 
+<div class="navbar navbar-fixed-bottom navbar-inverse" style="max-height:100px; ">
+    <div class="navbar-inner" style="height:60px;">
+      <div class="status-bar-container">
+        <span id="status-bar-message">Realiza una busqueda para empezar</span>
+      </div>
+    </div>
+</div>
+
 <%= javascript_include_tag 'http://maps.googleapis.com/maps/api/js?sensor=false' %>
 <%= javascript_include_tag "application" %>
 </body>

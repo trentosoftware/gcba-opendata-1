@@ -16,7 +16,9 @@ var Map = function(){
         createInfoboxWithHTML,
         emptyParcelaClicked,
         createGoogleLatLong,
-        createMap;
+        createMap,
+        updateViewport,
+        removePreviousDrawing;
 
     var canvasWidth = 960,
         canvasHeight = 500,
@@ -188,7 +190,6 @@ var Map = function(){
         var overlay = new google.maps.OverlayView();
         overlay.onAdd = function () {
 
-            $(".SvgOverlay").remove();
 
             var layer = d3.select(this.getPanes().overlayMouseTarget).append("div").attr("class", "SvgOverlay");
             var svg = layer.append("svg");
@@ -218,8 +219,6 @@ var Map = function(){
         overlay.setMap(window.__map);
 
         google.maps.event.trigger(window.__map, 'resize');
-
-        removeOpenedInfobox();
     }
 
     mapViewPortChanged = function(map){
@@ -266,6 +265,25 @@ var Map = function(){
         return buenosAiresLocation;
     }
 
+    removePreviousDrawing = function(){
+        $(".SvgOverlay").remove();
+        removeOpenedInfobox();
+    }
+
+    updateViewport = function(data, query){
+        removePreviousDrawing();
+
+        var resultCount = data.features.length;
+
+        if(resultCount == 0){
+            $('#status-bar-message').text('No hubo resultados para la busqueda "' + query + '"');
+        } else{
+            $('#status-bar-message').text('Mostrando ' + resultCount + ' resultado' + (resultCount == 1 ? '' : 's') + ' para la busqueda "' + query + '"');
+            drawParcelasOverGoogleMap(data);
+        }
+
+        $("#loading").hide();
+    }
 
     return {
         init : function(){
@@ -275,13 +293,11 @@ var Map = function(){
         },
 
         search : function(query){
-            var $loadingIndicator = $("#loading");
             var endpoint = getEndpointWithQuery(query);
+            $("#loading").show();
 
-            $loadingIndicator.show();
             $.getJSON(endpoint, function(data){
-                drawParcelasOverGoogleMap(data);
-                $loadingIndicator.hide();
+                updateViewport(data, query);
             });
         }
     };
