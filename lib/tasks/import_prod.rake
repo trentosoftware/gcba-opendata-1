@@ -13,6 +13,14 @@ namespace :import_prod do
     output.close
     raise "Cannot import parcelas data" if not $?.success?
 
+    cmd = 'psql -d \'gcba-opendata-prod\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/pg_utils.sql'
+    puts 'running pg utils script...'
+    output = IO.popen(cmd)
+    puts output.readlines
+    output.close
+    raise "Cannot run pg utils script" if not $?.success?
+
+
     #cmd = 'psql -d \'gcba-opendata-prod\' -h localhost -U gcba -c "copy parcelas_geometries(seccion,manzana,parcela,smp,geometry) from \'' + s.chomp + '/db/migrate/insert_geometry_data2.csv\' DELIMITERS \'#\' csv quote \'\'\'\' encoding \'utf-8\'"'
 
     #puts 'importing parcelas geometries...'

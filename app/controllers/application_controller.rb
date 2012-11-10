@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  require 'extended_string'
+
   protect_from_forgery
 
   def index
@@ -41,7 +43,7 @@ class ApplicationController < ActionController::Base
   end
 
   def nearest_parcelas
-    cat = params[:category].upcase
+    cat = params[:category].to_ascii.upcase
     limit = params[:limit].to_i
 
     lat = params[:lat].to_f
@@ -51,7 +53,7 @@ class ApplicationController < ActionController::Base
     raise 'search limit must be under 200' if limit > 200
 
     res = ParcelasGeometry.includes(:parcelas_data).where(
-        ["parcelas_data.tipo2 like ? or parcelas_data.nombre like ?", "%#{cat}%", "%#{cat}%"]).order(
+        ["unaccent_string(parcelas_data.tipo2) ilike ? or unaccent_string(parcelas_data.nombre) ilike ?", "%#{cat}%", "%#{cat}%"]).order(
         "ST_Transform(parcelas_geometries.geometry, 4326) <-> ST_Point(#{long},#{lat})").limit(200)
 
     response = add_geo_json_header(res)
