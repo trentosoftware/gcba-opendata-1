@@ -293,8 +293,10 @@ var Map = function(){
             }
         },
 
-         drawOverGoogleMap : function(geoJson){
-             drawParcelasOverGoogleMap(geoJson);
-         }
+        search : function(query){
+            var encodedQuery = encodeURIComponent(query);
+
+            // TODO hook with search
+        },
     };
 }();

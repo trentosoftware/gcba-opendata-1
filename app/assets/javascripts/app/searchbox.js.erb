@@ -1,5 +1,4 @@
 <% url = Parcelas::Application.routes.url_helpers %>
-
 var Searchbox = function(){
 
     //functions
@@ -10,15 +9,9 @@ var Searchbox = function(){
         getMapModule,
         mapModule;
 
-    getSearchEndpoint = function(query){
-        getMapModule().search(encodeURIComponent(query));
-    }
-
     doSearch = function(query){
         $("#loading").show();
-        $.getJSON(getSearchEndpoint(query), function(data){
-            getMapModule().drawOverGoogleMap(data);
-        });
+        getMapModule().search(query);
     }
 
     registerHandlers = function(){
@@ -45,7 +38,6 @@ var Searchbox = function(){
         init : function(mapModule){
             setMapModule(mapModule);
             registerHandlers();
-
         }
     }
 }();
