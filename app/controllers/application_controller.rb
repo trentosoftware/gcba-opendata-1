@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
     cat = params[:category].upcase
     limit = params[:limit].to_i
 
-    raise 'search category must have at least 4 characters' if cat.size < 4
+    raise 'search category must have at least 3 characters' if cat.size < 3
     raise 'search limit must be under 200' if limit > 200
 
     condition = "tipo2 like ?", "%#{cat}%"
@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
     lat = params[:lat].to_f
     long = params[:long].to_f
 
-    raise 'search category must have at least 4 characters' if cat.size < 4
+    raise 'search category must have at least 3 characters' if cat.size < 3
     raise 'search limit must be under 200' if limit > 200
 
     res = ParcelasGeometry.includes(:parcelas_data).where(
@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
 
     condition = "tipo2 like ?", "%#{cat}%"
 
-    raise 'search category must have at least 4 characters' if cat.size < 4
+    raise 'search category must have at least 3 characters' if cat.size < 3
     raise 'search limit must be under 200' if limit > 200
 
     geometries = ParcelasGeometry.includes(:parcelas_data).where("parcelas_data.tipo2 like ? or nombre like ?", "%#{cat}%", "%#{cat}%").limit(limit)
