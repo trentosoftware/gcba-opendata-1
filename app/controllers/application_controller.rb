@@ -7,6 +7,11 @@ class ApplicationController < ActionController::Base
   def nearest_manzanas
     category = params[:category]
     cat = params[:category].upcase
+    limit = params[:limit].to_i
+
+    raise 'search category must have at least 4 characters' if cat.size < 4
+    raise 'search limit must be under 200' if limit > 200
+
     condition = "tipo2 like ?", "%#{cat}%"
 
     lat = params[:lat].to_f
@@ -36,17 +41,18 @@ class ApplicationController < ActionController::Base
   end
 
   def nearest_parcelas
-    category = params[:category]
     cat = params[:category].upcase
-    condition = "tipo2 like ?", "%#{cat}%"
+    limit = params[:limit].to_i
 
     lat = params[:lat].to_f
     long = params[:long].to_f
-    search_criteria = params[:category]
+
+    raise 'search category must have at least 4 characters' if cat.size < 4
+    raise 'search limit must be under 200' if limit > 200
 
     res = ParcelasGeometry.includes(:parcelas_data).where(
         ["parcelas_data.tipo2 like ? or parcelas_data.nombre like ?", "%#{cat}%", "%#{cat}%"]).order(
-        "ST_Transform(parcelas_geometries.geometry, 4326) <-> ST_Point(#{long},#{lat})").limit(100)
+        "ST_Transform(parcelas_geometries.geometry, 4326) <-> ST_Point(#{long},#{lat})").limit(200)
 
     response = add_geo_json_header(res)
 
