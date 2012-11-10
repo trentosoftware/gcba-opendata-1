@@ -5,7 +5,6 @@ var Map = function(){
     var buenosAiresLocation = new google.maps.LatLng(-34.61997232, -58.45);
 
     var getEndpointWithQuery,
-        getGeoAddress,
         doDrawParcelasOverGoogleMap,
         drawParcelasOverGoogleMap,
         parcelaClicked,
@@ -31,8 +30,7 @@ var Map = function(){
         currentMapCenter = buenosAiresLocation;
 
     var idleSkipped = false,
-        isMapDragging = false,
-        rendering = false;
+        isMapDragging = false;;
 
     var getIdleSkipped,
         setIdleSkipped,
@@ -42,17 +40,7 @@ var Map = function(){
         setCurrentMapCenter,
         getCurrentMapCenter,
         getCurrentZoomLevel,
-        setCurrentZoomLevel,
-        setIsRendering,
-        getIsRendering;
-
-    setIsRendering = function(isRendering){
-        rendering = isRendering;
-    }
-
-    getIsRendering = function(){
-        return rendering;
-    }
+        setCurrentZoomLevel;
 
     getEndpointWithQuery = function(query){
        var url = '<%= url.pcercanas_json_path(:category => '__cat', :limit => '__limit') %>';
@@ -164,12 +152,6 @@ var Map = function(){
         });
 
         google.maps.event.addListener(window.__map, 'idle', function() {
-
-            if(getIsRendering()){
-                setIsRendering(false);
-                return;
-            }
-
             if (getIsMapDragging()) {
                 setIdleSkipped(true);
                 return;
