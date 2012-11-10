@@ -14,14 +14,14 @@ var Searchbox = function(){
     }
 
     registerHandlers = function(){
-        $("#searchbar").keyup(function(event){
+        $(".search-bar").keyup(function(event){
             if(event.keyCode == 13){
                 doSearch(this.value);
             }
         });
 
-        $("#searchButton").click(function(){
-           doSearch($("#searchbar").val());
+        $(".search-button").click(function(){
+           doSearch($("#search-bar").val());
         });
     }
 
