@@ -30,7 +30,7 @@ var Map = function(){
         currentMapCenter = buenosAiresLocation;
 
     var idleSkipped = false,
-        isMapDragging = false;;
+        isMapDragging = false;
 
     var getIdleSkipped,
         setIdleSkipped,
@@ -146,6 +146,7 @@ var Map = function(){
 
         window.__map = new google.maps.Map($map[0], {
             zoom: getCurrentZoomLevel(),
+            minZoom: 12,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             center: getMapCenter(),
             styles:[{"stylers": [{"saturation": -75},{"lightness": 75}]}]
