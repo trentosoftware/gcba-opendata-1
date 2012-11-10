@@ -128,7 +128,7 @@ InfoBox.prototype.createInfoBoxDiv_ = function () {
 
     // This handler prevents an event in the InfoBox from being passed on to the map.
     //
-    var cancelHandler = function (e) {
+    var cancelHandler = function (e, s, f) {
         e.cancelBubble = true;
         if (e.stopPropagation) {
             e.stopPropagation();

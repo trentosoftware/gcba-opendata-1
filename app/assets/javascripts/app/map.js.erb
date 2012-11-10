@@ -44,11 +44,22 @@ var Map = function(){
         getCurrentZoomLevel,
         setCurrentZoomLevel;
 
-    getEndpointWithQuery = function(query){
-       var url = '<%= url.pcercanas_json_path(:category => '__cat', :limit => '__limit') %>';
+    getEndpointWithQuery = function(query, isNearby){
+
+        var lat, long;
+
+        if(isNearby && typeof(temporalMarker) !== 'undefined'){
+            lat = temporalMarker.getPosition().lat();
+            long = temporalMarker.getPosition().lng();
+        } else {
+            lat = getCurrentMapCenter().lat();
+            long = getCurrentMapCenter().lng();
+        }
+
+        var url = '<%= url.pcercanas_json_path(:category => '__cat', :limit => '__limit') %>';
         url = url.replace('__cat', encodeURIComponent(query));
         url = url.replace('__limit', 100);
-       return url + '?lat=' + getCurrentMapCenter().lat() + '&long=' + getCurrentMapCenter().lng();
+        return url + '?lat=' + lat + '&long=' + long;
     }
 
     showSearchInfobox = function(latLong){
@@ -89,7 +100,7 @@ var Map = function(){
         boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: white; padding: 5px;";
         boxText.innerHTML = html;
 
-        var temporalMarker = new google.maps.Marker({
+        temporalMarker = new google.maps.Marker({
             map: window.__map,
             position: latLong,
             visible: false
@@ -121,7 +132,10 @@ var Map = function(){
             $("a.carousel-control.right").click(function() {
                 $("#parcela-carousel").carousel("next");
             });
+
+            Searchbox.registerLocationSearchHandlers();
         });
+
     }
 
     emptyParcelaClicked = function(point){
@@ -302,8 +316,8 @@ var Map = function(){
             }
         },
 
-        search : function(query){
-            var endpoint = getEndpointWithQuery(query);
+        search : function(query, isNearby){
+            var endpoint = getEndpointWithQuery(query, isNearby);
             $("#loading").show();
             
             // the z-index of the loader is not enough to be on the top of everything

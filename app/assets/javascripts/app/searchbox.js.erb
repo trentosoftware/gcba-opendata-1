@@ -7,14 +7,40 @@ var Searchbox = function(){
         getSearchEndpoint,
         setMapModule,
         getMapModule,
-        mapModule;
+        mapModule,
+        registerLocationSearchHandlers;
 
-    doSearch = function(query){
-        getMapModule().search(query);
+    doSearch = function(query, isNearby){
+        getMapModule().search(query, isNearby);
+    }
+
+    registerLocationSearchHandlers = function(){
+        $('a.location-search-button').click(function(){
+            var searchBar = $(this).closest('div').find('.location-search-bar');
+            var query = searchBar.val();
+
+            if(query.length > 2){
+                doSearch(query, true);
+            }
+        });
+
+        $('input.location-search-bar').keyup(function(event){
+            var searchButton = $(this).closest('div').find('.location-search-button');
+
+            if(this.value.length > 2){
+                searchButton.removeClass("disabled");
+            } else{
+                searchButton.addClass("disabled");
+            }
+
+            if(event.keyCode == 13 && this.value.length > 2){
+                doSearch(this.value, true);
+            }
+        });
     }
 
     registerHandlers = function(){
-        $('body').on('keyup',".search-bar", function(event){
+        $('.search-bar').keyup(function(event){
             var searchButton = $(this).closest('div').find('.search-button');
 
             if(this.value.length > 2){
@@ -28,7 +54,7 @@ var Searchbox = function(){
             }
         });
 
-        $('html').on('click', '.search-button', function(){
+        $('.search-button').click(function(){
             var searchBar = $(this).closest('div').find('.search-bar');
             var query = searchBar.val();
 
@@ -50,6 +76,8 @@ var Searchbox = function(){
         init : function(mapModule){
             setMapModule(mapModule);
             registerHandlers();
-        }
+        },
+
+        registerLocationSearchHandlers : registerLocationSearchHandlers
     }
 }();
