@@ -202,8 +202,6 @@ var Map = function(){
     }
 
     drawParcelasOverGoogleMap = function(geoJson){
-        setIsRendering(true);
-
         var overlay = new google.maps.OverlayView();
         overlay.onAdd = function () {
 
@@ -239,8 +237,6 @@ var Map = function(){
         google.maps.event.trigger(window.__map, 'resize');
 
         removeOpenedInfobox();
-
-        $("#loading").hide();
     }
 
     mapViewPortChanged = function(map){
@@ -296,9 +292,14 @@ var Map = function(){
         },
 
         search : function(query){
+            var $loadingIndicator = $("#loading");
             var endpoint = getEndpointWithQuery(query);
 
-            $.getJSON(endpoint, drawParcelasOverGoogleMap);
+            $loadingIndicator.show();
+            $.getJSON(endpoint, function(data){
+                drawParcelasOverGoogleMap(data);
+                $loadingIndicator.hide();
+            });
         }
     };
 }();
