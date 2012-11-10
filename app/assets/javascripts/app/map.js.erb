@@ -4,7 +4,7 @@ var Map = function(){
 
     var buenosAiresLocation = new google.maps.LatLng(-34.61997232, -58.45);
 
-    var parcelasEndpoint,
+    var getEndpointWithQuery,
         getGeoAddress,
         doDrawParcelasOverGoogleMap,
         drawParcelasOverGoogleMap,
@@ -54,9 +54,9 @@ var Map = function(){
         return rendering;
     }
 
-    parcelasEndpoint = function(){
+    getEndpointWithQuery = function(query){
        var url = '<%= url.pcercanas_json_path(:category => '__cat', :limit => '__limit') %>';
-        url = url.replace('__cat', encodeURIComponent('lavadero de ropa'));
+        url = url.replace('__cat', encodeURIComponent(query));
         url = url.replace('__limit', 100);
        return url + '?lat=' + getCurrentMapCenter().lat() + '&long=' + getCurrentMapCenter().lng();
     }
@@ -296,9 +296,9 @@ var Map = function(){
         },
 
         search : function(query){
-            var encodedQuery = encodeURIComponent(query);
+            var endpoint = getEndpointWithQuery(query);
 
-            // TODO hook with search
+            $.getJSON(endpoint, drawParcelasOverGoogleMap);
         }
     };
 }();
