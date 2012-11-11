@@ -103,9 +103,9 @@ var Searchbox = function(){
             }
 
             if(event.keyCode == 13 && trimmedValue.length > 2){
-                if ($('ul.typeahead.dropdown-menu').css('display') === 'block'
-                        && $('ul.dropdown-menu li.active').size() > 0) {
-                    this.value = trimmedValue = $('ul.dropdown-menu li.active').text();
+
+                if ($('ul.dropdown-menu:visible li.active').size() > 0) {
+                    this.value = trimmedValue = $.trim($('ul.dropdown-menu:visible li.active').attr('data-value'));
                 }
                 doSearch(trimmedValue);
             }

@@ -43,14 +43,14 @@ class ApplicationController < ActionController::Base
   end
 
   def nearest_parcelas
-    cat = params[:category].to_pg_escaped_str.removeaccents
+    raise 'search category must have at least 3 characters' if params[:category].size < 3
     limit = params[:limit].to_i
+    raise 'search limit must be under 200' if limit > 200
+
+    cat = params[:category].to_pg_escaped_str.removeaccents
 
     lat = params[:lat].to_f
     long = params[:long].to_f
-
-    raise 'search category must have at least 3 characters' if cat.size < 3
-    raise 'search limit must be under 200' if limit > 200
 
     res = ParcelasGeometry.includes(:parcelas_data).where(
         ["unaccent_string(parcelas_data.tipo2) ilike ? or unaccent_string(parcelas_data.nombre) ilike ?", "%#{cat}%", "%#{cat}%"]).order(
