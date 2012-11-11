@@ -38,7 +38,7 @@ namespace :import_prod do
       }
     ]
 
-    db_name = "gcba-opendata-prod"
+    db_name = "gcba-opendata-dev"
     bsas_data_path = "localhost:./bsas.data/"
     output = IO.popen('pwd')
     s = output.readlines.first
