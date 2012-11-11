@@ -6,7 +6,6 @@ var Map = function(){
         searchLimit = 200;
 
     var getEndpointWithQuery,
-        doDrawParcelasOverGoogleMap,
         drawParcelasOverGoogleMap,
         parcelaClicked,
         mapViewPortChanged,
@@ -21,7 +20,8 @@ var Map = function(){
         updateViewport,
         removePreviousDrawing,
         getInfoMessageForQuery,
-        removeOpenedMarker;
+        removeOpenedMarker,
+        createSearchMarker;
 
     var clickedElement,
         temporalMarker,
@@ -105,8 +105,7 @@ var Map = function(){
 
         temporalMarker = new google.maps.Marker({
             map: window.__map,
-            position: latLong,
-            zIndex: 999999
+            position: latLong
         });
 
         var myOptions = {
@@ -137,6 +136,22 @@ var Map = function(){
             });
 
             Searchbox.registerLocationSearchHandlers();
+        });
+    }
+
+    createSearchMarker = function(isNearbyQuery){
+        var position;
+
+        if(isNearbyQuery && typeof(temporalMarker) !== 'undefined'){
+            position = temporalMarker.getPosition();
+        } else {
+            position = getCurrentMapCenter();
+        }
+
+        searchMarker = new google.maps.Marker({
+            map: window.__map,
+            position: position,
+            zIndex: 150
         });
     }
 
@@ -211,7 +226,12 @@ var Map = function(){
         });
     }
 
-    drawParcelasOverGoogleMap = function(geoJson){
+    drawParcelasOverGoogleMap = function(geoJson, isNearbyQuery){
+
+        removeOpenedMarker(searchMarker);
+
+        createSearchMarker(isNearbyQuery);
+
         var overlay = new google.maps.OverlayView();
         overlay.onAdd = function () {
 
@@ -292,7 +312,6 @@ var Map = function(){
 
     removePreviousDrawing = function(){
         $(".SvgOverlay").remove();
-        removeOpenedInfobox();
     }
 
     getInfoMessageForQuery = function(query, count){
@@ -304,7 +323,7 @@ var Map = function(){
         return message + resultCount;
     }
 
-    updateViewport = function(data, query){
+    updateViewport = function(data, query, isNearbyQuery){
         removePreviousDrawing();
 
         var resultCount = data.features.length;
@@ -313,8 +332,10 @@ var Map = function(){
             StatusBar.showErrorMessage('No hubo resultados para la busqueda "' + query + '"');
         } else{
             StatusBar.showInfoMessage(getInfoMessageForQuery(query, resultCount));
-            drawParcelasOverGoogleMap(data);
+            drawParcelasOverGoogleMap(data, isNearbyQuery);
         }
+
+        removeOpenedInfobox();
 
         $("#loading").hide();
         $('.navbar-search').show();
@@ -339,8 +360,8 @@ var Map = function(){
 
         },
 
-        search : function(query, isNearby){
-            var endpoint = getEndpointWithQuery(query, isNearby);
+        search : function(query, isNearbyQuery){
+            var endpoint = getEndpointWithQuery(query, isNearbyQuery);
             $("#loading").show();
             
             // the z-index of the loader is not enough to be on the top of everything
@@ -348,7 +369,7 @@ var Map = function(){
             $('.navbar-search').hide();
 
             $.getJSON(endpoint, function(data){
-                updateViewport(data, query);
+                updateViewport(data, query, isNearbyQuery);
             });
         }
     };
