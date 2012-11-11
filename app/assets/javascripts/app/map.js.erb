@@ -115,7 +115,7 @@ var Map = function(){
             pixelOffset: new google.maps.Size(-140, 0),
             zIndex: null,
             boxStyle: { background: "url('assets/infoBox/tipbox.gif') no-repeat"
-                ,opacity: 0.75
+                ,opacity: 0.85
                 ,width: "500px" },
             closeBoxMargin: "10px 2px 2px 2px",
             closeBoxURL: "assets/infoBox/close.gif",
@@ -196,8 +196,7 @@ var Map = function(){
             mapTypeControl: false,
             scaleControl: false,
             streetViewControl: false,
-            overviewMapControl: false,
-
+            overviewMapControl: false
         });
 
         google.maps.event.addListener(window.__map, 'idle', function() {
@@ -233,15 +232,11 @@ var Map = function(){
     }
 
     drawParcelasOverGoogleMap = function(geoJson, isNearbyQuery){
-
         removeOpenedMarker(searchMarker);
-
         createSearchMarker(isNearbyQuery);
 
         var overlay = new google.maps.OverlayView();
         overlay.onAdd = function () {
-
-
             var layer = d3.select(this.getPanes().overlayMouseTarget).append("div").attr("class", "SvgOverlay");
             var svg = layer.append("svg");
             var adminDivisions = svg.append("g").attr("class", "AdminDivisions");
@@ -268,7 +263,6 @@ var Map = function(){
         };
 
         overlay.setMap(window.__map);
-
         google.maps.event.trigger(window.__map, 'resize');
     }
 
@@ -363,7 +357,6 @@ var Map = function(){
             } else {
                 initFun();
             }
-
         },
 
         search : function(query, isNearbyQuery){
