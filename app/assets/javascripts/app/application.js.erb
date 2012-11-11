@@ -10,4 +10,10 @@ $(document).ready(function(){
     Searchbox.init(Map);
 
     $('#introduction-modal').modal('show');
+
+    $('html').ajaxError(function(){
+        $('#loading').hide();
+        $('.navbar-search').show();
+        StatusBar.showErrorMessage("Ooops, hubo un error en la comunicacion con el servidor. Proba nuevamente mas tarde.");
+    });
 });
