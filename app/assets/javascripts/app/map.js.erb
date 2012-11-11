@@ -18,7 +18,8 @@ var Map = function(){
         createGoogleLatLong,
         createMap,
         updateViewport,
-        removePreviousDrawing;
+        removePreviousDrawing,
+        getInfoMessageForQuery;
 
     var canvasWidth = 960,
         canvasHeight = 500,
@@ -135,7 +136,6 @@ var Map = function(){
 
             Searchbox.registerLocationSearchHandlers();
         });
-
     }
 
     emptyParcelaClicked = function(point){
@@ -293,6 +293,13 @@ var Map = function(){
         removeOpenedInfobox();
     }
 
+    getInfoMessageForQuery = function(query, count){
+        var plural = (count == 1 ? '' : 's');
+        var prefix = (count == 200 ? 'Limitando resultados a 200 ' : 'Mostrando ' + count + ' resultado' + plural);
+
+        return prefix + ' para la busqueda "' + query + '"';
+    }
+
     updateViewport = function(data, query){
         removePreviousDrawing();
 
@@ -301,7 +308,7 @@ var Map = function(){
         if(resultCount == 0){
             StatusBar.showErrorMessage('No hubo resultados para la busqueda "' + query + '"');
         } else{
-            StatusBar.showInfoMessage('Mostrando ' + resultCount + ' resultado' + (resultCount == 1 ? '' : 's') + ' para la busqueda "' + query + '"');
+            StatusBar.showInfoMessage(getInfoMessageForQuery(query, resultCount));
             drawParcelasOverGoogleMap(data);
         }
 
