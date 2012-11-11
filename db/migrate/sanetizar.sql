@@ -24,7 +24,7 @@ delete from parcelas_geometries where smp in (select smp from parcelas_geometrie
 update parcelas_data set smp = lower(smp), parcela = lower(parcela), manzana=lower(manzana);
 
 --SE ACTUALIZAN SECCIONES DE PARCELAS_DATA
-update parcelas_data set seccion = concat('0',seccion), smp = concat('0', smp);
+--update parcelas_data set seccion = concat('0',seccion), smp = concat('0', smp);
 
 
 
