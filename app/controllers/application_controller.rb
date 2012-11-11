@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
   end
 
   def nearest_parcelas
-    cat = params[:category].to_ascii.upcase
+    cat = params[:category].to_pg_escaped_str.removeaccents.upcase
     limit = params[:limit].to_i
 
     lat = params[:lat].to_f
