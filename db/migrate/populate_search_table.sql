@@ -1,3 +1,4 @@
+TRUNCATE autocomplete_search;
 INSERT INTO autocomplete_search(results, text, original_text)
 SELECT conteo, upper(unaccent_string(texto)) as text, texto as original_text from
 ((
