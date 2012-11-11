@@ -49,7 +49,7 @@ namespace :import_dev do
                 'Importing parcelas data...', "Cannot import parcelas data")
 
     # Add Utils to db
-    run_command('psql -d \'gcba-opendata-dev\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/pg_utils.sql',
+    run_command('psql -d \'' + db_name + '\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/pg_utils.sql',
                 'running pg utils script...', "Cannot run pg utils script")
 
     # Create the temp directory
