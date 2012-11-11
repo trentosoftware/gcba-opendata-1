@@ -62,13 +62,12 @@ class ApplicationController < ActionController::Base
   end
 
   def autocomplete_category
-    cat = params[:text].to_pg_escaped_str.removeaccents
+    cat = params[:text].to_pg_escaped_str.removeaccents.upcase
 
-    response = ParcelasData.select("case when tipo2 ilike \'%#{cat}%\' THEN tipo2 ELSE nombre END as groupedName, count(case when tipo2 ilike \'%#{cat}%\' THEN tipo2 ELSE nombre END) as cuenta").where(
-        ["unaccent_string(tipo2) ilike ? or unaccent_string(nombre) ilike ?", "%#{cat}%", "%#{cat}%"]).group('groupedName').order('cuenta desc').uniq(true).limit(5)
-
-    plucked = response.to_a.map do |e|
-      e.groupedname
+    query = ActiveRecord::Base.send(:sanitize_sql_array, ["select * from autocomplete_search where text like ? order by results desc limit ?", "%#{cat}%", 10])
+    results = ActiveRecord::Base.connection.execute(query)
+    plucked = results.map do |e|
+      e.original_text
     end
 
     render :json => { 'autocomplete' => plucked }
