@@ -135,7 +135,8 @@ var Map = function(){
             infoBoxClearance: new google.maps.Size(1, 1),
             isHidden: false,
             pane: "floatPane",
-            enableEventPropagation: false
+            enableEventPropagation: false,
+            closeHandler: dropFocusFromSelectParcel
         }
 
         openedBox = new InfoBox(myOptions);

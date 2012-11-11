@@ -103,6 +103,8 @@ function InfoBox(opt_opts) {
     this.pane_ = opt_opts.pane || "floatPane";
     this.enableEventPropagation_ = opt_opts.enableEventPropagation || false;
 
+    this.closeHandler = opt_opts.closeHandler;
+
     this.div_ = null;
     this.closeListener_ = null;
     this.moveListener_ = null;
@@ -293,6 +295,10 @@ InfoBox.prototype.getCloseClickHandler_ = function () {
          * @event
          */
         google.maps.event.trigger(me, "closeclick");
+
+        if(typeof(me.closeHandler) != 'undefined' ){
+            me.closeHandler();
+        }
 
         me.close();
     };
