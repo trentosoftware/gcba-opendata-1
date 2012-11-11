@@ -21,7 +21,9 @@ var Map = function(){
         removePreviousDrawing,
         getInfoMessageForQuery,
         removeOpenedMarker,
-        createSearchMarker;
+        createSearchMarker,
+        dropFocusFromSelectParcel,
+        setFocusToParcel;
 
     var clickedElement,
         temporalMarker,
@@ -74,11 +76,22 @@ var Map = function(){
         }
     }
 
-    removeOpenedInfobox = function(){
+    removeOpenedInfobox = function(undefined){
         removeOpenedMarker(temporalMarker);
 
         if(typeof(openedBox) !== 'undefined'){
             openedBox.close();
+        }
+
+        dropFocusFromSelectParcel();
+    }
+
+    // recives an undefined parameter to reset the value of the current click element
+    dropFocusFromSelectParcel = function(undefined){
+        if(typeof(clickedElement) !== 'undefined' && clickedElement != null){
+            clickedElement.style("stroke", "orange");
+            clickedElement.style("fill", "orange");
+            clickedElement = undefined;
         }
     }
 
@@ -161,19 +174,18 @@ var Map = function(){
     }
 
     parcelaClicked = function(parcela, a, b, c, d){
-        if(typeof(clickedElement) !== 'undefined' && clickedElement != null){
-            clickedElement.style("stroke", "orange");
-            clickedElement.style("fill", "orange");
-        }
-
-        clickedElement = d3.select(this);
-
-        clickedElement.style("stroke", "blue");
-        clickedElement.style("fill", "blue");
-
+        dropFocusFromSelectParcel();
         showParcelaInfoBox(parcela, getParcelaLatLong(parcela));
 
+        setFocusToParcel(this);
+
         d3.event.stopPropagation();
+    }
+
+    setFocusToParcel = function(d3Parcel){
+        clickedElement = d3.select(d3Parcel);
+        clickedElement.style("stroke", "blue");
+        clickedElement.style("fill", "blue");
     }
 
     createGoogleLatLong = function(lat, long){
