@@ -117,6 +117,10 @@ namespace :import_dev do
     run_command('psql -d \'' + db_name + '\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/sanetizar.sql',
                 'cleaning data...', "Cannot clean data")
 
+    # Populo la tabla para el autocomplete
+    run_command('psql -d \'' + db_name + '\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/populate_search_table.sql',
+                'populating autocomplete table...', "Cannot populate autocomplete table")
+
   end
 
   def run_command(cmd, desc, error_msg)
