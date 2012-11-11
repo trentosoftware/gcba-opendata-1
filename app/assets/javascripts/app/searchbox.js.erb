@@ -140,11 +140,6 @@ var Searchbox = function(){
         init : function(mapModule){
             setMapModule(mapModule);
             registerHandlers();
-            $('.search-bar').tooltip('show');
-
-            $('body').one('click', function(e){
-                $('.search-bar').tooltip('hide');
-            })
         },
 
         registerLocationSearchHandlers : registerLocationSearchHandlers

@@ -192,7 +192,12 @@ var Map = function(){
             minZoom: 12,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             center: getMapCenter(),
-            styles:[{"stylers": [{"saturation": -75},{"lightness": 75}]}]
+            styles:[{"stylers": [{"saturation": -75},{"lightness": 75}]}] ,
+            mapTypeControl: false,
+            scaleControl: false,
+            streetViewControl: false,
+            overviewMapControl: false,
+
         });
 
         google.maps.event.addListener(window.__map, 'idle', function() {

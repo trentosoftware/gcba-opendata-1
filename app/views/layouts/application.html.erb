@@ -8,12 +8,12 @@
 </head>
 <body>
  <!--navbar -->
-<div class="navbar navbar-static-top navbar-inverse">
+<div class="navbar navbar-static-top">
   <div class="navbar-inner">
     <a class="brand" href="/#">Conoce Buenos Aires</a>
     <div class="navbar-search pull-right">
       <div class="input-append">
-        <input type="text" class="span3 search-bar typeahead" data-placement="bottom" data-trigger="manual" data-original-title="Realiza una busqueda o has click en el mapa para comenzar">
+        <input type="text" class="span3 search-bar typeahead">
         <a class="search-button btn disabled">Buscar</a>
       </div>
     </div>
@@ -22,11 +22,11 @@
 
 <%= yield %>
 
-<div class="navbar navbar-fixed-bottom navbar-inverse footer-bar" style="max-height:60px;">
+<div class="navbar-fixed-bottom footer-bar" style="max-height:60px;">
     <div id="status-bar" style="height: 60px; padding: 0; margin: 0; border-radius: 0; display: none;">
       <div class="status-bar-wrapper">
         <span id="status-bar-message"></span>
-        <a type="button" class="close close-bar-button" style="right:20px;">×</a>
+        <a type="button" class="close close-bar-button" style="right:20px;"><strong>×</strong></a>
       </div>
     </div>
 </div>

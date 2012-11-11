@@ -8,4 +8,10 @@ $(document).ready(function(){
     StatusBar.init();
     Map.init();
     Searchbox.init(Map);
+
+    $('#introduction-modal').modal({backdrop: false});
+
+    $('body').one('click', function(){
+        $('#introduction-modal').modal('hide');
+    });
 });
