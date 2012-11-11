@@ -52,14 +52,16 @@ var Searchbox = function(){
         });
 
         $('.location-search-typeahead').typeahead({
-            source : autocompleter,
+            source : function(data, process){
+                autocompleter('.location-search-bar', data, process);
+            },
             minLength : 3,
             matcher : autocompleteMatcher,
             highlighter : autocompleteHighlighter
         });
     }
 
-    autocompleter = function(query, process){
+    autocompleter = function(currentQueryContainerSelector, query, process){
         var trimmedQuery = $.trim(query);
 
         if(trimmedQuery.length <= 2){
@@ -67,6 +69,10 @@ var Searchbox = function(){
         }
 
         $.getJSON(getAutocompleteEndpoint(trimmedQuery), function(data){
+            if(trimmedQuery != $.trim($(currentQueryContainerSelector).val())){
+                return;
+            }
+
             process(data.autocomplete);
         });
     }
@@ -113,7 +119,9 @@ var Searchbox = function(){
         });
 
         $('.typeahead').typeahead({
-            source : autocompleter,
+            source : function(data, process){
+                autocompleter('.search-bar', data, process);
+            },
             minLength : 3,
             matcher : autocompleteMatcher,
             highlighter : autocompleteHighlighter
