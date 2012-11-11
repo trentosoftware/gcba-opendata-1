@@ -31,6 +31,7 @@ var Searchbox = function(){
             var trimmedQuery = $.trim(query);
 
             if(query.length > 2){
+                $('ul.typeahead.dropdown-menu').hide();
                 doSearch(trimmedQuery, true);
             }
         });
@@ -48,6 +49,13 @@ var Searchbox = function(){
             if(event.keyCode == 13 && trimmedValue.length > 2){
                 doSearch(trimmedValue, true);
             }
+        });
+
+        $('.location-search-typeahead').typeahead({
+            source : autocompleter,
+            minLength : 3,
+            matcher : autocompleteMatcher,
+            highlighter : autocompleteHighlighter
         });
     }
 
