@@ -45,42 +45,22 @@ namespace :import_dev do
     output.close
 
     # Insert Parcelas data
-    cmd = 'psql -d \'' + db_name + '\' -h localhost -U gcba -c "copy parcelas_data(id,fecha,barrio,seccion,manzana,parcela,smp,calle,nro,calle2,chapa_visible,tipo1,tipo2,pisos,nombre,created_at,updated_at) from \'' + s.chomp + '/db/migrate/uso-suelo-2008-csv2\' DELIMITERS \'|\' csv ENCODING \'utf8\'"'
-    puts 'Importing parcelas data...'
-    output = IO.popen(cmd)
-    puts output.readlines
-    output.close
-    raise "Cannot import parcelas data" if not $?.success?
+    run_command('psql -d \'' + db_name + '\' -h localhost -U gcba -c "copy parcelas_data(id,fecha,barrio,seccion,manzana,parcela,smp,calle,nro,calle2,chapa_visible,tipo1,tipo2,pisos,nombre,created_at,updated_at) from \'' + s.chomp + '/db/migrate/uso-suelo-2008-csv2\' DELIMITERS \'|\' csv ENCODING \'utf8\'"',
+                'Importing parcelas data...', "Cannot import parcelas data")
 
-    # Add Utils to db    
-    cmd = 'psql -d \'gcba-opendata-dev\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/pg_utils.sql'
-    puts 'running pg utils script...'
-    output = IO.popen(cmd)
-    puts output.readlines
-    output.close
-    raise "Cannot run pg utils script" if not $?.success?
+    # Add Utils to db
+    run_command('psql -d \'gcba-opendata-dev\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/pg_utils.sql',
+                'running pg utils script...', "Cannot run pg utils script")
 
-    # Create the temp directory  
-    cmd = 'mkdir -p ' + s.chomp + '/import_tmp'
-    output = IO.popen(cmd)
-    puts output.readlines
-    output.close
-    raise "Cannot create the temp directory" if not $?.success?
+    # Create the temp directory
+    run_command('mkdir -p ' + s.chomp + '/import_tmp', 'creating temp directory', "Cannot create the temp directory")
 
     # Update sequence for parcelas_data.id
-    cmd = 'psql -d \'' + db_name + '\' -h localhost -U gcba -c "select setval(\'parcelas_data_id_seq\', (select max(id)+1 from parcelas_data))"'
-    puts 'Updating parcelas_data.id sequence...'
-    output = IO.popen(cmd)
-    puts output.readlines
-    output.close
-    raise "Cannot update parcelas_data.id sequence" if not $?.success?
+    run_command('psql -d \'' + db_name + '\' -h localhost -U gcba -c "select setval(\'parcelas_data_id_seq\', (select max(id)+1 from parcelas_data))"',
+                'Updating parcelas_data.id sequence...', "Cannot update parcelas_data.id sequence")
 
-    # Remove possible files in the temp directory  
-    cmd = 'rm -rf ' + s.chomp + '/import_tmp/*'
-    output = IO.popen(cmd)
-    puts output.readlines
-    output.close
-    raise "Cannot remove files in the temp directory" if not $?.success?
+    # Remove possible files in the temp directory
+    run_command('rm -rf ' + s.chomp + '/import_tmp/*', 'remove files in temp directory', "Cannot remove files in the temp directory")
 
     # Go temp directory  
     Dir.chdir('import_tmp')
@@ -89,13 +69,11 @@ namespace :import_dev do
     # Get dataset files
     cmd = 'rsync -avz '
     data_sets.each do |data|
-	cmd += ' ' + bsas_data_path + data['name']
+	    cmd += ' ' + bsas_data_path + data['name']
     end
     cmd += ' .'
-    output = IO.popen(cmd)
-    puts output.readlines
-    output.close
-    raise 'Cannot get files from ' + bsas_data_path if not $?.success?
+
+    run_command(cmd, 'getting files from ' + bsas_data_path, 'Cannot get files from ' + bsas_data_path)
 
     # Process dataset files
     data_sets.each do |data|
@@ -104,11 +82,9 @@ namespace :import_dev do
        
         # Unrar/Unzip dataset files
         (data['type'] == 'zip')?cmd = 'unzip ':cmd = 'unrar e '
-	cmd += data['name']
-        output = IO.popen(cmd)
-        puts output.readlines
-        output.close
-        raise 'Cannot uncompress file: ' + data['name'] if not $?.success?
+	      cmd += data['name']
+
+        run_command(cmd, 'uncompressing file ' + data['name'], 'Cannot uncompress file: ' + data['name'])
 
         # Get shp file
         output = IO.popen('ls *.shp')
@@ -118,50 +94,37 @@ namespace :import_dev do
 
         # Insert data set into db
         cmd = 'shp2pgsql ' + data['opc']  + ' -s 9807:4326 -g geometry -W latin1 -I ' + shp + ' ' + data['table'] + ' | sudo -u postgres psql -d ' + db_name
-        puts 'Importing dataset in ' + data['name'] + '...'
-        output = IO.popen(cmd)
-        puts output.readlines
-        output.close
-        raise "Cannot import data set in db" if not $?.success?
+        run_command(cmd, 'Importing dataset in ' + data['name'] + '...', "Cannot import data set in db")
 
         # Run data insertion to parcelas_db
         data['inserts'].each do |insert|
             cmd = 'psql -d \'' + db_name + '\' -h localhost -U gcba -c "' + insert  + '"'
-            puts 'Moving data from dataset ' + data['name'] + ' to main parcela data/geometries table...'
-            output = IO.popen(cmd)
-            puts output.readlines
-            output.close
-            raise "Cannot import into parcelas data: '#{insert}'" if not $?.success?
+            run_command(cmd, 'Moving data from dataset ' + data['name'] + ' to main parcela data/geometries table...', "Cannot import into parcelas data: '#{insert}'")
         end
 
         # Remove dataset files
-        cmd = 'rm -rf *.shp'
-        output = IO.popen(cmd)
-        puts output.readlines
-        output.close
-        raise "Cannot remove files in the temp directory" if not $?.success?
+        run_command('rm -rf *.shp', 'remove dataset files', "Cannot remove files in the temp directory")
     end
-
 
     # Go temp directory  
     Dir.chdir('..')
     raise "Cannot exit the temp directory" if not $?.success?
 
-    # Remove temp directory  
-    cmd = 'rm -rf import_tmp'
-    output = IO.popen(cmd)
-    puts output.readlines
-    output.close
-    raise "Cannot remove the temp directory" if not $?.success?
+    # Remove temp directory
+    run_command('rm -rf import_tmp', 'removing temp directory', "Cannot remove the temp directory")
 
     # Sanetizar
-    cmd = 'psql -d \'' + db_name + '\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/sanetizar.sql'
-    puts 'cleaning data...'
+    run_command('psql -d \'' + db_name + '\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/sanetizar.sql',
+                'cleaning data...', "Cannot clean data")
+
+  end
+
+  def run_command(cmd, desc, error_msg)
+    puts desc
     output = IO.popen(cmd)
     puts output.readlines
     output.close
-    raise "Cannot clean data" if not $?.success?
-
+    raise error_msg if not $?.success?
   end
 end
 
