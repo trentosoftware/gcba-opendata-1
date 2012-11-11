@@ -32,8 +32,10 @@
                         <div class="item">
                     {{ } }}
                         <dl class="dl-horizontal"><dt>Nombre</dt><dd>{{ if(item.nombre) { print(item.nombre); } else { print("Sin informaci&oacute;n"); } }}</dd></dl>
-                        <dl class="dl-horizontal"><dt>Calle</dt><dd>{{= item.calle}} {{= item.nro}}</dd></dl>
-                        <dl class="dl-horizontal"><dt>Categoria</dt><dd>{{= item.tipo2}}</dd></dl>
+                        {{ if(item.calle != undefined && item.nro != undefined){ }}
+                            <dl class="dl-horizontal"><dt>Calle</dt><dd>{{= item.calle}} {{= item.nro}}</dd></dl>
+                        {{ } }}
+                          <dl class="dl-horizontal"><dt>Categoria</dt><dd>{{= item.tipo2}}</dd></dl>
                     </div>
                 {{ }); }}
             </div>
