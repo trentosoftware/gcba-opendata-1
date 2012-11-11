@@ -241,6 +241,9 @@ var Map = function(){
 
         google.maps.event.addDomListener(window.__map, 'rightclick', function(data) {
             emptyParcelaClicked(data.latLng);
+
+            // don't execute other handlers, we have already take care of the event
+            event.stopPropagation();
         });
 
         google.maps.event.addDomListener(window.__map, 'click', function(data) {
