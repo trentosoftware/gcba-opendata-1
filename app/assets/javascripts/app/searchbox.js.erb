@@ -93,17 +93,20 @@ var Searchbox = function(){
 
     registerHandlers = function(){
         $('.search-bar').keyup(function(event){
-            var searchButton = $(this).closest('div').find('.search-button');
+            var trimmedValue = $.trim(this.value),
+                    searchButton = $(this).closest('div').find('.search-button');
 
-            var trimmedValue = $.trim(this.value);
-
-            if(trimmedValue.length > 2){
+            if(trimmedValue.length > 2) {
                 searchButton.removeClass("disabled");
-            } else{
+            } else {
                 searchButton.addClass("disabled");
             }
 
             if(event.keyCode == 13 && trimmedValue.length > 2){
+                if ($('ul.typeahead.dropdown-menu').css('display') === 'block'
+                        && $('ul.dropdown-menu li.active').size() > 0) {
+                    this.value = trimmedValue = $('ul.dropdown-menu li.active').text();
+                }
                 doSearch(trimmedValue, true);
             }
         });
