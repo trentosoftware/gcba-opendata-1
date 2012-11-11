@@ -116,7 +116,7 @@ var Map = function(){
             zIndex: null,
             boxStyle: { background: "url('assets/infoBox/tipbox.gif') no-repeat"
                 ,opacity: 0.85
-                ,width: "410px" },
+                ,width: "500px" },
             closeBoxMargin: "10px 2px 2px 2px",
             closeBoxURL: "assets/infoBox/close.gif",
             infoBoxClearance: new google.maps.Size(1, 1),
@@ -229,6 +229,11 @@ var Map = function(){
         google.maps.event.addDomListener(window.__map, 'rightclick', function(data) {
             emptyParcelaClicked(data.latLng);
         });
+
+        google.maps.event.addDomListener(window.__map, 'click', function(data) {
+            removeOpenedInfobox();
+        });
+
     }
 
     drawParcelasOverGoogleMap = function(geoJson, isNearbyQuery){
