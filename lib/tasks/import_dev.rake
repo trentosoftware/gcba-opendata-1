@@ -8,32 +8,32 @@ namespace :import_dev do
       {'type' => 'rar', 'name' => 'manzanas.rar', 'table' => 'manzanas_geometries', 'opc' => '-a', 'inserts' => []},
       {'type' => 'zip', 'name' => 'mapa-bibliotecas.zip', 'table' => 'biblio_geometries', 'opc' => '-d', 'inserts' => [
           'INSERT INTO parcelas_geometries (smp, geometry) SELECT \'biblio\'||gid AS smp, ST_Multi(ST_GeomFromText(ST_AsText(ST_Buffer(geometry,0.00005,2)),4326)) FROM biblio_geometries',
-          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at) SELECT \'biblio\'||gid AS smp, \'BIBLIOTECA\' AS tipo2, nom_mapa AS nombre, now() AS created_at, now() AS updated_at FROM biblio_geometries'
+          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at, is_generated) SELECT \'biblio\'||gid AS smp, \'BIBLIOTECA\' AS tipo2, nom_mapa AS nombre, now() AS created_at, now() AS updated_at, true as is_generated FROM biblio_geometries'
           ]
       },
       {'type' => 'zip', 'name' => 'establecimientos-educativos-privados.zip', 'table' => 'edu_priv_geometries', 'opc' => '-d', 'inserts' => [
           'INSERT INTO parcelas_geometries (smp, geometry) SELECT \'epriv\'||gid AS smp, ST_Multi(ST_GeomFromText(ST_AsText(ST_Buffer(geometry,0.00005,2)),4326)) FROM edu_priv_geometries',
-          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at) SELECT \'epriv\'||gid AS smp, \'ESTABLECIMIENTO EDUCATIVO PRIVADO\' AS tipo2, nombre_est AS nombre, now() AS created_at, now() AS updated_at FROM edu_priv_geometries'
+          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at, is_generated) SELECT \'epriv\'||gid AS smp, \'ESTABLECIMIENTO EDUCATIVO PRIVADO\' AS tipo2, nombre_est AS nombre, now() AS created_at, now() AS updated_at, true as is_generated FROM edu_priv_geometries'
           ]
       },
       {'type' => 'zip', 'name' => 'establecimientos-educativos-publicos.zip', 'table' => 'edu_pub_geometries', 'opc' => '-d', 'inserts' => [
           'INSERT INTO parcelas_geometries (smp, geometry) SELECT \'epub\'||gid AS smp, ST_Multi(ST_GeomFromText(ST_AsText(ST_Buffer(geometry,0.00005,2)),4326)) FROM edu_pub_geometries',
-          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at) SELECT \'epub\'||gid AS smp, \'ESTABLECIMIENTO EDUCATIVO PUBLICO\' AS tipo2, nombre_est AS nombre, now() AS created_at, now() AS updated_at FROM edu_pub_geometries'
+          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at, is_generated) SELECT \'epub\'||gid AS smp, \'ESTABLECIMIENTO EDUCATIVO PUBLICO\' AS tipo2, nombre_est AS nombre, now() AS created_at, now() AS updated_at, true as is_generated FROM edu_pub_geometries'
           ]
       },
       {'type' => 'zip', 'name' => 'mapa-estaciones-de-subterraneo.zip', 'table' => 'subte_geometries', 'opc' => '-d', 'inserts' => [
           'INSERT INTO parcelas_geometries (smp, geometry) SELECT \'subte\'||gid AS smp, ST_Multi(ST_GeomFromText(ST_AsText(ST_Buffer(geometry,0.00005,2)),4326)) FROM subte_geometries',
-          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at) SELECT \'subte\'||gid AS smp, \'ESTACION SUBTE\' AS tipo2, \'Línea \'||linea||\' - \'||estacion AS nombre, now() AS created_at, now() AS updated_at FROM subte_geometries'
+          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at, is_generated) SELECT \'subte\'||gid AS smp, \'ESTACION SUBTE\' AS tipo2, \'Línea \'||linea||\' - \'||estacion AS nombre, now() AS created_at, now() AS updated_at, true as is_generated FROM subte_geometries'
           ]
       },
       {'type' => 'rar', 'name' => 'espacios-verdes.rar', 'table' => 'espverdes_data', 'opc' => '-d', 'inserts' => [
          'INSERT INTO parcelas_geometries (smp, geometry) SELECT \'everde\'||gid AS smp, geometry FROM espverdes_data',
-         'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at) SELECT \'everde\'||gid AS smp, \'ESPACIO VERDE\' AS tipo2, nombre, now() AS created_at, now() AS updated_at FROM espverdes_data'
+         'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at, is_generated) SELECT \'everde\'||gid AS smp, \'ESPACIO VERDE\' AS tipo2, nombre, now() AS created_at, now() AS updated_at, true as is_generated FROM espverdes_data'
          ]
       },
       {'type' => 'zip', 'name' => 'comisarias.zip', 'table' => 'comisarias_geometries', 'opc' => '-d', 'inserts' => [
           'INSERT INTO parcelas_geometries (smp, geometry) SELECT \'comisa\'||gid AS smp, ST_Multi(ST_GeomFromText(ST_AsText(ST_Buffer(geometry,0.00015,2)),4326)) FROM comisarias_geometries',
-          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at) SELECT \'comisa\'||gid AS smp, \'COMISARIA\' AS tipo2, nombre, now() AS created_at, now() AS updated_at FROM comisarias_geometries'
+          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at, is_generated) SELECT \'comisa\'||gid AS smp, \'COMISARIA\' AS tipo2, nombre, now() AS created_at, now() AS updated_at, true as is_generated FROM comisarias_geometries'
          ]
       }
     ]
@@ -81,7 +81,7 @@ namespace :import_dev do
         puts("Working with: #{data['name']}...")
        
         # Unrar/Unzip dataset files
-        (data['type'] == 'zip')?cmd = 'unzip ':cmd = 'unrar e '
+        cmd = (data['type'] == 'zip') ? 'unzip ': 'unrar e '
 	      cmd += data['name']
 
         run_command(cmd, 'uncompressing file ' + data['name'], 'Cannot uncompress file: ' + data['name'])
