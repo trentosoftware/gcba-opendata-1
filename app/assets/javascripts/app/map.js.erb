@@ -311,9 +311,21 @@ var Map = function(){
 
     return {
         init : function(){
-            if(window.__map == undefined){
-                createMap();
+            var initFun = function() {
+                if(window.__map == undefined){
+                    createMap();
+                }
             }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    buenosAiresLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    initFun();
+                }, initFun);
+            } else {
+                initFun();
+            }
+
         },
 
         search : function(query, isNearby){
