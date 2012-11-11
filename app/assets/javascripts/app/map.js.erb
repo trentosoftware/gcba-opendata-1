@@ -226,7 +226,7 @@ var Map = function(){
             setIdleSkipped(false);
         });
 
-        google.maps.event.addDomListener(window.__map, 'click', function(data) {
+        google.maps.event.addDomListener(window.__map, 'rightclick', function(data) {
             emptyParcelaClicked(data.latLng);
         });
     }
