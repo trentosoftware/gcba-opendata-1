@@ -8,7 +8,7 @@ namespace :import_prod do
       {'type' => 'rar', 'name' => 'manzanas.rar', 'table' => 'manzanas_geometries', 'opc' => '-a', 'inserts' => []},
       {'type' => 'zip', 'name' => 'mapa-bibliotecas.zip', 'table' => 'biblio_geometries', 'opc' => '-d', 'inserts' => [
           'INSERT INTO parcelas_geometries (smp, geometry) SELECT \'biblio\'||gid AS smp, ST_Multi(ST_GeomFromText(ST_AsText(ST_Buffer(geometry,0.00005,2)),4326)) FROM biblio_geometries',
-          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at) SELECT \'biblio\'||gid AS smp, \'BIBLIOTECA\' AS tipo2, nombre, now() AS created_at, now() AS updated_at FROM biblio_geometries'
+          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at) SELECT \'biblio\'||gid AS smp, \'BIBLIOTECA\' AS tipo2, nom_mapa AS nombre, now() AS created_at, now() AS updated_at FROM biblio_geometries'
           ]
       },
       {'type' => 'zip', 'name' => 'establecimientos-educativos-privados.zip', 'table' => 'edu_priv_geometries', 'opc' => '-d', 'inserts' => [
