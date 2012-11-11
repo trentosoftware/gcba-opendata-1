@@ -3,6 +3,7 @@ class CreateAutocompleteSearchTable < ActiveRecord::Migration
     create_table :autocomplete_search do |t|
       t.integer :results
       t.string :text
+      t.string :original_text
     end
 
     add_index :autocomplete_search, :results

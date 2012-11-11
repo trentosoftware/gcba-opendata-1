@@ -1,5 +1,5 @@
-INSERT INTO autocomplete_search(results, text)
-SELECT conteo, upper(unaccent_string(texto)) as text from
+INSERT INTO autocomplete_search(results, text, original_text)
+SELECT conteo, upper(unaccent_string(texto)) as text, texto as original_text from
 ((
 (select tipo2 as texto, count(tipo2) as conteo
 from parcelas_data where smp in (select smp from parcelas_geometries)
