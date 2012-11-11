@@ -340,7 +340,7 @@ var Map = function(){
         var resultCount = (count == searchLimit ? 'Limitando resultados a ' + searchLimit + '.' :
                                              'Mostrando ' + count + ' resultado' + plural + '.');
 
-        var message = 'Se muestran resultados para la busqueda "' + query + '". ';
+        var message = 'Se muestran resultados para la búsqueda "' + query + '". ';
         return message + resultCount;
     }
 
@@ -350,7 +350,7 @@ var Map = function(){
         var resultCount = data.features.length;
 
         if(resultCount == 0){
-            StatusBar.showErrorMessage('No hubo resultados para la busqueda "' + query + '"');
+            StatusBar.showErrorMessage('No hubo resultados para la búsqueda "' + query + '"');
         } else{
             StatusBar.showInfoMessage(getInfoMessageForQuery(query, resultCount));
             drawParcelasOverGoogleMap(data, isNearbyQuery);

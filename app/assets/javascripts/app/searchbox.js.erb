@@ -107,7 +107,7 @@ var Searchbox = function(){
                         && $('ul.dropdown-menu li.active').size() > 0) {
                     this.value = trimmedValue = $('ul.dropdown-menu li.active').text();
                 }
-                doSearch(trimmedValue, true);
+                doSearch(trimmedValue);
             }
         });
 
@@ -117,7 +117,7 @@ var Searchbox = function(){
             var trimmedQuery = $.trim(query);
 
             if(query.length > 2){
-                doSearch(trimmedQuery, true);
+                doSearch(trimmedQuery);
             }
         });
 
