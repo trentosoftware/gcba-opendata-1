@@ -60,13 +60,12 @@ namespace :import_prod do
     output.close
     raise "Cannot run pg utils script" if not $?.success?
 
-    # Update smp in data to match in geometries
-    cmd = 'psql -d \'' + db_name + '\' -h localhost -U gcba -c "update parcelas_data set seccion = concat(\'0\',seccion), smp = concat(\'0\', smp)"'
-    puts 'Updating parcelas_data.id sequence...'
+    # Create the temp directory  
+    cmd = 'mkdir -p ' + s.chomp + '/import_tmp'
     output = IO.popen(cmd)
     puts output.readlines
     output.close
-    raise "Cannot update parcelas_data.id sequence" if not $?.success?
+    raise "Cannot create the temp directory" if not $?.success?
 
     # Update sequence for parcelas_data.id
     cmd = 'psql -d \'' + db_name + '\' -h localhost -U gcba -c "select setval(\'parcelas_data_id_seq\', (select max(id)+1 from parcelas_data))"'
@@ -75,13 +74,6 @@ namespace :import_prod do
     puts output.readlines
     output.close
     raise "Cannot update parcelas_data.id sequence" if not $?.success?
-
-    # Create the temp directory  
-    cmd = 'mkdir -p ' + s.chomp + '/import_tmp'
-    output = IO.popen(cmd)
-    puts output.readlines
-    output.close
-    raise "Cannot create the temp directory" if not $?.success?
 
     # Remove possible files in the temp directory  
     cmd = 'rm -rf ' + s.chomp + '/import_tmp/*'
