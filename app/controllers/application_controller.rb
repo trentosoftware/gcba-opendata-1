@@ -67,7 +67,7 @@ class ApplicationController < ActionController::Base
     query = ActiveRecord::Base.send(:sanitize_sql_array, ["select * from autocomplete_search where text like ? order by results desc limit ?", "%#{cat}%", 10])
     results = ActiveRecord::Base.connection.execute(query)
     plucked = results.map do |e|
-      e.original_text
+      e['original_text']
     end
 
     render :json => { 'autocomplete' => plucked }

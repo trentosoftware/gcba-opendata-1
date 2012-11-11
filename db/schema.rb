@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(:version => 20121111174634) do
   create_table "autocomplete_search", :force => true do |t|
     t.integer "results"
     t.string  "text"
+    t.string  "original_text"
   end
 
   add_index "autocomplete_search", ["results"], :name => "index_autocomplete_search_on_results"
