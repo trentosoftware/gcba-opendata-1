@@ -1,5 +1,5 @@
 #encoding: utf-8
-namespace :import_prod do
+namespace :import_dev do
   desc "import the data file into postgres local db"
   task :data do
 
