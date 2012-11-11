@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
   end
 
   def nearest_parcelas
-    cat = params[:category].to_pg_escaped_str.removeaccents.upcase
+    cat = params[:category].to_pg_escaped_str.removeaccents
     limit = params[:limit].to_i
 
     lat = params[:lat].to_f
@@ -59,6 +59,17 @@ class ApplicationController < ActionController::Base
     response = add_geo_json_header(res)
 
     render :json => response
+  end
+
+  def autocomplete_category
+    cat = params[:text].to_pg_escaped_str.removeaccents
+
+    response = ParcelasData.select("case when tipo2 ilike \'%#{cat}%\' THEN tipo2 ELSE nombre END").where(
+        ["unaccent_string(tipo2) ilike ? or unaccent_string(nombre) ilike ?", "%#{cat}%", "%#{cat}%"]).uniq(true).limit(5)
+
+    plucked = response.to_a.map { |e| e.nombre }
+
+    render :json => { 'autocomplete' => plucked }
   end
 
   def parcelas_by_seccion
