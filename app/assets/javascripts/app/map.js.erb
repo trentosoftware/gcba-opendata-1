@@ -2,7 +2,8 @@
 
 var Map = function(){
 
-    var buenosAiresLocation = new google.maps.LatLng(-34.61997232, -58.45);
+    var buenosAiresLocation = new google.maps.LatLng(-34.61997232, -58.45),
+        searchLimit = 200;
 
     var getEndpointWithQuery,
         doDrawParcelasOverGoogleMap,
@@ -19,14 +20,12 @@ var Map = function(){
         createMap,
         updateViewport,
         removePreviousDrawing,
-        getInfoMessageForQuery;
-
-    var canvasWidth = 960,
-        canvasHeight = 500,
-        centered;
+        getInfoMessageForQuery,
+        removeOpenedMarker;
 
     var clickedElement,
         temporalMarker,
+        searchMarker,
         openedBox;
 
     var currentZoomLevel = 12,
@@ -46,7 +45,6 @@ var Map = function(){
         setCurrentZoomLevel;
 
     getEndpointWithQuery = function(query, isNearby){
-
         var lat, long;
 
         if(isNearby && typeof(temporalMarker) !== 'undefined'){
@@ -59,7 +57,7 @@ var Map = function(){
 
         var url = '<%= url.pcercanas_json_path(:category => '__cat', :limit => '__limit') %>';
         url = url.replace('__cat', encodeURIComponent(query));
-        url = url.replace('__limit', 100);
+        url = url.replace('__limit', searchLimit);
         return url + '?lat=' + lat + '&long=' + long;
     }
 
@@ -70,10 +68,14 @@ var Map = function(){
         createInfoboxWithHTML(html, latLong);
     }
 
-    removeOpenedInfobox = function(){
-        if(typeof(temporalMarker) !== 'undefined'){
-            temporalMarker.setMap(null);
+    removeOpenedMarker = function(marker){
+        if(typeof(marker) !== 'undefined'){
+            marker.setMap(null);
         }
+    }
+
+    removeOpenedInfobox = function(){
+        removeOpenedMarker(temporalMarker);
 
         if(typeof(openedBox) !== 'undefined'){
             openedBox.close();
@@ -104,7 +106,7 @@ var Map = function(){
         temporalMarker = new google.maps.Marker({
             map: window.__map,
             position: latLong,
-            visible: false
+            zIndex: 999999
         });
 
         var myOptions = {
@@ -295,9 +297,11 @@ var Map = function(){
 
     getInfoMessageForQuery = function(query, count){
         var plural = (count == 1 ? '' : 's');
-        var prefix = (count == 200 ? 'Limitando resultados a 200 ' : 'Mostrando ' + count + ' resultado' + plural);
+        var resultCount = (count == searchLimit ? 'Limitando resultados a ' + searchLimit + '.' :
+                                             'Mostrando ' + count + ' resultado' + plural + '.');
 
-        return prefix + ' para la busqueda "' + query + '"';
+        var message = 'Se muestran resultados para la busqueda "' + query + '". ';
+        return message + resultCount;
     }
 
     updateViewport = function(data, query){
