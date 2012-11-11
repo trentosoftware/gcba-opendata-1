@@ -39,7 +39,7 @@ namespace :import_dev do
     ]
 
     db_name = "gcba-opendata-dev"
-    bsas_data_path = "localhost:./bsas.data/"
+    bsas_data_path = "deploy@gcba-opendata-1.trentolabs.com:./bsas.data/"
     output = IO.popen('pwd')
     s = output.readlines.first
     output.close
@@ -53,7 +53,7 @@ namespace :import_dev do
     raise "Cannot import parcelas data" if not $?.success?
 
     # Add Utils to db    
-    cmd = 'psql -d \'gcba-opendata-prod\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/pg_utils.sql'
+    cmd = 'psql -d \'gcba-opendata-dev\' -h localhost -U gcba -f ' + s.chomp + '/db/migrate/pg_utils.sql'
     puts 'running pg utils script...'
     output = IO.popen(cmd)
     puts output.readlines
@@ -87,7 +87,7 @@ namespace :import_dev do
     raise "Cannot find the temp directory" if not $?.success?
 
     # Get dataset files
-    cmd = 'scp -i ~/.ssh/id_rsa '
+    cmd = 'rsync -avz '
     data_sets.each do |data|
 	cmd += ' ' + bsas_data_path + data['name']
     end

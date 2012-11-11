@@ -11,7 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121104230940) do
+ActiveRecord::Schema.define(:version => 20121111150049) do
+
+  create_table "autocomplete_search", :force => true do |t|
+    t.integer "results"
+    t.string  "text"
+  end
+
+  add_index "autocomplete_search", ["results"], :name => "index_autocomplete_search_on_results"
+  add_index "autocomplete_search", ["text"], :name => "index_autocomplete_search_on_text"
 
   create_table "barrios_geometries", :force => true do |t|
     t.integer "gid"
