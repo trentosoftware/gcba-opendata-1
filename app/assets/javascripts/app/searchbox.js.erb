@@ -47,8 +47,12 @@ var Searchbox = function(){
             }
 
             if(event.keyCode == 13 && trimmedValue.length > 2){
+                if ($('ul.dropdown-menu:visible li.active').size() > 0) {
+                    this.value = trimmedValue = $.trim($('ul.dropdown-menu:visible li.active').attr('data-value'));
+                }
                 doSearch(trimmedValue, true);
             }
+
         });
 
         $('.location-search-typeahead').typeahead({
@@ -107,7 +111,6 @@ var Searchbox = function(){
             }
 
             if(event.keyCode == 13 && trimmedValue.length > 2){
-
                 if ($('ul.dropdown-menu:visible li.active').size() > 0) {
                     this.value = trimmedValue = $.trim($('ul.dropdown-menu:visible li.active').attr('data-value'));
                 }
