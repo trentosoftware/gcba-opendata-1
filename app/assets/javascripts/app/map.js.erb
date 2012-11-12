@@ -338,10 +338,15 @@ var Map = function(){
     getInfoMessageForQuery = function(query, count){
         var plural = (count == 1 ? '' : 's');
         var resultCount = (count == searchLimit ? 'Limitando resultados a ' + searchLimit + '.' :
-                                             'Mostrando ' + count + ' resultado' + plural + '.');
+                'Mostrando ' + count + ' resultado' + plural + '.');
 
-        var message = 'Se muestran resultados para la búsqueda "' + query + '". ';
-        return message + resultCount;
+        if(query.length > 0){
+            var message = 'Se muestran resultados para la búsqueda "' + query + '". ';
+            return message + resultCount;
+        }
+
+        // if the query is empty, a discovery query was perform. show the status message accordingly.
+        return "Descubriendo parcelas. " + resultCount;
     }
 
     updateViewport = function(data, query, isNearbyQuery){
