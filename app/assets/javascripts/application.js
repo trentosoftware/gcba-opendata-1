@@ -18,6 +18,7 @@
 //= require app/utils
 //= require app/map
 //= require app/searchbox
+//= require app/navigationBar
 //= require infoxbox
 //= require app/application
 

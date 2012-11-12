@@ -59,6 +59,10 @@ var Searchbox = function(){
             matcher : autocompleteMatcher,
             highlighter : autocompleteHighlighter
         });
+
+        $('.discover-button').click(function(){
+            doSearch('', true);
+        });
     }
 
     autocompleter = function(currentQueryContainerSelector, query, process){

@@ -1,0 +1,11 @@
+var NavigationBar = function(){
+    return {
+        init : function(){
+
+            // register tip button
+            $("#tip-button").click(function(){
+                $('#introduction-modal').modal('show');
+            });
+        }
+    }
+}();
