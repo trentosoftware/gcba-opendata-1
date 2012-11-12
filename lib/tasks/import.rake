@@ -7,6 +7,8 @@ namespace :import do
       {'test' => 'false', 'type' => 'rar', 'name' => 'parcelas.rar', 'table' => 'parcelas_geometries', 'opc' => '-a', 'inserts' => []},
       {'test' => 'RFU', 'type' => 'rar', 'name' => 'manzanas.rar', 'table' => 'manzanas_geometries', 'opc' => '-a', 'inserts' => []},
       {'test' => 'true', 'type' => 'zip', 'name' => 'bicisendas.zip', 'table' => 'bicis_geometries', 'opc' => '-d', 'inserts' => [
+          'INSERT INTO parcelas_geometries (smp, geometry) SELECT \'bsenda\'||gid AS smp, ST_BdMPolyFromText(ST_AsText(geometry),4326) AS geometry FROM bicis_geometries',
+          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at, is_generated) SELECT \'bsenda\'||gid AS smp, \'BICISENDA\' AS tipo2, nomoficial||\' (\'||alt_izqini||\'-\'||alt_izqfin||\')\' AS nombre, now() AS created_at, now() AS updated_at, true as is_generated  FROM bicis_geometries'
           ]
       },
       {'test' => 'true', 'type' => 'zip', 'name' => 'linea_ferrocarril_1991.zip', 'table' => 'tren_geometries', 'opc' => '-d', 'inserts' => [
