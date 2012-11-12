@@ -16,4 +16,8 @@ $(document).ready(function(){
         $('.navbar-search').show();
         StatusBar.showErrorMessage("Ooops, hubo un error en la comunicación con el servidor. Proba de nuevo más tarde.");
     });
+
+    $("#tip-button").click(function(){
+        $('#introduction-modal').modal('show');
+    });
 });
