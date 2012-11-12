@@ -76,7 +76,6 @@ var Searchbox = function(){
             if(trimmedQuery != $.trim($(currentQueryContainerSelector).val())){
                 return;
             }
-
             process(data.autocomplete);
         });
     }
@@ -85,14 +84,15 @@ var Searchbox = function(){
         var trimmedItem = $.trim(item);
         var trimmedQuery = $.trim(this.query);
 
-        var query = trimmedQuery.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&')
+        var query = trimmedQuery.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
+
         return trimmedItem.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
             return '<strong>' + match + '</strong>'
-        })
+        });
     }
 
     autocompleteMatcher = function(item){
-        return ~($.trim(item)).toLowerCase().indexOf($.trim(this.query).toLowerCase())
+        return ~($.trim(item)).toLowerCase().indexOf($.trim(this.query).toLowerCase());
     }
 
     registerHandlers = function(){

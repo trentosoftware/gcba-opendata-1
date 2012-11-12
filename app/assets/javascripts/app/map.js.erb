@@ -88,8 +88,7 @@ var Map = function(){
     // recives an undefined parameter to reset the value of the current click element
     dropFocusFromSelectParcel = function(undefined){
         if(typeof(clickedElement) !== 'undefined' && clickedElement != null){
-            clickedElement.style("stroke", "orange");
-            clickedElement.style("fill", "orange");
+            clickedElement.classed('clicked', false);
             clickedElement = undefined;
         }
     }
@@ -175,6 +174,7 @@ var Map = function(){
     }
 
     parcelaClicked = function(parcela, a, b, c, d){
+
         dropFocusFromSelectParcel();
         showParcelaInfoBox(parcela, getParcelaLatLong(parcela));
 
@@ -185,8 +185,7 @@ var Map = function(){
 
     setFocusToParcel = function(d3Parcel){
         clickedElement = d3.select(d3Parcel);
-        clickedElement.style("stroke", "blue");
-        clickedElement.style("fill", "blue");
+        clickedElement.classed('clicked', true);
     }
 
     createGoogleLatLong = function(lat, long){
@@ -278,6 +277,7 @@ var Map = function(){
                         .data(geoJson.features)
                         .attr("d", path) // update existing paths
                         .enter().append("svg:path")
+                        .attr("class", "parcel")
                         .attr("d", path)
                         .on("click", parcelaClicked);
             };
