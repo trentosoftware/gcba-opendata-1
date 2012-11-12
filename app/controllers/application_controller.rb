@@ -42,19 +42,22 @@ class ApplicationController < ActionController::Base
 
   end
 
+
+
   def nearest_parcelas
-    raise 'search category must have at least 3 characters' if params[:category].size < 3
-    limit = params[:limit].to_i
-    raise 'search limit must be under 200' if limit > 200
-
-    cat = params[:category].to_pg_escaped_str.removeaccents
-
+    limit = params[:limit].to_i > 200 ? 200 : params[:limit].to_i
     lat = params[:lat].to_f
     long = params[:long].to_f
 
-    res = ParcelasGeometry.includes(:parcelas_data).where(
-        ["unaccent_string(parcelas_data.tipo2) ilike ? or unaccent_string(parcelas_data.nombre) ilike ?", "%#{cat}%", "%#{cat}%"]).order(
-        "ST_Transform(parcelas_geometries.geometry, 4326) <-> ST_Point(#{long},#{lat})").limit(200)
+    if params[:category].nil? or params[:category].empty?
+      where_clause = []
+    else
+      cat = params[:category].to_pg_escaped_str.removeaccents
+      where_clause = ["unaccent_string(parcelas_data.tipo2) ilike ? or unaccent_string(parcelas_data.nombre) ilike ?", "%#{cat}%", "%#{cat}%"]
+    end
+
+    res = ParcelasGeometry.includes(:parcelas_data).where(where_clause).order(
+        "ST_Transform(parcelas_geometries.geometry, 4326) <-> ST_Point(#{long},#{lat})").limit(limit)
 
     response = add_geo_json_header(res)
 
