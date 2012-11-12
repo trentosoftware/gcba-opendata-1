@@ -42,7 +42,25 @@ class ApplicationController < ActionController::Base
 
   end
 
+  def parcelas_by_tag
+    limit = params[:limit].to_i > 300 ? 300 : params[:limit].to_i
+    lat = params[:lat].to_f
+    long = params[:long].to_f
 
+    if params[:tag].nil? or params[:tag].empty?
+      where_clause = []
+    else
+      cat = params[:tag].to_pg_escaped_str.removeaccents
+      where_clause = ["parcelas_data.aliases ilike ?", "%#{cat}%"]
+    end
+
+    res = ParcelasGeometry.includes(:parcelas_data).where(where_clause).order(
+        "ST_Transform(parcelas_geometries.geometry, 4326) <-> ST_Point(#{long},#{lat})").limit(limit)
+
+    response = add_geo_json_header(res)
+
+    render :json => response
+  end
 
   def nearest_parcelas
     limit = params[:limit].to_i > 200 ? 200 : params[:limit].to_i

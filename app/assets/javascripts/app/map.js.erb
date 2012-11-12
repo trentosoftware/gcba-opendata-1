@@ -53,9 +53,9 @@ var Map = function(){
         lat = getCurrentMapCenter().lat();
         long = getCurrentMapCenter().lng();
 
-        var url = '<%= url.pcercanas_json_path(:limit => '__limit') %>';
+        var url = '<%= url.parcelas_by_tag(:limit => '__limit') %>';
         url = url.replace('__limit', searchLimit);
-        return url + '?lat=' + lat + '&long=' + long + '&category=' + encodeURIComponent(category);
+        return url + '?lat=' + lat + '&long=' + long + '&tag=' + encodeURIComponent(category);
     }
 
     getEndpointWithQuery = function(query, isNearby){
