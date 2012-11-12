@@ -23,7 +23,8 @@ var Map = function(){
         removeOpenedMarker,
         createSearchMarker,
         dropFocusFromSelectParcel,
-        setFocusToParcel;
+        setFocusToParcel,
+        getEndpointWithCategory;
 
     var clickedElement,
         temporalMarker,
@@ -45,6 +46,17 @@ var Map = function(){
         getCurrentMapCenter,
         getCurrentZoomLevel,
         setCurrentZoomLevel;
+
+    getEndpointWithCategory = function(category){
+        var lat, long;
+
+        lat = getCurrentMapCenter().lat();
+        long = getCurrentMapCenter().lng();
+
+        var url = '<%= url.pcercanas_json_path(:limit => '__limit') %>';
+        url = url.replace('__limit', searchLimit);
+        return url + '?lat=' + lat + '&long=' + long + '&category=' + encodeURIComponent(category);
+    }
 
     getEndpointWithQuery = function(query, isNearby){
         var lat, long;
@@ -246,7 +258,7 @@ var Map = function(){
             emptyParcelaClicked(data.latLng);
 
             // don't execute other handlers, we have already take care of the event
-            event.stopPropagation();
+            return false;
         });
 
         google.maps.event.addDomListener(window.__map, 'click', function(data) {
@@ -396,6 +408,15 @@ var Map = function(){
             } else {
                 initFun();
             }
+        },
+
+        categorySearch : function(category, fancyName){
+            var endpoint = getEndpointWithCategory(category);
+            $("#loading").show();
+
+            $.getJSON(endpoint, function(data){
+                updateViewport(data, fancyName);
+            });
         },
 
         search : function(query, isNearbyQuery){
