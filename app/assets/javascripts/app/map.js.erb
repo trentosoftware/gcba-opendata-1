@@ -175,6 +175,10 @@ var Map = function(){
 
     parcelaClicked = function(parcela, a, b, c, d){
 
+        if (parcela.properties.parcelas_data.length === 0) {
+            return;
+        }
+
         dropFocusFromSelectParcel();
         showParcelaInfoBox(parcela, getParcelaLatLong(parcela));
 
@@ -277,7 +281,16 @@ var Map = function(){
                         .data(geoJson.features)
                         .attr("d", path) // update existing paths
                         .enter().append("svg:path")
-                        .attr("class", "parcel")
+                        .attr("class", function(d) {
+                            if (d.properties.parcelas_data.length === 1
+                                    && (d.properties.parcelas_data[0].tipo2 === 'ESPACIO VERDE'
+                                    || d.properties.parcelas_data[0].tipo2 === 'PLAZA')) {
+                                return "parcel espacio-verde";
+                            } else if (d.properties.parcelas_data.length === 0) {
+                                return "parcel-not-clickeable";
+                            }
+                            return "parcel";
+                        })
                         .attr("d", path)
                         .on("click", parcelaClicked);
             };
