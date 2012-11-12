@@ -12,7 +12,9 @@ namespace :import do
       {'test' => 'true', 'type' => 'zip', 'name' => 'linea_ferrocarril_1991.zip', 'table' => 'tren_geometries', 'opc' => '-d', 'inserts' => [
           ]
       },
-      {'test' => 'true', 'type' => 'zip', 'name' => 'autopistas_1991.zip', 'table' => 'autopista_geometries', 'opc' => '-d', 'inserts' => [
+      {'test' => 'false', 'type' => 'zip', 'name' => 'autopistas_1991.zip', 'table' => 'autopista_geometries', 'opc' => '-d', 'inserts' => [
+          'INSERT INTO parcelas_geometries (smp, geometry) SELECT \'auto\'||gid AS smp, geometry FROM autopista_geometries',
+          'INSERT INTO parcelas_data (smp, tipo2, nombre, created_at, updated_at, is_generated) SELECT \'auto\'||gid AS smp, \'AUTOPISTA\' AS tipo2, CASE WHEN TRIM(nombre) is null THEN \'Autopista\' ELSE nombre END AS nombre, now() AS created_at, now() AS updated_at, true as is_generated  FROM autopista_geometries'
           ]
       },
       {'test' => 'true', 'type' => 'zip', 'name' => 'mapa-lineas-de-subterraneo.zip', 'table' => 'linea_subte_geometries', 'opc' => '-d', 'inserts' => [
