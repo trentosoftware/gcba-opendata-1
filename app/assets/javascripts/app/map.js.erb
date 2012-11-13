@@ -53,8 +53,6 @@ var Map = function(){
         lat = getCurrentMapCenter().lat();
         long = getCurrentMapCenter().lng();
 
-        var url = '<%= url.parcelas_by_tag_path(:limit => '__limit') %>';
-        url = url.replace('__limit', searchLimit);
         return url + '?lat=' + lat + '&long=' + long + '&tag=' + encodeURIComponent(category);
     }
 
@@ -398,20 +396,20 @@ var Map = function(){
 
     return {
         init : function(){
-            var initFun = function() {
-                if(window.__map == undefined){
-                    createMap();
-                }
-            }
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    buenosAiresLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    initFun();
-                }, initFun);
-            } else {
-                initFun();
-            }
+//            var initFun = function() {
+//                if(window.__map == undefined){
+//                    createMap();
+//                }
+//            }
+//
+//            if (navigator.geolocation) {
+//                navigator.geolocation.getCurrentPosition(function(position) {
+//                    buenosAiresLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+//                    initFun();
+//                }, initFun);
+//            } else {
+//                initFun();
+//            }
         },
 
         categorySearch : function(category, fancyName){

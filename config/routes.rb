@@ -11,6 +11,7 @@ Parcelas::Application.routes.draw do
   match 'parcelas_by_tag/limit/:limit' => 'application#parcelas_by_tag', :as => 'parcelas_by_tag'
   match 'nearest_parcelas/limit/:limit' => 'application#nearest_parcelas', :as => 'pcercanas_json'
   match 'autocomplete_category/:text' => 'application#autocomplete_category', :as => 'autocomplete_json'
+  match 'landing' => 'application#landing'
   #match 'nearest_manzana/:category' => 'application#nearest_manzanas', :as => 'mcercanas_json'
 
 

@@ -6,6 +6,9 @@ class ApplicationController < ActionController::Base
   def index
   end
 
+  def landing
+  end
+
   def nearest_manzanas
     category = params[:category]
     cat = params[:category].upcase
