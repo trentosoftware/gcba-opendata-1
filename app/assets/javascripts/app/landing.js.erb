@@ -3,6 +3,9 @@
 $(document).ready(function(){
    $('#search-button').on('click', function(ev) {
        var url = '<%= url.application_index_path %>';
+       url += '?lat=-34.662445791586556';
+       url += '&long=-58.44481076406247';
+       url += '&cat=' + 'heladeria';
 
        $(ev.currentTarget).attr('href', url);
    });

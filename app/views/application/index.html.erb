@@ -139,3 +139,14 @@
 <script type="x-tmpl" id="no_results_template">
   <h4>No hay resultados para la b&uacute;squeda</h4>
 </script>
+
+<script type="text/javascript">
+    // Global Application Object
+    window.bsasApp = {};
+    //Default values
+    window.bsasApp = {
+        'lat' : '<%= h(@lat) %>',
+        'long' : '<%= h(@long) %>',
+        'cat': '<%= h(@cat) %>'
+    };
+</script>
