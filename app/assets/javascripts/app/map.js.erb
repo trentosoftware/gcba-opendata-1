@@ -2,8 +2,11 @@
 
 var Map = function(){
 
-    var buenosAiresLocation = new google.maps.LatLng(-34.662445791586556, -58.44481076406247),
+    var buenosAiresLocation = new google.maps.LatLng(parseFloat(window.bsasApp.lat), parseFloat(window.bsasApp.long)),
         searchLimit = 200;
+//    var buenosAiresLocation = new google.maps.LatLng(-34.662445791586556, -58.44481076406247),
+//            searchLimit = 200;
+
 
     var getEndpointWithQuery,
         drawParcelasOverGoogleMap,
@@ -396,11 +399,9 @@ var Map = function(){
 
     return {
         init : function(){
-//            var initFun = function() {
-//                if(window.__map == undefined){
-//                    createMap();
-//                }
-//            }
+            if(window.__map == undefined){
+                createMap();
+            }
 //
 //            if (navigator.geolocation) {
 //                navigator.geolocation.getCurrentPosition(function(position) {

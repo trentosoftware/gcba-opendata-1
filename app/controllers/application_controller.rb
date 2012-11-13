@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   def index
     @lat = params[:lat]
     @long = params[:long]
-    @cat = params[:category]
+    @cat = params[:cat]
   end
 
   def landing
