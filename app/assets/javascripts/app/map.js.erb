@@ -401,6 +401,7 @@ var Map = function(){
         init : function(){
             if(window.__map == undefined){
                 createMap();
+                this.search(window.bsasApp.cat, false);
             }
 //
 //            if (navigator.geolocation) {

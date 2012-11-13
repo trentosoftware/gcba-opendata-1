@@ -145,8 +145,8 @@
     window.bsasApp = {};
     //Default values
     window.bsasApp = {
-        'lat' : '-34.662445791586556',
-        'long' : '-58.44481076406247',
-        'cat': 'heladeria'
+        'lat' : '<%= h(@lat) %>',
+        'long' : '<%= h(@long) %>',
+        'cat': '<%= h(@cat) %>'
     };
 </script>
