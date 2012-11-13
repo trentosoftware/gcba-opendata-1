@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   end
 
   def landing
+    render :layout => 'landing'
   end
 
   def nearest_manzanas
