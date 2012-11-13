@@ -4,9 +4,17 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   def index
-    @lat = params[:lat]
-    @long = params[:long]
+    lat = params[:lat].to_f
+    long = params[:long].to_f
     @cat = params[:cat]
+
+    query = ActiveRecord::Base.send(:sanitize_sql_array, ["select ST_X(ST_Transform(ST_SetSRID(ST_Point(?, ?),9807),4326)), ST_Y(ST_Transform(ST_SetSRID(ST_Point(?, ?),9807),4326))", "#{long}", "#{lat}", "#{long}", "#{lat}"])
+    results = ActiveRecord::Base.connection.execute(query)
+
+    coords = results.to_a.first
+    @long = coords['st_x']
+    @lat = coords['st_y']
+
   end
 
   def landing
