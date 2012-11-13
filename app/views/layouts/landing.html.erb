@@ -10,17 +10,7 @@
 
 <%= yield %>
 
-<div class="navbar-fixed-bottom footer-bar" style="max-height:60px;">
-  <div id="status-bar" style="height: 60px; padding: 0; margin: 0; border-radius: 0; display: none;">
-    <div class="status-bar-wrapper">
-      <span id="status-bar-message"></span>
-      <a type="button" class="close close-bar-button" style="right:20px;"><strong>×</strong></a>
-    </div>
-  </div>
-</div>
-
-<%= javascript_include_tag 'http://maps.googleapis.com/maps/api/js?sensor=false' %>
-<%= javascript_include_tag "application" %>
+<%= javascript_include_tag "landing" %>
 </body>
 </html>
 
