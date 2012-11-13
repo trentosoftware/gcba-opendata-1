@@ -7,6 +7,7 @@ Parcelas::Application.routes.draw do
   # first created -> highest priority.
 
   root :to => "application#landing"
+
   #match 'parcelas-por-seccion/:seccion' => 'application#parcelas_by_seccion', :as => 'secciones_json'
   match 'parcelas_by_tag/limit/:limit' => 'application#parcelas_by_tag', :as => 'parcelas_by_tag'
   match 'nearest_parcelas/limit/:limit' => 'application#nearest_parcelas', :as => 'pcercanas_json'
@@ -15,7 +16,11 @@ Parcelas::Application.routes.draw do
   #match 'nearest_manzana/:category' => 'application#nearest_manzanas', :as => 'mcercanas_json'
 
 
-
+  resources :application do
+    member do
+      get 'index'
+    end
+  end
   #match '/comunas/list' => 'comunas#list', :as => 'comunas_all'
 
   # Sample of regular route:

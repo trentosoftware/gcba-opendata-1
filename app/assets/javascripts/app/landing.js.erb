@@ -1,6 +1,10 @@
 <% url = Parcelas::Application.routes.url_helpers %>
 
 $(document).ready(function(){
+   $('#search-button').on('click', function(ev) {
+       var url = '<%= url.application_index_path %>';
 
+       $(ev.currentTarget).attr('href', url);
+   });
 
 });
