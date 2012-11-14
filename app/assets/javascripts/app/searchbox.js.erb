@@ -110,7 +110,7 @@ var Searchbox = function(){
                 searchButton.addClass("disabled");
             }*/
 
-            if(event.keyCode == 13 && trimmedValue.length > 2){
+            if(event.keyCode == 13 ){
                 if ($('ul.dropdown-menu:visible li.active').size() > 0) {
                     this.value = trimmedValue = $.trim($('ul.dropdown-menu:visible li.active').attr('data-value'));
                 }
