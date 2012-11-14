@@ -99,12 +99,12 @@ var Searchbox = function(){
         return ~($.trim(item)).toLowerCase().indexOf($.trim(this.query).toLowerCase());
     }
 
-    registerHandlers = function(){
+    registerHandlers = function(extraCondition){
         $('.search-bar').keyup(function(event){
             var trimmedValue = $.trim(this.value),
                     searchButton = $(this).closest('div').find('.search-button');
 
-            if(trimmedValue.length > 2) {
+            if(trimmedValue.length > 2 && extraCondition()) {
                 searchButton.removeClass("disabled");
             } else {
                 searchButton.addClass("disabled");
@@ -147,9 +147,9 @@ var Searchbox = function(){
     }
 
     return {
-        init : function(mapModule){
+        init : function(mapModule, extraCondition){
             setMapModule(mapModule);
-            registerHandlers();
+            registerHandlers(extraCondition);
         },
 
         registerLocationSearchHandlers : registerLocationSearchHandlers

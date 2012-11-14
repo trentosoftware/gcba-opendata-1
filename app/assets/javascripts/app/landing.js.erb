@@ -4,6 +4,10 @@ $(document).ready(function(){
    $.backstretch("<%= asset_path 'background-landing.png' %>");
 
    $('#search-button').on('click', function(ev) {
+       if ($(ev.currentTarget).hasClass('disabled')) {
+           ev.preventDefault(); ev.stopPropagation();
+           return;
+       }
        var url = '<%= url.application_index_path %>';
        url += '?lat=102836.5234375';
        url += '&long=107533.140625';
@@ -12,26 +16,48 @@ $(document).ready(function(){
        $(ev.currentTarget).attr('href', url);
    });
 
+
+    var searchable = {
+        search : function(query, isNearbyQuery) {
+            $('#dir').focus(); return;
+        },
+        isEnabled: function() {
+            return $.trim($('#cat-search').val()).length >= 3;
+        }
+    };
+    Searchbox.init(searchable, function() { return true; });
+
     var direccion;
 
     var ac = new usig.AutoCompleter('dir', {
         rootUrl: 'http://servicios.usig.buenosaires.gob.ar/usig-js/2.3/',
         skin: 'usig4',
         onReady: function() {
-            $('#dir').val('').focus();
+            //$('#dir').val('').focus();
         },
         afterSelection: function(option) {
             direccion = option;
+            alert('asd');
         },
         afterGeoCoding: function(pt) {
+            debugger;
             if (pt instanceof usig.Punto) {
                 if (direccion instanceof usig.Direccion) {
                     direccion.setCoordenadas(pt);
                 }
             }
-            if(direccion instanceof usig.Direccion){
+            if(direccion instanceof usig.Direccion) {
+
+                if (searchable.isEnabled()) {
+                    $('#search-button').removeClass('disabled');
+                }
                 alert(direccion.getCoordenadas().toString());
             }
         }
+
     });
+
+
+
+    $('#cat-search').focus();
 });
