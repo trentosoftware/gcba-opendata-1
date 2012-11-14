@@ -2,11 +2,12 @@
 
 $(document).ready(function(){
     var long = 107533.140625, lat = 102836.5234375,
-            getUrl = function(lat, long, cat) {
+            getUrl = function(lat, long, cat, explore) {
                 var url = '<%= url.application_index_path %>';
                 url += '?lat=' + lat;
                 url += '&long=' + long;
                 url += '&cat=' + encodeURIComponent(cat);
+                url += '&explore=' + (explore ? true : false);
                 return url;
             };
 
@@ -26,14 +27,14 @@ $(document).ready(function(){
     });
 
     $('#explorar-btn').on('click', function(ev) {
-        $(ev.currentTarget).attr('href', getUrl(102836.5234375, 107533.140625, ""));
+        $(ev.currentTarget).attr('href', getUrl(102836.5234375, 107533.140625, "", true));
     });
 
     $('#explorar-btn').on('keyup', function(ev) {
         if(ev.keyCode != 13){
             return;
         }
-        window.location.href = getUrl(102836.5234375, 107533.140625, "");
+        window.location.href = getUrl(102836.5234375, 107533.140625, "", true);
     });
 
 
