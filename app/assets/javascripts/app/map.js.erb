@@ -401,8 +401,8 @@ var Map = function(){
         if(resultCount == 0){
             StatusBar.showErrorMessage('No hubo resultados para la búsqueda "' + query + '"');
         } else{
-            StatusBar.showInfoMessage(getInfoMessageForQuery(query, resultCount));
             drawParcelasOverGoogleMap(data, isNearbyQuery);
+            StatusBar.showInfoMessage(getInfoMessageForQuery(query, resultCount));
         }
 
         removeOpenedInfobox();
