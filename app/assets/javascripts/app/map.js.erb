@@ -326,6 +326,8 @@ var Map = function(){
                     .style("opacity", 1);
         };
 
+        overlay.onRemove = removePreviousDrawing;
+
         window.__map.fitBounds(resultBounds);
         overlay.setMap(window.__map);
         google.maps.event.trigger(window.__map, 'resize');
