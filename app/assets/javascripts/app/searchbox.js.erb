@@ -104,11 +104,11 @@ var Searchbox = function(){
             var trimmedValue = $.trim(this.value),
                     searchButton = $(this).closest('div').find('.search-button');
 
-            if(trimmedValue.length > 2 && extraCondition()) {
+            /*if(trimmedValue.length > 2 && extraCondition()) {
                 searchButton.removeClass("disabled");
             } else {
                 searchButton.addClass("disabled");
-            }
+            }*/
 
             if(event.keyCode == 13 && trimmedValue.length > 2){
                 if ($('ul.dropdown-menu:visible li.active').size() > 0) {

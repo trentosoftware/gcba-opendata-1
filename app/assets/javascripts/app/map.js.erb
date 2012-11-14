@@ -284,7 +284,7 @@ var Map = function(){
 
         resultBounds = new google.maps.LatLngBounds();
 
-        var points = _(geoJson.features).chain().pluck('geometry').pluck('coordinates')
+        var points = _(geoJson.features).chain().pluck('geometry').compact().pluck('coordinates')
                 .flatten(true).flatten(true).flatten(true).map(function(val) {
                     return new google.maps.LatLng(val[1] + 0.0005, val[0] - 0.0006);}).value();
 
