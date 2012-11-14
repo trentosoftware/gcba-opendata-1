@@ -10,6 +10,13 @@ $(document).ready(function(){
     Searchbox.init(Map, function() { return true; });
     NavigationBar.init();
 
+    AutocompleteGcba.init('autocomplete-bsas', function(direction) {
+        long = direccion.getCoordenadas().getX();
+        lat = direccion.getCoordenadas().getY();
+
+        //$('.current-target b').text(direccion.toString());
+    });
+
 //    $('#introduction-modal').modal('show');
 
     $('html').ajaxError(function(){

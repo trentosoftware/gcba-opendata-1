@@ -44,30 +44,10 @@ $(document).ready(function(){
     };
     Searchbox.init(searchable, function() { return true; });
 
-    var direccion;
-
-    var ac = new usig.AutoCompleter('dir', {
-        rootUrl: 'http://servicios.usig.buenosaires.gob.ar/usig-js/2.3/',
-        skin: 'usig4',
-        onReady: function() {
-            //$('#dir').val('').focus();
-        },
-        afterSelection: function(option) {
-            direccion = option;
-        },
-        afterGeoCoding: function(pt) {
-            if (pt instanceof usig.Punto) {
-                if (direccion instanceof usig.Direccion) {
-                    direccion.setCoordenadas(pt);
-                }
-            }
-            if(direccion instanceof usig.Direccion) {
-                long = direccion.getCoordenadas().getX();
-                lat = direccion.getCoordenadas().getY();
-                $('.current-target b').text(direccion.toString());
-            }
-        }
-
+    AutocompleteGcba.init('dir', function(direction) {
+        long = direccion.getCoordenadas().getX();
+        lat = direccion.getCoordenadas().getY();
+        $('.current-target b').text(direccion.toString());
     });
 
     $('#cat-search').focus();
