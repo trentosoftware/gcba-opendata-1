@@ -420,6 +420,23 @@ var Map = function(){
                 this.search(window.bsasApp.cat, false);
             }
 
+            $('.search-button').on('keyup', function(ev) {
+                if(ev.keyCode !== 13){
+                    return;
+                }
+
+                var endpoint = getEndpointWithQuery(query, isNearbyQuery);
+                $("#loading").show();
+                // the z-index of the loader is not enough to be on the top of everything
+                // because this component has the focus
+                $('.navbar-search').hide();
+
+                $.getJSON(endpoint, function(data){
+                    updateViewport(data, query, isNearbyQuery);
+                });
+
+            });
+
             $(window).keydown(function(evt) {
                 if (evt.which == 16) { // shift
                     shiftPressed = true;
@@ -444,7 +461,7 @@ var Map = function(){
         search : function(query, isNearbyQuery){
             var endpoint = getEndpointWithQuery(query, isNearbyQuery);
             $("#loading").show();
-            
+
             // the z-index of the loader is not enough to be on the top of everything
             // because this component has the focus
             $('.navbar-search').hide();

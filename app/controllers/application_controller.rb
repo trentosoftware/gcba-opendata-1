@@ -3,16 +3,21 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
+  def coord_transform(long, lat)
+
+    query = ActiveRecord::Base.send(:sanitize_sql_array, ["select ST_X(ST_Transform(ST_SetSRID(ST_Point(?, ?),9807),4326)), ST_Y(ST_Transform(ST_SetSRID(ST_Point(?, ?),9807),4326))", "#{long}", "#{lat}", "#{long}", "#{lat}"])
+    results = ActiveRecord::Base.connection.execute(query)
+
+    coords = results.to_a.first
+  end
+
   def index
     lat = params[:lat].to_f
     long = params[:long].to_f
     @cat = params[:cat]
     @dir = params[:direction]
 
-    query = ActiveRecord::Base.send(:sanitize_sql_array, ["select ST_X(ST_Transform(ST_SetSRID(ST_Point(?, ?),9807),4326)), ST_Y(ST_Transform(ST_SetSRID(ST_Point(?, ?),9807),4326))", "#{long}", "#{lat}", "#{long}", "#{lat}"])
-    results = ActiveRecord::Base.connection.execute(query)
-
-    coords = results.to_a.first
+    coords = coord_transform(long, lat)
     @long = coords['st_x']
     @lat = coords['st_y']
 
@@ -44,8 +49,15 @@ class ApplicationController < ActionController::Base
 
   def nearest_parcelas
     limit = params[:limit].to_i > 200 ? 200 : params[:limit].to_i
-    lat = params[:lat].to_f
-    long = params[:long].to_f
+
+    if (params[:conv])
+      coords = coord_transform(params[:long].to_f, params[:lat].to_f)
+      long = coords['st_x']
+      lat = coords['st_y']
+    else
+      long = params[:long].to_f
+      lat = params[:lat].to_f
+    end
 
     if params[:category].nil? or params[:category].empty?
       where_clause = []

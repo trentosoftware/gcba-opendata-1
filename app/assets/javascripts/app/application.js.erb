@@ -9,7 +9,10 @@ $(document).ready(function(){
 
     StatusBar.init();
     Map.init();
-    Searchbox.init(Map, function() { return true; });
+    Searchbox.init({ search: function() {
+        $('#autocomplete-bsas').focus();
+        return;
+    }}, function() { return true; });
     NavigationBar.init();
 
     AutocompleteGcba.init('autocomplete-bsas', function(direction) {
@@ -18,6 +21,8 @@ $(document).ready(function(){
         lat = direction.getCoordenadas().getY();
 
         $('ul.unstyled li strong').text(direction.toString());
+    }, function() {
+        $('button.close').focus();
     });
 
     function getURLParameter(name) {
@@ -28,6 +33,9 @@ $(document).ready(function(){
 
     if(typeof(exploreFlag) !== "undefined" && exploreFlag != null && exploreFlag !== ""){
         $('#introduction-modal').modal('show');
+        $('#introduction-modal').on('shown', function() {
+            $('button.close').focus();
+        });
     }
 
 //    $('#introduction-modal').modal('show');
@@ -37,4 +45,6 @@ $(document).ready(function(){
         $('.navbar-search').show();
         StatusBar.showErrorMessage("Ooops, hubo un error en la comunicación con el servidor. Proba de nuevo más tarde.");
     });
+
+    $('button.close').focus();
 });

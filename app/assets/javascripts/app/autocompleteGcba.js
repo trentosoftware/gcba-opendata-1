@@ -1,9 +1,13 @@
 var AutocompleteGcba = function(){
 
-    var direccion, createAutocomplete, setCallback, callback;
+    var direccion, createAutocomplete, setCallback, callback, onReadyCallback;
 
     setCallback = function(cb) {
         callback = cb;
+    }
+
+    setAfterRenderCallback = function(cb) {
+        onReadyCallback = cb;
     }
 
     createAutocomplete = function(selector) {
@@ -11,7 +15,7 @@ var AutocompleteGcba = function(){
             rootUrl: 'http://servicios.usig.buenosaires.gob.ar/usig-js/2.3/',
             skin: 'usig4',
             onReady: function() {
-                //$('#dir').val('').focus();
+                onReadyCallback();
             },
             afterSelection: function(option) {
                 direccion = option;
@@ -31,9 +35,10 @@ var AutocompleteGcba = function(){
     }
 
     return {
-        init : function(selector, cb){
+        init : function(selector, afterGeocodingCallback, afterRenderCallback){
             createAutocomplete(selector);
-            setCallback(cb);
+            setCallback(afterGeocodingCallback);
+            setAfterRenderCallback(afterRenderCallback);
         }
     }
 }();

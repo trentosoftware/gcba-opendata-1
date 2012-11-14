@@ -9,6 +9,8 @@ $(document).ready(function(){
                 url += '&cat=' + encodeURIComponent(cat);
                 url += '&explore=' + (explore ? true : false);
                 url += '&direction=' + encodeURIComponent(dir);
+                url += '&conv=' + true;
+
                 return url;
             };
 
@@ -50,6 +52,8 @@ $(document).ready(function(){
         direction = dir.toString();
 
         $('.current-target b').text(dir.toString());
+    }, function() {
+        $('#cat-search').focus();
     });
 
     $('#cat-search').focus();
