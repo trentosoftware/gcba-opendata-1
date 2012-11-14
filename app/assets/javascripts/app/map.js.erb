@@ -256,15 +256,13 @@ var Map = function(){
             setIdleSkipped(false);
         });
 
-        google.maps.event.addDomListener(window.__map, 'rightclick', function(data) {
-            emptyParcelaClicked(data.latLng);
-
-            // don't execute other handlers, we have already take care of the event
-            return false;
-        });
 
         google.maps.event.addDomListener(window.__map, 'click', function(data) {
             removeOpenedInfobox();
+
+            if(shiftPressed){
+                emptyParcelaClicked(data.latLng);
+            }
         });
 
     }
@@ -413,21 +411,25 @@ var Map = function(){
         $('.navbar-search').show();
     }
 
+    var shiftPressed = false;
+
     return {
         init : function(){
             if(window.__map == undefined){
                 createMap();
                 this.search(window.bsasApp.cat, false);
             }
-//
-//            if (navigator.geolocation) {
-//                navigator.geolocation.getCurrentPosition(function(position) {
-//                    buenosAiresLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-//                    initFun();
-//                }, initFun);
-//            } else {
-//                initFun();
-//            }
+
+            $(window).keydown(function(evt) {
+                if (evt.which == 16) { // shift
+                    shiftPressed = true;
+                }
+            }).keyup(function(evt) {
+                if (evt.which == 16) { // shift
+                    shiftPressed = false;
+                }
+            });
+
         },
 
         categorySearch : function(category, fancyName){
