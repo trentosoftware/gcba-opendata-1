@@ -3541,7 +3541,7 @@ input[type="submit"].btn.btn-mini {
     display: block;
     padding: 20px 20px 20px;
     margin-left: -20px;
-    font-size: 20px;
+    font-size: 25px;
     font-weight: 200;
     color: #000000;
     text-shadow: 0 1px 0 #ffffff;
@@ -5065,7 +5065,7 @@ hr {
 }
 .navbar .brand {
     padding: 19px 20px 21px;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
     text-shadow: none;
     text-transform: uppercase;
