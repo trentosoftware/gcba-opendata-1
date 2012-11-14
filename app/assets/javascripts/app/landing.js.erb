@@ -1,6 +1,8 @@
 <% url = Parcelas::Application.routes.url_helpers %>
 
 $(document).ready(function(){
+   $.backstretch("<%= asset_path 'background-landing.png' %>");
+
    $('#search-button').on('click', function(ev) {
        var url = '<%= url.application_index_path %>';
        url += '?lat=102836.5234375';
