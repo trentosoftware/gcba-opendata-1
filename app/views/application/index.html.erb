@@ -1,3 +1,29 @@
+<!--navbar -->
+<div class="navbar navbar-static-top">
+  <div class="navbar-inner">
+    <div style="line-height: 50px;">
+      <a class="brand" href="/#">Descubr&iacute; Buenos Aires</a>
+
+      <ul class="nav" role="navigation">
+        <li><a href="#" id="about-button" style="line-height: 50px;">Sobre esta aplicaci&oacute;n</a></li>
+        <li><a href="#" id="tip-button" style="line-height: 50px;">Tips</a></li>
+      </ul>
+    </div>
+
+    <div class="navbar-search pull-right">
+      <ul class="unstyled" style="line-height: 0px; font-weight: normal; margin-left: 225px; max-width: 285px; text-overflow: ellipsis;"><li>Calle (Usando <strong><%= h(@dir.empty? ? '9 DE JULIO AV. y CORRIENTES AV.' : @dir) %></strong>)</li></ul>
+
+
+      <input type="text" class="span3 search-bar typeahead" value="<%= h(@cat) %>" tabindex="1"/>
+      <input id="autocomplete-bsas" type="text" value="<%= h(@dir) %>" tabindex="2"/>
+
+      <a class="search-button btn disabled" style="margin-top: -10px;" tabindex="3">Buscar</a>
+    </div>
+
+  </div>
+</div>
+
+
 <div class="container-fluid">
   <div class="row-fluid">
       <div id="map-wrap">

@@ -1,40 +1,39 @@
 <% url = Parcelas::Application.routes.url_helpers %>
 
 $(document).ready(function(){
-    var long = 107533.140625, lat = 102836.5234375,
-            getUrl = function(lat, long, cat, explore) {
+    var long = 107533.140625, lat = 102836.5234375, direction = '',
+            getUrl = function(latn, longn, cat, explore, dir) {
                 var url = '<%= url.application_index_path %>';
-                url += '?lat=' + lat;
-                url += '&long=' + long;
+                url += '?lat=' + latn;
+                url += '&long=' + longn;
                 url += '&cat=' + encodeURIComponent(cat);
                 url += '&explore=' + (explore ? true : false);
+                url += '&direction=' + encodeURIComponent(dir);
                 return url;
             };
 
    $.backstretch("<%= asset_path 'background-landing.png' %>");
 
-
-
    $('#search-button').on('click', function(ev) {
-       $(ev.currentTarget).attr('href', getUrl(lat, long, $.trim($('#cat-search').val())));
+       $(ev.currentTarget).attr('href', getUrl(lat, long, $.trim($('#cat-search').val()), false, direction));
    });
 
     $('#search-button').on('keyup', function(ev) {
         if(ev.keyCode != 13){
             return;
         }
-        window.location.href = getUrl(lat, long, $.trim($('#cat-search').val()));
+        window.location.href = getUrl(lat, long, $.trim($('#cat-search').val()), false, direction);
     });
 
     $('#explorar-btn').on('click', function(ev) {
-        $(ev.currentTarget).attr('href', getUrl(102836.5234375, 107533.140625, "", true));
+        $(ev.currentTarget).attr('href', getUrl(102836.5234375, 107533.140625, "", true, direction));
     });
 
     $('#explorar-btn').on('keyup', function(ev) {
-        if(ev.keyCode != 13){
+        if(ev.keyCode !== 13){
             return;
         }
-        window.location.href = getUrl(102836.5234375, 107533.140625, "", true);
+        window.location.href = getUrl(102836.5234375, 107533.140625, "", true, direction);
     });
 
 
@@ -45,10 +44,12 @@ $(document).ready(function(){
     };
     Searchbox.init(searchable, function() { return true; });
 
-    AutocompleteGcba.init('dir', function(direction) {
-        long = direccion.getCoordenadas().getX();
-        lat = direccion.getCoordenadas().getY();
-        $('.current-target b').text(direccion.toString());
+    AutocompleteGcba.init('dir', function(dir) {
+        long = dir.getCoordenadas().getX();
+        lat = dir.getCoordenadas().getY();
+        direction = dir.toString();
+
+        $('.current-target b').text(dir.toString());
     });
 
     $('#cat-search').focus();

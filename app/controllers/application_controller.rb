@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
     lat = params[:lat].to_f
     long = params[:long].to_f
     @cat = params[:cat]
+    @dir = params[:direction]
 
     query = ActiveRecord::Base.send(:sanitize_sql_array, ["select ST_X(ST_Transform(ST_SetSRID(ST_Point(?, ?),9807),4326)), ST_Y(ST_Transform(ST_SetSRID(ST_Point(?, ?),9807),4326))", "#{long}", "#{lat}", "#{long}", "#{lat}"])
     results = ActiveRecord::Base.connection.execute(query)

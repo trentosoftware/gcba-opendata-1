@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+    var long = 107533.140625, lat = 102836.5234375;
+
     _.templateSettings = {
         interpolate: /\{\{\=(.+?)\}\}/g,
         evaluate: /\{\{(.+?)\}\}/g
@@ -11,10 +13,11 @@ $(document).ready(function(){
     NavigationBar.init();
 
     AutocompleteGcba.init('autocomplete-bsas', function(direction) {
-        long = direccion.getCoordenadas().getX();
-        lat = direccion.getCoordenadas().getY();
 
-        //$('.current-target b').text(direccion.toString());
+        long = direction.getCoordenadas().getX();
+        lat = direction.getCoordenadas().getY();
+
+        $('ul.unstyled li strong').text(direction.toString());
     });
 
     function getURLParameter(name) {

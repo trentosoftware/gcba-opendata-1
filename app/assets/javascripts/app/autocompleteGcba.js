@@ -6,10 +6,6 @@ var AutocompleteGcba = function(){
         callback = cb;
     }
 
-    getCallback = function() {
-        return callback;
-    }
-
     createAutocomplete = function(selector) {
         new usig.AutoCompleter(selector, {
             rootUrl: 'http://servicios.usig.buenosaires.gob.ar/usig-js/2.3/',
@@ -27,7 +23,7 @@ var AutocompleteGcba = function(){
                     }
                 }
                 if(direccion instanceof usig.Direccion) {
-                    getCallback(direccion);
+                    callback(direccion);
                 }
             }
 
