@@ -40,13 +40,13 @@ $(document).ready(function(){
 
     var searchable = {
         search : function(query, isNearbyQuery) {
-            $('#dir').focus(); return;
+            $('#autocomplete-bsas').focus(); return;
         }
     };
 
     Searchbox.init(null ,true);
 
-    AutocompleteGcba.init('dir', function(dir) {
+    AutocompleteGcba.init('autocomplete-bsas', function(dir) {
         long = dir.getCoordenadas().getX();
         lat = dir.getCoordenadas().getY();
         direction = dir.toString();
