@@ -26,7 +26,6 @@ var AutocompleteGcba = function(){
                 direccion = option;
             },
             afterGeoCoding: function(pt) {
-                alert('ads');
                 if (pt instanceof usig.Punto) {
                     if (direccion instanceof usig.Direccion) {
                         direccion.setCoordenadas(pt);
