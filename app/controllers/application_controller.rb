@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
 
     response = add_geo_json_header(res)
 
-    render :json => response
+    render :json => { :lat=>lat, :long=>long, :geojson => response}
   end
 
   def autocomplete_category
