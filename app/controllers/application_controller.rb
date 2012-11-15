@@ -20,6 +20,8 @@ class ApplicationController < ActionController::Base
     coords = coord_transform(long, lat)
     @long = coords['st_x']
     @lat = coords['st_y']
+    @xpoint = params[:long]
+    @ypoint = params[:lat]
 
   end
 

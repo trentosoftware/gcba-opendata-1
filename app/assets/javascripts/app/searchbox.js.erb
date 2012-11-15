@@ -16,7 +16,8 @@ var Searchbox = function(){
         executeSearch;
 
     // default values
-    var long = 107533.140625, lat = 102836.5234375;
+    var long = (window.bsasApp === undefined ? 107533.140625 : window.bsasApp.pointx),
+            lat = (window.bsasApp === undefined ? 102836.5234375 : window.bsasApp.pointy);
 
     doSearch = function(query, isNearby){
         getMapModule().search(query, isNearby, lat, long);
