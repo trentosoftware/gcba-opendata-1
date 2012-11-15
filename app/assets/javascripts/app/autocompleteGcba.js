@@ -20,7 +20,6 @@ var AutocompleteGcba = function(){
             skin: 'usig4',
             onReady: function() {
                 onReadyCallback();
-                $("#" + selector).trigger('keypress');
             },
             afterSelection: function(option) {
                 direccion = option;

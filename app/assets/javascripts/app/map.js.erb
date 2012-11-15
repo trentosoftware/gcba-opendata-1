@@ -2,7 +2,7 @@
 
 var Map = function(){
 
-    var buenosAiresLocation = new google.maps.LatLng(parseFloat(window.bsasApp.lat), parseFloat(window.bsasApp.long)),
+    var buenosAiresLocation = new google.maps.LatLng(window.bsasApp.lat, window.bsasApp.long),
         searchLimit = 200,
         resultBounds;
 //    var buenosAiresLocation = new google.maps.LatLng(-34.662445791586556, -58.44481076406247),
@@ -164,7 +164,7 @@ var Map = function(){
         if(isNearbyQuery && typeof(temporalMarker) !== 'undefined'){
             position = temporalMarker.getPosition();
         } else {
-            position = new google.maps.LatLng(parseFloat(data.lat), parseFloat(data.long));
+            position = new google.maps.LatLng(data.lat, data.long);
         }
 
         searchMarker = new google.maps.Marker({
@@ -172,6 +172,7 @@ var Map = function(){
             position: position,
             zIndex: 150
         });
+
     }
 
     emptyParcelaClicked = function(point){
@@ -261,9 +262,6 @@ var Map = function(){
     drawParcelasOverGoogleMap = function(data, isNearbyQuery){
         var geoJson = data.geojson;
 
-        removeOpenedMarker(searchMarker);
-        createSearchMarker(data, isNearbyQuery);
-
         var overlay = new google.maps.OverlayView();
 
         overlay.onAdd = function () {
@@ -314,9 +312,16 @@ var Map = function(){
                     .transition()
                     .delay(function(d, i) { return 4000 * Math.random(); })
                     .style("opacity", 1);
+
+
         };
 
+        removeOpenedMarker(searchMarker);
+        createSearchMarker(data, isNearbyQuery);
+
+
         overlay.onRemove = removePreviousDrawing;
+
 
         window.__map.fitBounds(resultBounds);
         overlay.setMap(window.__map);
@@ -409,7 +414,7 @@ var Map = function(){
         init : function(){
             if(window.__map == undefined){
                 createMap();
-                this.search(window.bsasApp.cat, false);
+                this.search(window.bsasApp.cat, true, window.bsasApp.lat, window.bsasApp.long);
             }
 
             $(window).keydown(function(evt) {

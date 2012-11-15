@@ -12,8 +12,8 @@ class ApplicationController < ActionController::Base
   end
 
   def index
-    lat = params[:lat].to_f
-    long = params[:long].to_f
+    lat = BigDecimal.new(params[:lat])
+    long = BigDecimal.new(params[:long])
     @cat = params[:cat]
     @dir = params[:direction]
 
@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
     limit = params[:limit].to_i > 200 ? 200 : params[:limit].to_i
 
     if (params[:conv].eql?('true'))
-      coords = coord_transform(params[:long].to_f, params[:lat].to_f)
+      coords = coord_transform(BigDecimal.new(params[:long]), BigDecimal.new(params[:lat]))
       long = coords['st_x']
       lat = coords['st_y']
     else
