@@ -1849,7 +1849,7 @@
         case 9: // tab
         case 13: // enter
           if (!this.shown) return
-          this.select()
+          this.hide()
           break
 
         case 27: // escape

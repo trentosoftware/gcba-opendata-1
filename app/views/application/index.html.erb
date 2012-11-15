@@ -1,3 +1,29 @@
+<!--navbar -->
+<div class="navbar navbar-static-top">
+  <div class="navbar-inner">
+    <div style="line-height: 50px;">
+      <a class="brand" href="/#">Descubr&iacute; Buenos Aires</a>
+
+      <ul class="nav" role="navigation">
+        <li><a href="#" id="about-button" style="line-height: 50px;">Sobre esta aplicaci&oacute;n</a></li>
+        <li><a href="#" id="tip-button" style="line-height: 50px;">Tips</a></li>
+      </ul>
+    </div>
+
+    <div class="navbar-search pull-right">
+      <ul class="unstyled" style="line-height: 0px; font-weight: normal; margin-left: 225px; max-width: 285px; text-overflow: ellipsis;"><li>Calle (Usando <strong><%= h(@dir.empty? ? '9 DE JULIO AV. y CORRIENTES AV.' : @dir) %></strong>)</li></ul>
+
+
+      <input type="text" class="span3 search-bar typeahead" value="<%= h(@cat) %>" tabindex="1"/>
+      <input id="autocomplete-bsas" type="text" value="<%= h(@dir) %>" tabindex="2"/>
+
+      <a class="search-button btn" style="margin-top: -10px;" tabindex="3">Buscar</a>
+    </div>
+
+  </div>
+</div>
+
+
 <div class="container-fluid">
   <div class="row-fluid">
       <div id="map-wrap">
@@ -7,45 +33,133 @@
   </div>
 </div>
 
-<div id="introduction-modal" class="modal show fade" data-backdrop="true" data-keyboard="true">
+<div id="about-modal" class="modal hide fade" data-backdrop="true" data-keyboard="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Sobre esta aplicaci&oacute;n</h3>
+   </div>
+    <div class="modal-body" style="height:400px;">
+      <div class="accordion" id="accordion2">
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+              Motivaci&oacute;n
+            </a>
+          </div>
+          <div id="collapseOne" class="accordion-body in collapse" style="height: auto;">
+            <div class="accordion-inner">
+              <p><strong>Descubr&iacute; Buenos Aires</strong> es una aplicaci&oacute;n creada para participar de <a>BAapps</a>, un concurso creado por la Ciudad de Buenos Aires</p>
+              <p>Buscamos que toda la informaci&oacute;n sobre el uso del suelo de la ciudad sea consumible por cualquier persona, de una manera amigable, pudiendo de esta manera encontrar y descubrir nuevos rincones de la ciudad</p>
+              <p>Esta aplicaci&oacute;n fue creada por</p>
+              <ul>
+                <li>Juan Ignacio Go&ntilde;i (<a href="http://twitter.com/nachogoni">@nachogoni</a>)</li>
+                <li>Mart&iacute;n Cabral (<a href="http://twitter.com/mcabral_">@mcabral_</a>)</li>
+                <li>S&aacute;ntiago Vazquez (<a href="http://twitter.com/savazq">@savazq</a>)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+              Sets de datos utilizados
+            </a>
+          </div>
+          <div id="collapseTwo" class="accordion-body collapse" style="height: 0px;">
+            <div class="accordion-inner">
+            <p>La informaci&oacute;n que disponibilizamos al usuario surge de consumir los siguientes conjuntos de datos provistos por la Cuidad de Buenos Aires</p>
+              <ul>
+                <li>Mapa de parcelas</li>
+                <li>Relevamiento Usos del Suelo 2008-2010</li>
+                <li>Mapa Autopistas</li>
+                <li>Mapa de Bibliotecas</li>
+                <li>Mapa Espacios Verdes</li>
+                <li>Mapa Comisarías</li>
+                <li>Mapa Estaciones de Subterr&aacute;neo</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+              Tecnolog&iacute;as
+            </a>
+          </div>
+          <div id="collapseThree" class="accordion-body collapse" style="height: 0px;">
+            <div class="accordion-inner">
+              <p><strong>Descubr&iacute; Buenos Aires</strong> fue creada con tecnolog&iacute;as Open Source.</p><p>Este es un listado (parcial) de las tecnolog&iacute;as utilizadas</p>
+              <ul>
+                <li><a href="http://d3js.org/">d3.js</a></li>
+                <li><a href="http://twitter.github.com/bootstrap/index.html">Twitter Bootstrap</a></li>
+                <li><a href="http://www.postgresql.org/">Postgresql</a></li>
+                <li><a href="http://postgis.refractions.net/">Postgis</a></li>
+                <li><a href="http://rubyonrails.org/">Ruby on Rails</a></li>
+                <li><a href="https://developers.google.com/maps/?hl=es">Google Maps v3 API</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">
+              Link backs
+            </a>
+          </div>
+          <div id="collapseFour" class="accordion-body collapse" style="height: 0px;">
+            <div class="accordion-inner">
+              <p>Agradecemos con un linkback a:</p>
+              <ul>
+                <li><p><a href="http://www.webdesignerdepot.com/">Webdesigner Depot</a> (Icono de brujula)</p></li>
+                <li><p><a href="http://bootswatch.com//">bootswatch</a> (Themes for Bootstrap)</p></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div id="introduction-modal" class="modal hide fade" data-backdrop="true" data-keyboard="true">
+  <div class="modal-header">
+    <button  tabindex="1" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h3>Tips</h3>
   </div>
   <div class="modal-body" style="height:400px;">
-    <div id="myCarousel" class="carousel slide">
+    <div id="myCarousel" class="carousel slide" data-interval="false">
       <div class="carousel-inner">
-        <div class="item active">
-          <img src="assets/tips/dropdown-cropped.png" alt="">
-          <div class="carousel-caption" style="height: 40px;">
-            <p>Podes ver b&uacute;squedas categorizadas desde los men&uacute;es desplegables.</p>
-          </div>
-        </div>
         <div class="item">
           <img src="assets/tips/contextual-cropped.png" alt="">
-          <div class="carousel-caption" style="height: 40px;">
-            <p>Proba de hacer click derecho en cualquier lugar el mapa para una b&uacute;squeda localizada.</p>
+          <div class="carousel-caption carousel-legend">
+            <p>El men&uacute; de acciones te permite realizar una b&uacute;squeda localizada o explorar.</p>
           </div>
         </div>
 
         <div class="item">
           <img src="assets/tips/infobox-cropped.png" alt="">
-          <div class="carousel-caption" style="height: 40px;">
+          <div class="carousel-caption carousel-legend">
             <p>Hace click sobre una parcela para ver informaci&oacute;n detallada sobre la misma.</p>
           </div>
         </div>
 
         <div class="item">
           <img src="assets/tips/search-center-cropped.png" alt="">
-          <div class="carousel-caption" style="height: 40px;">
+          <div class="carousel-caption carousel-legend">
             <p>Un marcador rojo aparecer&aacute; con cada b&uacute;squeda mostrando el centro geogr&aacute;fico desde donde estas buscando.</p>
           </div>
         </div>
 
-        <div class="item">
+        <div class="item active">
           <img src="assets/tips/discover-cropped.png" alt="">
-          <div class="carousel-caption" style="height: 40px;">
-            <p>En el men&uacute; contextual, la acci&oacute;n "Descubrir" te permitir&aacute; mostrar el contenido de las parcelas m&aacute;s cercanas.</p>
+          <div class="carousel-caption carousel-legend">
+            <p>Hace <strong>shift+click</strong> en cualquier lugar el mapa para despleguar el men&uacute; de acciones; la acci&oacute;n "Descubrir" te permitir&aacute; mostrar el contenido de las parcelas m&aacute;s cercanas.</p>
+          </div>
+        </div>
+
+        <div class="item">
+          <img src="assets/tips/coloring-cropped.png" alt="">
+          <div class="carousel-caption carousel-legend">
+            <p>El color naranja indica parcelas clickeables, el verde se utiliza para plazas y parques y el gris para parcelas no clickeables.</p>
           </div>
         </div>
 
@@ -105,7 +219,7 @@
     <div class="modal-footer infobox-footer">
       <div class="input-append">
         <input class="location-search-bar span10 typeahead location-search-typeahead" type="text">
-        <a class="location-search-button btn disabled">Buscar</a>
+        <a class="location-search-button btn">Buscar</a>
       </div>
     </div>
   </div>
@@ -120,7 +234,7 @@
     <div class="modal-body">
         <div class="input-append location-search-container">
             <input class="location-search-bar span10 typeahead location-search-typeahead" type="text">
-            <a class="location-search-button btn disabled">Buscar</a>
+            <a class="location-search-button btn">Buscar</a>
         </div>
       <div class="discover-container">
         <dl class="dl-horizontal">
@@ -138,4 +252,17 @@
 
 <script type="x-tmpl" id="no_results_template">
   <h4>No hay resultados para la b&uacute;squeda</h4>
+</script>
+
+<script type="text/javascript">
+    // Global Application Object
+    window.bsasApp = {};
+    //Default values
+    window.bsasApp = {
+        'lat' : '<%= h(@lat) %>',
+        'long' : '<%= h(@long) %>',
+        'pointx': '<%= h(@xpoint) %>',
+        'pointy': '<%= h(@ypoint) %>',
+        'cat': '<%= h(@cat) %>'
+    };
 </script>

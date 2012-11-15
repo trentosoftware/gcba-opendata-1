@@ -3,43 +3,30 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
-  def index
+  def coord_transform(long, lat)
+
+    query = ActiveRecord::Base.send(:sanitize_sql_array, ["select ST_X(ST_Transform(ST_SetSRID(ST_Point(?, ?),9807),4326)), ST_Y(ST_Transform(ST_SetSRID(ST_Point(?, ?),9807),4326))", "#{long}", "#{lat}", "#{long}", "#{lat}"])
+    results = ActiveRecord::Base.connection.execute(query)
+
+    coords = results.to_a.first
   end
 
-  def nearest_manzanas
-    category = params[:category]
-    cat = params[:category].upcase
-    limit = params[:limit].to_i
+  def index
+    lat = BigDecimal.new(params[:lat])
+    long = BigDecimal.new(params[:long])
+    @cat = params[:cat]
+    @dir = params[:direction]
 
-    raise 'search category must have at least 3 characters' if cat.size < 3
-    raise 'search limit must be under 200' if limit > 200
+    coords = coord_transform(long, lat)
+    @long = coords['st_x']
+    @lat = coords['st_y']
+    @xpoint = params[:long]
+    @ypoint = params[:lat]
 
-    condition = "tipo2 like ?", "%#{cat}%"
+  end
 
-    lat = params[:lat].to_f
-    long = params[:long].to_f
-    search_criteria = params[:category]
-
-    #ManzanasGeometry.find()
-
-    res = ParcelasGeometry.find_by_sql ['select * ' +
-                                      'from manzanas_geometries as parm inner join parcelas_data as pard ' +
-                                            'on pard.manzana = parm.manz' +
-                                      ' where pard.tipo2 like ? or pard.nombre like ? ' +
-                                            'order by ST_Transform(parm.geometry, 4326) <-> ST_Point(?,?) ' +
-                                            ' limit ?',
-                                        "%#{cat}%", "%#{cat}%", long, lat, 100]
-
-    response = add_geo_json_header(res)
-
-    response['features'].each do |elem|
-      elem['properties']['parcelas_data'].reject! do |el|
-        el['tipo2'].upcase.index(cat).nil? and el['nombre'].upcase.index(cat).nil?
-      end
-    end
-
-    render :json => response
-
+  def landing
+    render :layout => 'landing'
   end
 
   def parcelas_by_tag
@@ -64,8 +51,15 @@ class ApplicationController < ActionController::Base
 
   def nearest_parcelas
     limit = params[:limit].to_i > 200 ? 200 : params[:limit].to_i
-    lat = params[:lat].to_f
-    long = params[:long].to_f
+
+    if (params[:conv].eql?('true'))
+      coords = coord_transform(BigDecimal.new(params[:long]), BigDecimal.new(params[:lat]))
+      long = coords['st_x']
+      lat = coords['st_y']
+    else
+      long = params[:long].to_f
+      lat = params[:lat].to_f
+    end
 
     if params[:category].nil? or params[:category].empty?
       where_clause = []
@@ -79,7 +73,7 @@ class ApplicationController < ActionController::Base
 
     response = add_geo_json_header(res)
 
-    render :json => response
+    render :json => { :lat=>lat, :long=>long, :geojson => response}
   end
 
   def autocomplete_category

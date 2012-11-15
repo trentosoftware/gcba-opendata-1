@@ -2,8 +2,12 @@
 
 var Map = function(){
 
-    var buenosAiresLocation = new google.maps.LatLng(-34.662445791586556, -58.44481076406247),
-        searchLimit = 200;
+    var buenosAiresLocation = new google.maps.LatLng(window.bsasApp.lat, window.bsasApp.long),
+        searchLimit = 200,
+        resultBounds;
+//    var buenosAiresLocation = new google.maps.LatLng(-34.662445791586556, -58.44481076406247),
+//            searchLimit = 200;
+
 
     var getEndpointWithQuery,
         drawParcelasOverGoogleMap,
@@ -47,31 +51,20 @@ var Map = function(){
         getCurrentZoomLevel,
         setCurrentZoomLevel;
 
-    getEndpointWithCategory = function(category){
-        var lat, long;
-
-        lat = getCurrentMapCenter().lat();
-        long = getCurrentMapCenter().lng();
-
-        var url = '<%= url.parcelas_by_tag_path(:limit => '__limit') %>';
-        url = url.replace('__limit', searchLimit);
-        return url + '?lat=' + lat + '&long=' + long + '&tag=' + encodeURIComponent(category);
-    }
-
-    getEndpointWithQuery = function(query, isNearby){
-        var lat, long;
+    getEndpointWithQuery = function(query, isNearby, lat, long){
+        var finalLat, finalLong;
 
         if(isNearby && typeof(temporalMarker) !== 'undefined'){
-            lat = temporalMarker.getPosition().lat();
-            long = temporalMarker.getPosition().lng();
+            finalLat = temporalMarker.getPosition().lat();
+            finalLong = temporalMarker.getPosition().lng();
         } else {
-            lat = getCurrentMapCenter().lat();
-            long = getCurrentMapCenter().lng();
+            finalLat = lat;
+            finalLong = long;
         }
 
         var url = '<%= url.pcercanas_json_path(:limit => '__limit') %>';
         url = url.replace('__limit', searchLimit);
-        return url + '?lat=' + lat + '&long=' + long + '&category=' + encodeURIComponent(query);
+        return url + '?lat=' + finalLat + '&long=' + finalLong + '&category=' + encodeURIComponent(query) + '&conv=' + !isNearby;
     }
 
     showSearchInfobox = function(latLong){
@@ -165,13 +158,13 @@ var Map = function(){
         });
     }
 
-    createSearchMarker = function(isNearbyQuery){
+    createSearchMarker = function(data, isNearbyQuery){
         var position;
 
         if(isNearbyQuery && typeof(temporalMarker) !== 'undefined'){
             position = temporalMarker.getPosition();
         } else {
-            position = getCurrentMapCenter();
+            position = new google.maps.LatLng(data.lat, data.long);
         }
 
         searchMarker = new google.maps.Marker({
@@ -179,6 +172,7 @@ var Map = function(){
             position: position,
             zIndex: 150
         });
+
     }
 
     emptyParcelaClicked = function(point){
@@ -254,64 +248,82 @@ var Map = function(){
             setIdleSkipped(false);
         });
 
-        google.maps.event.addDomListener(window.__map, 'rightclick', function(data) {
-            emptyParcelaClicked(data.latLng);
-
-            // don't execute other handlers, we have already take care of the event
-            return false;
-        });
 
         google.maps.event.addDomListener(window.__map, 'click', function(data) {
             removeOpenedInfobox();
+
+            if(shiftPressed){
+                emptyParcelaClicked(data.latLng);
+            }
         });
 
     }
 
-    drawParcelasOverGoogleMap = function(geoJson, isNearbyQuery){
-        removeOpenedMarker(searchMarker);
-        createSearchMarker(isNearbyQuery);
+    drawParcelasOverGoogleMap = function(data, isNearbyQuery){
+        var geoJson = data.geojson;
 
         var overlay = new google.maps.OverlayView();
+
         overlay.onAdd = function () {
             var layer = d3.select(this.getPanes().overlayMouseTarget).append("div").attr("class", "SvgOverlay");
             var svg = layer.append("svg");
             var adminDivisions = svg.append("g").attr("class", "AdminDivisions");
-
-            overlay.draw = function () {
-                var markerOverlay = this;
-                var overlayProjection = markerOverlay.getProjection();
-
-                // Turn the overlay projection into a d3 projection
-                var googleMapProjection = function (coordinates) {
-                    var googleCoordinates = new google.maps.LatLng(coordinates[1] + 0.0005, coordinates[0] - 0.0006);
-                    var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
-                    return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
-                }
-
-                path = d3.geo.path().projection(googleMapProjection);
-                adminDivisions.selectAll("path")
-                        .data(geoJson.features)
-                        .attr("d", path) // update existing paths
-                        .enter().append("svg:path")
-                        .attr("class", function(d) {
-                            if (d.properties.parcelas_data.length === 1
-                                    && (d.properties.parcelas_data[0].tipo2 === 'ESPACIO VERDE'
-                                    || d.properties.parcelas_data[0].tipo2 === 'PLAZA')) {
-                                return "parcel espacio-verde";
-                            } else if (d.properties.parcelas_data.length === 0) {
-                                return "parcel-not-clickeable";
-                            }
-                            return "parcel";
-                        })
-                        .attr("d", path)
-                        .on("click", parcelaClicked)
-                        .style("opacity", 0.1)
-                        .transition()
-                        .delay(4000)
-                        .style("opacity", 1);
-            };
         };
 
+        resultBounds = new google.maps.LatLngBounds();
+
+        var points = _(geoJson.features).chain().pluck('geometry').compact().pluck('coordinates')
+                .flatten(true).flatten(true).flatten(true).map(function(val) {
+                    return new google.maps.LatLng(val[1] + 0.0005, val[0] - 0.0006);}).value();
+
+        _(points).each(function(e) {
+            resultBounds.extend(e);
+        });
+
+        overlay.draw = function () {
+            var markerOverlay = this;
+            var overlayProjection = markerOverlay.getProjection();
+            // Turn the overlay projection into a d3 projection
+            var googleMapProjection = function (coordinates) {
+                var googleCoordinates = new google.maps.LatLng(coordinates[1] + 0.0005, coordinates[0] - 0.0006);
+                var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
+                return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
+            };
+            var adminDivisions = d3.select('g');
+
+            path = d3.geo.path().projection(googleMapProjection);
+            adminDivisions.selectAll("path")
+                    .data(geoJson.features)
+                    .attr("d", path) // update existing paths
+                    .enter().append("svg:path")
+                    .attr("class", function(d) {
+                        if (d.properties.parcelas_data.length === 1
+                                && (d.properties.parcelas_data[0].tipo2 === 'ESPACIO VERDE'
+                                || d.properties.parcelas_data[0].tipo2 === 'PLAZA')) {
+                            return "parcel espacio-verde";
+                        } else if (d.properties.parcelas_data.length === 0) {
+                            return "parcel-not-clickeable";
+                        }
+                        return "parcel";
+                    })
+                    .attr("d", path)
+                    .on("click", parcelaClicked)
+                    .style("opacity", 0.1)
+                    .transition()
+                    .delay(function(d, i) { return 4000 * Math.random(); })
+                    .style("opacity", 1);
+
+
+        };
+
+        removeOpenedMarker(searchMarker);
+        createSearchMarker(data, isNearbyQuery);
+
+
+        overlay.onRemove = removePreviousDrawing;
+
+
+        window.__map.fitBounds(resultBounds);
         overlay.setMap(window.__map);
         google.maps.event.trigger(window.__map, 'resize');
     }
@@ -381,13 +393,13 @@ var Map = function(){
     updateViewport = function(data, query, isNearbyQuery){
         removePreviousDrawing();
 
-        var resultCount = data.features.length;
+        var resultCount = data.geojson.features.length;
 
         if(resultCount == 0){
             StatusBar.showErrorMessage('No hubo resultados para la búsqueda "' + query + '"');
         } else{
-            StatusBar.showInfoMessage(getInfoMessageForQuery(query, resultCount));
             drawParcelasOverGoogleMap(data, isNearbyQuery);
+            StatusBar.showInfoMessage(getInfoMessageForQuery(query, resultCount));
         }
 
         removeOpenedInfobox();
@@ -396,37 +408,31 @@ var Map = function(){
         $('.navbar-search').show();
     }
 
+    var shiftPressed = false;
+
     return {
         init : function(){
-            var initFun = function() {
-                if(window.__map == undefined){
-                    createMap();
+            if(window.__map == undefined){
+                createMap();
+                this.search(window.bsasApp.cat, true, window.bsasApp.lat, window.bsasApp.long);
+            }
+
+            $(window).keydown(function(evt) {
+                if (evt.which == 16) { // shift
+                    shiftPressed = true;
                 }
-            }
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    buenosAiresLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    initFun();
-                }, initFun);
-            } else {
-                initFun();
-            }
-        },
-
-        categorySearch : function(category, fancyName){
-            var endpoint = getEndpointWithCategory(category);
-            $("#loading").show();
-
-            $.getJSON(endpoint, function(data){
-                updateViewport(data, fancyName);
+            }).keyup(function(evt) {
+                if (evt.which == 16) { // shift
+                    shiftPressed = false;
+                }
             });
+
         },
 
-        search : function(query, isNearbyQuery){
-            var endpoint = getEndpointWithQuery(query, isNearbyQuery);
+        search : function(query, isNearbyQuery, lat, long, mustConvert){
+            var endpoint = getEndpointWithQuery(query, isNearbyQuery, lat, long);
             $("#loading").show();
-            
+
             // the z-index of the loader is not enough to be on the top of everything
             // because this component has the focus
             $('.navbar-search').hide();
