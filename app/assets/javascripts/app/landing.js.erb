@@ -38,13 +38,13 @@ $(document).ready(function(){
         window.location.href = getUrl(102836.5234375, 107533.140625, "", true, direction);
     });
 
-
     var searchable = {
         search : function(query, isNearbyQuery) {
             $('#dir').focus(); return;
         }
     };
-    Searchbox.init(searchable, function() { return true; });
+
+    Searchbox.init(null ,true);
 
     AutocompleteGcba.init('dir', function(dir) {
         long = dir.getCoordenadas().getX();

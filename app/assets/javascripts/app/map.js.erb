@@ -51,29 +51,20 @@ var Map = function(){
         getCurrentZoomLevel,
         setCurrentZoomLevel;
 
-    getEndpointWithCategory = function(category){
-        var lat, long;
-
-        lat = getCurrentMapCenter().lat();
-        long = getCurrentMapCenter().lng();
-
-        return url + '?lat=' + lat + '&long=' + long + '&tag=' + encodeURIComponent(category);
-    }
-
-    getEndpointWithQuery = function(query, isNearby){
-        var lat, long;
+    getEndpointWithQuery = function(query, isNearby, lat, long){
+        var finalLat, finalLong;
 
         if(isNearby && typeof(temporalMarker) !== 'undefined'){
-            lat = temporalMarker.getPosition().lat();
-            long = temporalMarker.getPosition().lng();
+            finalLat = temporalMarker.getPosition().lat();
+            finalLong = temporalMarker.getPosition().lng();
         } else {
-            lat = getCurrentMapCenter().lat();
-            long = getCurrentMapCenter().lng();
+            finalLat = lat;
+            finalLong = long;
         }
 
         var url = '<%= url.pcercanas_json_path(:limit => '__limit') %>';
         url = url.replace('__limit', searchLimit);
-        return url + '?lat=' + lat + '&long=' + long + '&category=' + encodeURIComponent(query);
+        return url + '?lat=' + finalLat + '&long=' + finalLong + '&category=' + encodeURIComponent(query) + '&conv=' + !isNearby;
     }
 
     showSearchInfobox = function(latLong){
@@ -420,23 +411,6 @@ var Map = function(){
                 this.search(window.bsasApp.cat, false);
             }
 
-            $('.search-button').on('keyup', function(ev) {
-                if(ev.keyCode !== 13){
-                    return;
-                }
-
-                var endpoint = getEndpointWithQuery(query, isNearbyQuery);
-                $("#loading").show();
-                // the z-index of the loader is not enough to be on the top of everything
-                // because this component has the focus
-                $('.navbar-search').hide();
-
-                $.getJSON(endpoint, function(data){
-                    updateViewport(data, query, isNearbyQuery);
-                });
-
-            });
-
             $(window).keydown(function(evt) {
                 if (evt.which == 16) { // shift
                     shiftPressed = true;
@@ -449,17 +423,8 @@ var Map = function(){
 
         },
 
-        categorySearch : function(category, fancyName){
-            var endpoint = getEndpointWithCategory(category);
-            $("#loading").show();
-
-            $.getJSON(endpoint, function(data){
-                updateViewport(data, fancyName);
-            });
-        },
-
-        search : function(query, isNearbyQuery){
-            var endpoint = getEndpointWithQuery(query, isNearbyQuery);
+        search : function(query, isNearbyQuery, lat, long, mustConvert){
+            var endpoint = getEndpointWithQuery(query, isNearbyQuery, lat, long);
             $("#loading").show();
 
             // the z-index of the loader is not enough to be on the top of everything

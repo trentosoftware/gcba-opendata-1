@@ -1,6 +1,6 @@
 var AutocompleteGcba = function(){
 
-    var direccion, createAutocomplete, setCallback, callback, onReadyCallback;
+    var direccion, createAutocomplete, setCallback, callback, onReadyCallback, setAfterRenderCallback;
 
     setCallback = function(cb) {
         callback = cb;
@@ -36,9 +36,9 @@ var AutocompleteGcba = function(){
 
     return {
         init : function(selector, afterGeocodingCallback, afterRenderCallback){
-            createAutocomplete(selector);
             setCallback(afterGeocodingCallback);
             setAfterRenderCallback(afterRenderCallback);
+            createAutocomplete(selector);
         }
     }
 }();
