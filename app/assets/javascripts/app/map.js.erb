@@ -158,13 +158,13 @@ var Map = function(){
         });
     }
 
-    createSearchMarker = function(isNearbyQuery){
+    createSearchMarker = function(data, isNearbyQuery){
         var position;
 
         if(isNearbyQuery && typeof(temporalMarker) !== 'undefined'){
             position = temporalMarker.getPosition();
         } else {
-            position = getCurrentMapCenter();
+            position = new google.maps.LatLng(parseFloat(data.lat), parseFloat(data.long));
         }
 
         searchMarker = new google.maps.Marker({
@@ -258,10 +258,11 @@ var Map = function(){
 
     }
 
-    drawParcelasOverGoogleMap = function(geoJson, isNearbyQuery){
+    drawParcelasOverGoogleMap = function(data, isNearbyQuery){
+        var geoJson = data.geojson;
 
         removeOpenedMarker(searchMarker);
-        createSearchMarker(isNearbyQuery);
+        createSearchMarker(data, isNearbyQuery);
 
         var overlay = new google.maps.OverlayView();
 
@@ -387,7 +388,7 @@ var Map = function(){
     updateViewport = function(data, query, isNearbyQuery){
         removePreviousDrawing();
 
-        var resultCount = data.features.length;
+        var resultCount = data.geojson.features.length;
 
         if(resultCount == 0){
             StatusBar.showErrorMessage('No hubo resultados para la búsqueda "' + query + '"');
