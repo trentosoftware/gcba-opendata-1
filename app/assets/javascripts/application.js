@@ -14,11 +14,13 @@
 //= require bootstrap
 //= require d3.v2
 //= require underscore
+//= require autocomplete-gcba
 //= require app/statusBar
 //= require app/utils
 //= require app/map
 //= require app/searchbox
 //= require app/navigationBar
+//= require app/autocompleteGcba
 //= require infoxbox
 //= require app/application
 

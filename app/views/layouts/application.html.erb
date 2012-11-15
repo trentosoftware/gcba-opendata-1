@@ -7,56 +7,6 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
- <!--navbar -->
-<div class="navbar navbar-static-top">
-  <div class="navbar-inner">
-    <a class="brand" href="/#">Descubr&iacute; Buenos Aires</a>
-    <div class="navbar-search pull-right">
-      <div class="input-append">
-        <input type="text" class="span3 search-bar typeahead">
-        <a class="search-button btn disabled">Buscar</a>
-      </div>
-    </div>
-    <ul class="nav pull-right" role="navigation">
-      <li class="dropdown">
-        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Movilidad<b class="caret"></b></a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-          <li><a tabindex="-1" href="#" id="estacion-servicio-item">Estaciones de Servicio</a></li>
-          <li><a tabindex="-1" href="#" id="garage-item">Garage</a></li>
-          <li><a tabindex="-1" href="#" id="subtes-item">Subtes</a></li>
-        </ul>
-      </li>
-      <li class="dropdown">
-        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Educaci&oacute;n<b class="caret"></b></a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-          <li><a tabindex="-1" href="#" id="educacion-privada-item">Educaci&oacute;n Privada</a></li>
-          <li><a tabindex="-1" href="#" id="educacion-publica-item">Educaci&oacute;n Publica</a></li>
-          <li><a tabindex="-1" href="#" id="biblioteca-item">Biblioteca</a></li>
-          <li><a tabindex="-1" href="#" id="universidad-item">Universidad</a></li>
-        </ul>
-      </li>
-      <li class="dropdown">
-        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Servicios<b class="caret"></b></a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-          <li><a tabindex="-1" href="#" id="bomberos-item">Bomberos</a></li>
-          <li><a tabindex="-1" href="#" id="policia-item">P&oacute;licia</a></li>
-          <li><a tabindex="-1" href="#" id="hospital-item">Hospital</a></li>
-          <li><a tabindex="-1" href="#" id="admin-publica-item">Adm. P&uacute;blica</a></li>
-        </ul>
-      </li>
-      <li class="dropdown">
-        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Recreaci&oacute;n<b class="caret"></b></a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-          <li><a tabindex="-1" href="#" id="espacio-verde-item">Espacios Verdes</a></li>
-          <li><a tabindex="-1" href="#" id="teatro-item">Teatros</a></li>
-          <li><a tabindex="-1" href="#" id="cine-item">Cine</a></li>
-          <li><a tabindex="-1" href="#" id="gastronomia-item">Gastronom&iacute;a</a></li>
-        </ul>
-      </li>
-      <li><a href="#" id="tip-button">Tips</a></li>
-    </ul>
-  </div>
-</div>
 
 <%= yield %>
 

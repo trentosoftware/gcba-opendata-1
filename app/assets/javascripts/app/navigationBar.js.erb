@@ -1,23 +1,6 @@
 var NavigationBar = function(){
 
-    var registerHandlers,
-        doSearch,
-        setMapModule,
-        getMapModule;
-
-    var mapModule;
-
-    doSearch = function(query, isNearby){
-        getMapModule().search(query, isNearby);
-    }
-
-    getMapModule = function(){
-        return mapModule;
-    }
-
-    setMapModule = function(module){
-        mapModule = module;
-    }
+    var registerHandlers;
 
     registerHandlers = function(){
         // register tip button
@@ -25,86 +8,13 @@ var NavigationBar = function(){
             $('#introduction-modal').modal('show');
         });
 
-        // estacion-servicio-item
-        $("#estacion-servicio-item").click(function(){
-            getMapModule().categorySearch("estacion-servicio-item", "Estaciones de Servicio");
+        $("#about-button").click(function(){
+            $('#about-modal').modal('show');
         });
-
-        // garage-item
-        $("#garage-item").click(function(){
-            getMapModule().categorySearch("garage-item", "Garages");
-        });
-
-        // subtes-item
-        $("#subtes-item").click(function(){
-            getMapModule().categorySearch("subtes-item", "Subtes");
-        });
-
-        // educacion-privada-item
-        $("#educacion-privada-item").click(function(){
-            getMapModule().categorySearch("educacion-privada-item", "Educación Privada");
-        });
-
-        // educacion-publica-item
-        $("#educacion-publica-item").click(function(){
-            getMapModule().categorySearch("educacion-publica-item", "Educación Pública");
-        });
-
-        // biblioteca-item
-        $("#biblioteca-item").click(function(){
-            getMapModule().categorySearch("biblioteca-item", "Bibliotecas");
-        });
-
-        // universidad-item
-        $("#universidad-item").click(function(){
-            getMapModule().categorySearch("universidad-item", "Universidad");
-        });
-
-        // bomberos-item
-        $("#bomberos-item").click(function(){
-            getMapModule().categorySearch("bomberos-item", "Bomberos");
-        });
-
-        // policia-item
-        $("#policia-item").click(function(){
-            getMapModule().categorySearch("policia-item", "Policía");
-        });
-
-        // hospital-item
-        $("#hospital-item").click(function(){
-            getMapModule().categorySearch("hospital-item", "Hospital");
-        });
-
-        // admin-publica-item
-        $("#admin-publica-item").click(function(){
-            getMapModule().categorySearch("admin-publica-item", "Adm. Pública");
-        });
-
-        // espacio-verde-item
-        $("#espacio-verde-item").click(function(){
-            getMapModule().categorySearch("espacio-verde-item", "Espacios Verdes");
-        });
-
-        // teatro-item
-        $("#teatro-item").click(function(){
-            getMapModule().categorySearch("teatro-item", "Teatros");
-        });
-
-        // cine-item
-        $("#cine-item").click(function(){
-            getMapModule().categorySearch("cine-item", "Cines");
-        });
-
-        // gastronomia-item
-        $("#gastronomia-item").click(function(){
-            getMapModule().categorySearch("gastronomia-item", "Gastronomía");
-        });
-
     }
 
     return {
-        init : function(mapModule){
-            setMapModule(mapModule);
+        init : function(){
             registerHandlers();
         }
     }

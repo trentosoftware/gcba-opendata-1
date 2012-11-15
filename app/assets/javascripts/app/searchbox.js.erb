@@ -12,10 +12,15 @@ var Searchbox = function(){
         autocompleter,
         getAutocompleteEndpoint,
         autocompleteMatcher,
-        autocompleteHighlighter;
+        autocompleteHighlighter,
+        executeSearch;
+
+    // default values
+    var long = (window.bsasApp === undefined ? 107533.140625 : window.bsasApp.pointx),
+            lat = (window.bsasApp === undefined ? 102836.5234375 : window.bsasApp.pointy);
 
     doSearch = function(query, isNearby){
-        getMapModule().search(query, isNearby);
+        getMapModule().search(query, isNearby, lat, long);
     }
 
     getAutocompleteEndpoint = function(query){
@@ -30,23 +35,15 @@ var Searchbox = function(){
             var query = searchBar.val();
             var trimmedQuery = $.trim(query);
 
-            if(query.length > 2){
-                $('ul.typeahead.dropdown-menu').hide();
-                doSearch(trimmedQuery, true);
-            }
+            $('ul.typeahead.dropdown-menu').hide();
+            doSearch(trimmedQuery, true);
         });
 
         $('input.location-search-bar').keyup(function(event){
             var searchButton = $(this).closest('div').find('.location-search-button');
             var trimmedValue = $.trim(this.value);
 
-            if(trimmedValue.length > 2){
-                searchButton.removeClass("disabled");
-            } else{
-                searchButton.addClass("disabled");
-            }
-
-            if(event.keyCode == 13 && trimmedValue.length > 2){
+            if(event.keyCode == 13){
                 if ($('ul.dropdown-menu:visible li.active').size() > 0) {
                     this.value = trimmedValue = $.trim($('ul.dropdown-menu:visible li.active').attr('data-value'));
                 }
@@ -99,32 +96,32 @@ var Searchbox = function(){
         return ~($.trim(item)).toLowerCase().indexOf($.trim(this.query).toLowerCase());
     }
 
+    executeSearch = function(mustConvert){
+        var searchBar = $(this).closest('div').find('.search-bar');
+        var query = searchBar.val();
+        var trimmedQuery = $.trim(query);
+
+        doSearch(trimmedQuery, false, lat, long, mustConvert);
+    }
+
     registerHandlers = function(){
-        $('.search-bar').keyup(function(event){
-            var trimmedValue = $.trim(this.value),
-                    searchButton = $(this).closest('div').find('.search-button');
-
-            if(trimmedValue.length > 2) {
-                searchButton.removeClass("disabled");
-            } else {
-                searchButton.addClass("disabled");
-            }
-
-            if(event.keyCode == 13 && trimmedValue.length > 2){
-                if ($('ul.dropdown-menu:visible li.active').size() > 0) {
-                    this.value = trimmedValue = $.trim($('ul.dropdown-menu:visible li.active').attr('data-value'));
-                }
-                doSearch(trimmedValue);
+        $('.search-button').keyup(function(event){
+            if(event.keyCode == 13){
+                executeSearch();
             }
         });
 
-        $('.search-button').click(function(){
-            var searchBar = $(this).closest('div').find('.search-bar');
-            var query = searchBar.val();
-            var trimmedQuery = $.trim(query);
+        $('.search-button').click(executeSearch);
 
-            if(query.length > 2){
-                doSearch(trimmedQuery);
+        $('.search-bar').keyup(function(event){
+            var trimmedValue = $.trim(this.value),
+            searchButton = $(this).closest('div').find('.search-button');
+
+            if(event.keyCode == 13 ){
+                if ($('ul.dropdown-menu:visible li.active').size() > 0) {
+                    this.value = $.trim($('ul.dropdown-menu:visible li.active').attr('data-value'));
+                }
+                $('#autocomplete-bsas').focus();
             }
         });
 
@@ -147,9 +144,22 @@ var Searchbox = function(){
     }
 
     return {
-        init : function(mapModule){
+        init : function(mapModule, isLanding){
             setMapModule(mapModule);
             registerHandlers();
+
+            if(isLanding){
+                return;
+            }
+
+            AutocompleteGcba.init('autocomplete-bsas', function(direction) {
+
+                long = direction.getCoordenadas().getX();
+                lat = direction.getCoordenadas().getY();
+
+                $('ul.unstyled li strong').text(direction.toString());
+            }, function() {
+            });
         },
 
         registerLocationSearchHandlers : registerLocationSearchHandlers
