@@ -34,23 +34,15 @@ var Searchbox = function(){
             var query = searchBar.val();
             var trimmedQuery = $.trim(query);
 
-            if(query.length > 2){
-                $('ul.typeahead.dropdown-menu').hide();
-                doSearch(trimmedQuery, true);
-            }
+            $('ul.typeahead.dropdown-menu').hide();
+            doSearch(trimmedQuery, true);
         });
 
         $('input.location-search-bar').keyup(function(event){
             var searchButton = $(this).closest('div').find('.location-search-button');
             var trimmedValue = $.trim(this.value);
 
-            if(trimmedValue.length > 2){
-                searchButton.removeClass("disabled");
-            } else{
-                searchButton.addClass("disabled");
-            }
-
-            if(event.keyCode == 13 && trimmedValue.length > 2){
+            if(event.keyCode == 13){
                 if ($('ul.dropdown-menu:visible li.active').size() > 0) {
                     this.value = trimmedValue = $.trim($('ul.dropdown-menu:visible li.active').attr('data-value'));
                 }

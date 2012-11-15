@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   def nearest_parcelas
     limit = params[:limit].to_i > 200 ? 200 : params[:limit].to_i
 
-    if (params[:conv])
+    if (params[:conv].eql?('true'))
       coords = coord_transform(params[:long].to_f, params[:lat].to_f)
       long = coords['st_x']
       lat = coords['st_y']
