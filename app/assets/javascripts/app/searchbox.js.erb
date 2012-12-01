@@ -1,5 +1,5 @@
 <% url = Parcelas::Application.routes.url_helpers %>
-var Searchbox = function(){
+var Searchbox = (function () {
 
     //functions
     var registerHandlers,
@@ -13,37 +13,39 @@ var Searchbox = function(){
         getAutocompleteEndpoint,
         autocompleteMatcher,
         autocompleteHighlighter,
-        executeSearch;
+        executeSearch,
+        long = (window.bsasApp === undefined ? 107533.140625 : window.bsasApp.pointx),
+        lat = (window.bsasApp === undefined ? 102836.5234375 : window.bsasApp.pointy);
 
-    // default values
-    var long = (window.bsasApp === undefined ? 107533.140625 : window.bsasApp.pointx),
-            lat = (window.bsasApp === undefined ? 102836.5234375 : window.bsasApp.pointy);
-
-    doSearch = function(query, isNearby){
+    doSearch = function (query, isNearby) {
         getMapModule().search(query, isNearby, lat, long);
-    }
+    };
 
-    getAutocompleteEndpoint = function(query){
+    getAutocompleteEndpoint = function (query) {
         var url = '<%= url.autocomplete_json_path(:text => '__query' ) %>';
         url = url.replace('__query', encodeURIComponent(query));
         return url;
-    }
+    };
 
-    registerLocationSearchHandlers = function(){
-        $('a.location-search-button').click(function(){
-            var searchBar = $(this).closest('div').find('.location-search-bar');
-            var query = searchBar.val();
-            var trimmedQuery = $.trim(query);
+    registerLocationSearchHandlers = function () {
+        $('a.location-search-button').click(function () {
+            var searchBar, query, trimmedQuery;
+
+            searchBar = $(this).closest('div').find('.location-search-bar');
+            query = searchBar.val();
+            trimmedQuery = $.trim(query);
 
             $('ul.typeahead.dropdown-menu').hide();
             doSearch(trimmedQuery, true);
         });
 
-        $('input.location-search-bar').keyup(function(event){
-            var searchButton = $(this).closest('div').find('.location-search-button');
-            var trimmedValue = $.trim(this.value);
+        $('input.location-search-bar').keyup(function (event) {
+            var searchButton, trimmedValue;
 
-            if(event.keyCode == 13){
+            searchButton = $(this).closest('div').find('.location-search-button');
+            trimmedValue = $.trim(this.value);
+
+            if (event.keyCode === 13) {
                 if ($('ul.dropdown-menu:visible li.active').size() > 0) {
                     this.value = trimmedValue = $.trim($('ul.dropdown-menu:visible li.active').attr('data-value'));
                 }
@@ -52,7 +54,7 @@ var Searchbox = function(){
         });
 
         $('.location-search-typeahead').typeahead({
-            source : function(data, process){
+            source : function (data, process) {
                 autocompleter('.location-search-bar', data, process);
             },
             minLength : 3,
@@ -60,63 +62,64 @@ var Searchbox = function(){
             highlighter : autocompleteHighlighter
         });
 
-        $('.discover-button').click(function(){
+        $('.discover-button').click(function () {
             doSearch('', true);
         });
-    }
+    };
 
-    autocompleter = function(currentQueryContainerSelector, query, process){
+    autocompleter = function (currentQueryContainerSelector, query, process) {
         var trimmedQuery = $.trim(query);
 
-        if(trimmedQuery.length <= 2){
+        if (trimmedQuery.length <= 2) {
             return;
         }
 
-        $.getJSON(getAutocompleteEndpoint(trimmedQuery), function(data){
-            if(trimmedQuery != $.trim($(currentQueryContainerSelector).val())){
+        $.getJSON(getAutocompleteEndpoint(trimmedQuery), function (data) {
+            if (trimmedQuery !== $.trim($(currentQueryContainerSelector).val())) {
                 return;
             }
             process(data.autocomplete);
         });
-    }
+    };
 
     autocompleteHighlighter = function (item) {
-        var trimmedItem = $.trim(item);
-        var trimmedQuery = $.trim(this.query);
+        var trimmedItem, trimmedQuery, query;
 
-        var query = trimmedQuery.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
+        trimmedItem = $.trim(item);
+        trimmedQuery = $.trim(this.query);
+
+        query = trimmedQuery.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
 
         return trimmedItem.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
-            return '<strong>' + match + '</strong>'
+            return '<strong>' + match + '</strong>';
         });
-    }
+    };
 
-    autocompleteMatcher = function(item){
+    autocompleteMatcher = function (item) {
         return ~($.trim(item)).toLowerCase().indexOf($.trim(this.query).toLowerCase());
-    }
+    };
 
-    executeSearch = function(mustConvert){
-        var searchBar = $(this).closest('div').find('.search-bar');
-        var query = searchBar.val();
-        var trimmedQuery = $.trim(query);
+    executeSearch = function (mustConvert) {
+        var searchBar, query, trimmedQuery;
+
+        searchBar = $(this).closest('div').find('.search-bar');
+        query = searchBar.val();
+        trimmedQuery = $.trim(query);
 
         doSearch(trimmedQuery, false, lat, long, mustConvert);
-    }
+    };
 
-    registerHandlers = function(){
-        $('.search-button').keyup(function(event){
-            if(event.keyCode == 13){
+    registerHandlers = function () {
+        $('.search-button').keyup(function (event) {
+            if (event.keyCode === 13) {
                 executeSearch();
             }
         });
 
         $('.search-button').click(executeSearch);
 
-        $('.search-bar').keyup(function(event){
-            var trimmedValue = $.trim(this.value),
-            searchButton = $(this).closest('div').find('.search-button');
-
-            if(event.keyCode == 13 ){
+        $('.search-bar').keyup(function (event) {
+            if (event.keyCode === 13) {
                 if ($('ul.dropdown-menu:visible li.active').size() > 0) {
                     this.value = $.trim($('ul.dropdown-menu:visible li.active').attr('data-value'));
                 }
@@ -125,42 +128,42 @@ var Searchbox = function(){
         });
 
         $('.typeahead').typeahead({
-            source : function(data, process){
+            source : function (data, process) {
                 autocompleter('.search-bar', data, process);
             },
             minLength : 3,
             matcher : autocompleteMatcher,
             highlighter : autocompleteHighlighter
         });
-    }
+    };
 
-    getMapModule = function(){
+    getMapModule = function () {
         return mapModule;
-    }
+    };
 
-    setMapModule = function(module){
+    setMapModule = function (module) {
         mapModule = module;
-    }
+    };
 
     return {
-        init : function(mapModule, isLanding){
+        init : function (mapModule, isLanding) {
             setMapModule(mapModule);
             registerHandlers();
 
-            if(isLanding){
+            if (isLanding) {
                 return;
             }
 
-            AutocompleteGcba.init('autocomplete-bsas', function(direction) {
+            AutocompleteGcba.init('autocomplete-bsas', function (direction) {
 
                 long = direction.getCoordenadas().getX();
                 lat = direction.getCoordenadas().getY();
 
                 $('ul.unstyled li strong').text(direction.toString());
-            }, function() {
+            }, function () {
             });
         },
 
         registerLocationSearchHandlers : registerLocationSearchHandlers
-    }
-}();
+    };
+}());

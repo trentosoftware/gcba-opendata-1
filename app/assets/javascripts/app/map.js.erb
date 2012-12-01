@@ -1,13 +1,11 @@
 <% url = Parcelas::Application.routes.url_helpers %>
-var Map = function(){
+var Map = (function () {
 
-    var mapObject;
-
-    var buenosAiresLocation = new google.maps.LatLng(window.bsasApp.lat, window.bsasApp.long),
+    var mapObject,
+        buenosAiresLocation = new google.maps.LatLng(window.bsasApp.lat, window.bsasApp.long),
         searchLimit = 200,
-        resultBounds;
-
-    var getEndpointWithQuery,
+        resultBounds,
+        getEndpointWithQuery,
         drawParcelasOverGoogleMap,
         parcelaClicked,
         mapViewPortChanged,
@@ -26,30 +24,26 @@ var Map = function(){
         createSearchMarker,
         dropFocusFromSelectParcel,
         setFocusToParcel,
-        getEndpointWithCategory;
-
-    var clickedElement,
+        clickedElement,
         temporalMarker,
         searchMarker,
-        openedBox;
-
-    var currentZoomLevel = 12;
-
-    var idleSkipped = false,
-        isMapDragging = false;
-
-    var getIdleSkipped,
+        openedBox,
+        currentZoomLevel = 12,
+        idleSkipped = false,
+        isMapDragging = false,
+        getIdleSkipped,
         setIdleSkipped,
         getIsMapDragging,
         setIsMapDragging,
         getMapCenter,
         getCurrentZoomLevel,
-        setCurrentZoomLevel;
+        setCurrentZoomLevel,
+        shiftPressed = false;
 
-    getEndpointWithQuery = function(query, isNearby, lat, long){
-        var finalLat, finalLong;
+    getEndpointWithQuery = function (query, isNearby, lat, long) {
+        var finalLat, finalLong, url;
 
-        if(isNearby && typeof(temporalMarker) !== 'undefined'){
+        if (isNearby && typeof (temporalMarker) !== 'undefined') {
             finalLat = temporalMarker.getPosition().lat();
             finalLong = temporalMarker.getPosition().lng();
         } else {
@@ -57,60 +51,65 @@ var Map = function(){
             finalLong = long;
         }
 
-        var url = '<%= url.pcercanas_json_path(:limit => '__limit') %>';
+        url = '<%= url.pcercanas_json_path(:limit => '__limit') %>';
         url = url.replace('__limit', searchLimit);
-        return url + '?lat=' + finalLat + '&long=' + finalLong + '&category=' + encodeURIComponent(query) + '&conv=' + !isNearby;
-    }
 
-    showSearchInfobox = function(latLong){
+        return url + '?lat=' + finalLat + '&long=' + finalLong + '&category=' + encodeURIComponent(query) + '&conv=' + !isNearby;
+    };
+
+    showSearchInfobox = function (latLong) {
         var html = _.template($("#location-search-box-template").html())();
 
         removeOpenedInfobox();
         createInfoboxWithHTML(html, latLong);
-    }
+    };
 
-    removeOpenedMarker = function(marker){
-        if(typeof(marker) !== 'undefined'){
+    removeOpenedMarker = function (marker) {
+        if (typeof (marker) !== 'undefined') {
             marker.setMap(null);
         }
-    }
+    };
 
-    removeOpenedInfobox = function(undefined){
+    removeOpenedInfobox = function (undefined) {
         removeOpenedMarker(temporalMarker);
 
-        if(typeof(openedBox) !== 'undefined'){
+        if (typeof (openedBox) !== 'undefined') {
             openedBox.close();
         }
 
         dropFocusFromSelectParcel();
-    }
+    };
 
     // recives an undefined parameter to reset the value of the current click element
-    dropFocusFromSelectParcel = function(undefined){
-        if(typeof(clickedElement) !== 'undefined' && clickedElement != null){
+    dropFocusFromSelectParcel = function (undef) {
+        if (typeof (clickedElement) !== 'undefined' && clickedElement !== null) {
             clickedElement.classed('clicked', false);
-            clickedElement = undefined;
+            clickedElement = undef;
         }
-    }
+    };
 
-    showParcelaInfoBox = function(parcelas, latLong){
+    showParcelaInfoBox = function (parcelas, latLong) {
+        var template, sanitazedItems, html;
+
         removeOpenedInfobox();
 
-        var template = $("#parcela_template").html();
+        template = $("#parcela_template").html();
 
-        var sanitazedItems = _.map(parcelas.properties.parcelas_data, function(item){
+        sanitazedItems = _.map(parcelas.properties.parcelas_data, function(item){
             var newParcela = cloneParcela(item);
             newParcela.smp = newParcela.smp.substring(1);
             return newParcela;
         });
 
-        var html = _.template(template, {items: sanitazedItems});
+        html = _.template(template, {items: sanitazedItems});
 
         createInfoboxWithHTML(html, latLong);
-    }
+    };
 
-    createInfoboxWithHTML = function(html, latLong) {
-        var boxText = document.createElement("div");
+    createInfoboxWithHTML = function (html, latLong) {
+        var boxText, myOptions;
+
+        boxText = document.createElement("div");
         boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: white; padding: 5px;";
         boxText.innerHTML = html;
 
@@ -120,14 +119,16 @@ var Map = function(){
             visible: false
         });
 
-        var myOptions = {
+        myOptions = {
             content: boxText,
             maxWidth: 800,
             pixelOffset: new google.maps.Size(-140, 0),
             zIndex: null,
-            boxStyle: { background: "url('assets/infoBox/tipbox.gif') no-repeat"
-                ,opacity: 0.85
-                ,width: "500px" },
+            boxStyle: {
+                background: "url('assets/infoBox/tipbox.gif') no-repeat",
+                opacity: 0.85,
+                width: "500px"
+            },
             closeBoxURL: "assets/infoBox/close.gif",
             infoBoxClearance: new google.maps.Size(1, 1),
             isHidden: false,
@@ -135,7 +136,7 @@ var Map = function(){
             enableEventPropagation: false,
             closeHandler: dropFocusFromSelectParcel,
             closeBoxMargin: "20px 10px 10px"
-        }
+        };
 
         openedBox = new InfoBox(myOptions);
         openedBox.open(mapObject, temporalMarker);
@@ -150,12 +151,12 @@ var Map = function(){
 
             Searchbox.registerLocationSearchHandlers();
         });
-    }
+    };
 
-    createSearchMarker = function(data, isNearbyQuery){
+    createSearchMarker = function (data, isNearbyQuery) {
         var position;
 
-        if(isNearbyQuery && typeof(temporalMarker) !== 'undefined'){
+        if (isNearbyQuery && typeof (temporalMarker) !== 'undefined') {
             position = temporalMarker.getPosition();
         } else {
             position = new google.maps.LatLng(data.lat, data.long);
@@ -167,13 +168,13 @@ var Map = function(){
             zIndex: 150
         });
 
-    }
+    };
 
-    emptyParcelaClicked = function(point){
+    emptyParcelaClicked = function (point) {
         showSearchInfobox(createGoogleLatLong(point.lat(), point.lng()));
-    }
+    };
 
-    parcelaClicked = function(parcela, a, b, c, d){
+    parcelaClicked = function (parcela) {
 
         if (parcela.properties.parcelas_data.length === 0) {
             return;
@@ -185,22 +186,22 @@ var Map = function(){
         setFocusToParcel(this);
 
         d3.event.stopPropagation();
-    }
+    };
 
-    setFocusToParcel = function(d3Parcel){
+    setFocusToParcel = function (d3Parcel) {
         clickedElement = d3.select(d3Parcel);
         clickedElement.classed('clicked', true);
-    }
+    };
 
-    createGoogleLatLong = function(lat, long){
+    createGoogleLatLong = function (lat, long) {
         return new google.maps.LatLng(lat, long);
-    }
+    };
 
-    getParcelaLatLong = function(parcela){
+    getParcelaLatLong = function (parcela) {
         return createGoogleLatLong(parcela.geometry.coordinates[0][0][0][1], parcela.geometry.coordinates[0][0][0][0] - 0.0006);
-    }
+    };
 
-    createMap = function(){
+    createMap = function () {
         var $map = $("#map");
 
         mapObject = new google.maps.Map($map[0], {
@@ -208,14 +209,14 @@ var Map = function(){
             minZoom: 12,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             center: getMapCenter(),
-            styles:[{"stylers": [{"saturation": -75},{"lightness": 75}]}] ,
+            styles: [{"stylers": [{"saturation": -75}, {"lightness": 75}]}],
             mapTypeControl: false,
             scaleControl: false,
             streetViewControl: false,
             overviewMapControl: false
         });
 
-        google.maps.event.addListener(mapObject, 'idle', function() {
+        google.maps.event.addListener(mapObject, 'idle', function () {
             if (getIsMapDragging()) {
                 setIdleSkipped(true);
                 return;
@@ -225,162 +226,164 @@ var Map = function(){
             mapViewPortChanged(mapObject);
         });
 
-        google.maps.event.addListener(mapObject, 'dragstart', function() {
+        google.maps.event.addListener(mapObject, 'dragstart', function () {
             setIsMapDragging(true);
         });
 
-        google.maps.event.addListener(mapObject, 'dragend', function() {
+        google.maps.event.addListener(mapObject, 'dragend', function () {
             setIsMapDragging(false);
-            if (getIdleSkipped() == true) {
+            if (getIdleSkipped() === true) {
 
                 mapViewPortChanged(mapObject);
                 setIdleSkipped(false);
             }
         });
 
-        google.maps.event.addListener(mapObject, 'bounds_changed', function() {
+        google.maps.event.addListener(mapObject, 'bounds_changed', function () {
             setIdleSkipped(false);
         });
 
 
-        google.maps.event.addDomListener(mapObject, 'click', function(data) {
+        google.maps.event.addDomListener(mapObject, 'click', function (data) {
             removeOpenedInfobox();
 
-            if(shiftPressed){
+            if (shiftPressed) {
                 emptyParcelaClicked(data.latLng);
             }
         });
+    };
 
-    }
+    drawParcelasOverGoogleMap = function (data, isNearbyQuery) {
+        var geoJson, overlay, points;
 
-    drawParcelasOverGoogleMap = function(data, isNearbyQuery){
-        var geoJson = data.geojson;
-
-        var overlay = new google.maps.OverlayView();
+        geoJson = data.geojson;
+        overlay = new google.maps.OverlayView();
 
         overlay.onAdd = function () {
-            var layer = d3.select(this.getPanes().overlayMouseTarget).append("div").attr("class", "SvgOverlay");
-            var svg = layer.append("svg");
-            var adminDivisions = svg.append("g").attr("class", "AdminDivisions");
+            var layer, svg, adminDivisions;
+            layer = d3.select(this.getPanes().overlayMouseTarget).append("div").attr("class", "SvgOverlay");
+            svg = layer.append("svg");
+            adminDivisions = svg.append("g").attr("class", "AdminDivisions");
         };
 
         resultBounds = new google.maps.LatLngBounds();
 
-        var points = _(geoJson.features).chain().pluck('geometry').compact().pluck('coordinates')
-                .flatten(true).flatten(true).flatten(true).map(function(val) {
-                    return new google.maps.LatLng(val[1] + 0.0005, val[0] - 0.0006);}).value();
+        points = _(geoJson.features).chain().pluck('geometry').compact().pluck('coordinates')
+                .flatten(true).flatten(true).flatten(true).map(function (val) {
+                return new google.maps.LatLng(val[1] + 0.0005, val[0] - 0.0006);
+            }).value();
 
-        _(points).each(function(e) {
+        _(points).each(function (e) {
             resultBounds.extend(e);
         });
 
         overlay.draw = function () {
-            var markerOverlay = this;
-            var overlayProjection = markerOverlay.getProjection();
+            var path, adminDivisions, markerOverlay, overlayProjection;
+
+            markerOverlay = this;
+            overlayProjection = markerOverlay.getProjection();
+
             // Turn the overlay projection into a d3 projection
             var googleMapProjection = function (coordinates) {
                 var googleCoordinates = new google.maps.LatLng(coordinates[1] + 0.0005, coordinates[0] - 0.0006);
                 var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
                 return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
             };
-            var adminDivisions = d3.select('g');
+
+            adminDivisions = d3.select('g');
 
             path = d3.geo.path().projection(googleMapProjection);
             adminDivisions.selectAll("path")
-                    .data(geoJson.features)
-                    .attr("d", path) // update existing paths
-                    .enter().append("svg:path")
-                    .attr("class", function(d) {
-                        if (d.properties.parcelas_data.length === 1
-                                && (d.properties.parcelas_data[0].tipo2 === 'ESPACIO VERDE'
-                                || d.properties.parcelas_data[0].tipo2 === 'PLAZA')) {
-                            return "parcel espacio-verde";
-                        } else if (d.properties.parcelas_data.length === 0) {
-                            return "parcel-not-clickeable";
-                        }
-                        return "parcel";
-                    })
-                    .attr("d", path)
-                    .on("click", parcelaClicked)
-                    .style("opacity", 0.1)
-                    .transition()
-                    .delay(function(d, i) { return 4000 * Math.random(); })
-                    .style("opacity", 1);
-
-
+                .data(geoJson.features)
+                .attr("d", path) // update existing paths
+                .enter().append("svg:path")
+                .attr("class", function (d) {
+                    if (d.properties.parcelas_data.length === 1 && (d.properties.parcelas_data[0].tipo2 === 'ESPACIO VERDE' || d.properties.parcelas_data[0].tipo2 === 'PLAZA')) {
+                        return "parcel espacio-verde";
+                    } else if (d.properties.parcelas_data.length === 0) {
+                        return "parcel-not-clickeable";
+                    }
+                    return "parcel";
+                })
+                .attr("d", path)
+                .on("click", parcelaClicked)
+                .style("opacity", 0.1)
+                .transition()
+                .delay(function (d, i) { return 4000 * Math.random(); })
+                .style("opacity", 1);
         };
 
         removeOpenedMarker(searchMarker);
         createSearchMarker(data, isNearbyQuery);
 
-
         overlay.onRemove = removePreviousDrawing;
-
 
         mapObject.fitBounds(resultBounds);
         overlay.setMap(mapObject);
         google.maps.event.trigger(mapObject, 'resize');
-    }
+    };
 
-    mapViewPortChanged = function(map){
+    mapViewPortChanged = function (map) {
         var zoomLevel = map.getZoom();
         setCurrentZoomLevel(zoomLevel);
     };
 
-    setCurrentZoomLevel = function(zoomLevel){
+    setCurrentZoomLevel = function (zoomLevel) {
         currentZoomLevel = zoomLevel;
-    }
+    };
 
-    getCurrentZoomLevel = function(){
+    getCurrentZoomLevel = function () {
         return currentZoomLevel;
-    }
+    };
 
-    getIdleSkipped = function(){
+    getIdleSkipped = function () {
         return idleSkipped;
-    }
+    };
 
-    setIdleSkipped = function(value){
+    setIdleSkipped = function (value) {
         idleSkipped = value;
-    }
+    };
 
-    getIsMapDragging = function(){
+    getIsMapDragging = function () {
         return isMapDragging;
-    }
+    };
 
-    setIsMapDragging = function(value){
+    setIsMapDragging = function (value) {
         isMapDragging = value;
-    }
+    };
 
-    getMapCenter = function(){
+    getMapCenter = function () {
         return buenosAiresLocation;
-    }
+    };
 
-    removePreviousDrawing = function(){
+    removePreviousDrawing = function () {
         $(".SvgOverlay").remove();
-    }
+    };
 
-    getInfoMessageForQuery = function(query, count){
-        var plural = (count == 1 ? '' : 's');
-        var resultCount = (count == searchLimit ? 'Limitando resultados a ' + searchLimit + '.' :
+    getInfoMessageForQuery = function (query, count) {
+        var plural, resultCount, message;
+
+        plural = (count === 1 ? '' : 's');
+        resultCount = (count === searchLimit ? 'Limitando resultados a ' + searchLimit + '.' :
                 'Mostrando ' + count + ' resultado' + plural + '.');
 
-        if(query.length > 0){
-            var message = 'Se muestran resultados para la búsqueda "' + query + '". ';
+        if (query.length > 0) {
+            message = 'Se muestran resultados para la búsqueda "' + query + '". ';
             return message + resultCount;
         }
 
         // if the query is empty, a discovery query was perform. show the status message accordingly.
         return "Descubriendo parcelas. " + resultCount;
-    }
+    };
 
     updateViewport = function(data, query, isNearbyQuery){
         removePreviousDrawing();
 
         var resultCount = data.geojson.features.length;
 
-        if(resultCount == 0){
+        if (resultCount === 0) {
             StatusBar.showErrorMessage('No hubo resultados para la búsqueda "' + query + '"');
-        } else{
+        } else {
             drawParcelasOverGoogleMap(data, isNearbyQuery);
             StatusBar.showInfoMessage(getInfoMessageForQuery(query, resultCount));
         }
@@ -389,30 +392,28 @@ var Map = function(){
 
         $("#loading").hide();
         $('.navbar-search').show();
-    }
-
-    var shiftPressed = false;
+    };
 
     return {
-        init : function(){
-            if(mapObject == undefined){
+        init : function () {
+            if (mapObject === undefined) {
                 createMap();
                 this.search(window.bsasApp.cat, true, window.bsasApp.lat, window.bsasApp.long);
             }
 
-            $(window).keydown(function(evt) {
-                if (evt.which == 16) { // shift
+            $(window).keydown(function (evt) {
+                if (evt.which === 16) { // shift
                     shiftPressed = true;
                 }
-            }).keyup(function(evt) {
-                if (evt.which == 16) { // shift
+            }).keyup(function (evt) {
+                if (evt.which === 16) { // shift
                     shiftPressed = false;
                 }
             });
 
         },
 
-        search : function(query, isNearbyQuery, lat, long, mustConvert){
+        search : function (query, isNearbyQuery, lat, long, mustConvert) {
             var endpoint = getEndpointWithQuery(query, isNearbyQuery, lat, long);
             $("#loading").show();
 
@@ -420,9 +421,9 @@ var Map = function(){
             // because this component has the focus
             $('.navbar-search').hide();
 
-            $.getJSON(endpoint, function(data){
+            $.getJSON(endpoint, function (data) {
                 updateViewport(data, query, isNearbyQuery);
             });
         }
     };
-}();
+}());

@@ -1,21 +1,17 @@
-var StatusBar = function(){
-    var closeBarButtonSelector = '.close-bar-button';
-
-    var statusBarContainerSelector = '#status-bar',
-        statusBarTextSelector = '#status-bar-message';
-
-    var errorContainerClass = 'alert alert-error',
-        errorTextClass = 'text-error';
-
-    var infoContainerClass = 'alert alert-info',
-        infoTextClass = 'text-info';
-
-    var showMessageWithClasses,
+var StatusBar = (function () {
+    var closeBarButtonSelector = '.close-bar-button',
+        statusBarContainerSelector = '#status-bar',
+        statusBarTextSelector = '#status-bar-message',
+        errorContainerClass = 'alert alert-error',
+        errorTextClass = 'text-error',
+        infoContainerClass = 'alert alert-info',
+        infoTextClass = 'text-info',
+        showMessageWithClasses,
         registerHandlers;
 
-    showMessageWithClasses = function(message, containerClass, textClass){
+    showMessageWithClasses = function(message, containerClass, textClass) {
         var $statusBar = $(statusBarContainerSelector),
-                $statusText = $(statusBarTextSelector);
+            $statusText = $(statusBarTextSelector);
 
         $statusBar.removeClass();
         $statusBar.addClass(containerClass);
@@ -28,25 +24,25 @@ var StatusBar = function(){
         $statusBar.show();
 
         $statusBar.fadeOut(8000);
-    }
+    };
 
-    registerHandlers = function(){
-        $(closeBarButtonSelector).click(function(){
+    registerHandlers = function () {
+        $(closeBarButtonSelector).click(function () {
             $(statusBarContainerSelector).hide();
         });
-    }
+    };
 
     return {
-        showErrorMessage : function(message){
+        showErrorMessage : function (message) {
             showMessageWithClasses(message, errorContainerClass,  errorTextClass);
         },
 
-        showInfoMessage : function(message){
+        showInfoMessage : function (message) {
             showMessageWithClasses(message, infoContainerClass, infoTextClass);
         },
 
-        init: function(){
+        init: function () {
             registerHandlers();
         }
-    }
-}();
+    };
+}());

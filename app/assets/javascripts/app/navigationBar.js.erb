@@ -1,21 +1,22 @@
-var NavigationBar = function(){
+var NavigationBar = (function () {
 
     var registerHandlers;
 
-    registerHandlers = function(){
+    registerHandlers = function () {
         // register tip button
-        $("#tip-button").click(function(){
+        $("#tip-button").click(function () {
             $('#introduction-modal').modal('show');
         });
 
-        $("#about-button").click(function(){
+        $("#about-button").click(function () {
             $('#about-modal').modal('show');
         });
-    }
+    };
 
     return {
-        init : function(){
+        init : function () {
             registerHandlers();
         }
-    }
-}();
+    };
+
+}());
