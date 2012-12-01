@@ -1,0 +1,45 @@
+<script type="x-tmpl" id="parcela_template">
+  <div id="parcela-modal">
+    <div class="modal-header">
+      <h3>Detalles</h3>
+    </div>
+    <div class="modal-body">
+      <fieldset>
+        <div id="parcela-carousel" class="carousel slide">
+          <!-- Carousel items -->
+          <div class="carousel-inner">
+            {{ _.each(items,function(item,key,list){ }}
+            {{ if(key == 0){ }}
+            <div class="item active">
+              {{ } else { }}
+              <div class="item">
+                {{ } }}
+                <dl class="dl-horizontal parcel-info-row"><dt>Nombre</dt><dd>{{ if(item.nombre) { print(item.nombre); } else { print("Sin informaci&oacute;n"); } }}</dd></dl>
+                {{ if(item.calle != undefined && item.nro != undefined){ }}
+                <dl class="dl-horizontal parcel-info-row"><dt>Calle</dt><dd>{{= item.calle}} {{= item.nro}}</dd></dl>
+                {{ } }}
+                <dl class="dl-horizontal parcel-info-row"><dt>Categor&iacute;a</dt><dd>{{= item.tipo2}}</dd></dl>
+              </div>
+              {{ }); }}
+            </div>
+            {{ if(items.length > 1) { }}
+            <!-- Carousel nav -->
+            <a class="carousel-control left parcela-carousel-left" href="#"  data-slide="prev">&lsaquo;</a>
+            <a class="carousel-control right parcela-carousel-right" href="#" data-slide="next">&rsaquo;</a>
+            {{ } }}
+          </div>
+      </fieldset>
+      <div style="text-align:center;">
+        <img class="parcela-image" src="http://fotos.usig.buenosaires.gob.ar//getFoto?smp={{= items[0].smp.toUpperCase()}}&i=0&w=243&h=195"
+             onerror="this.onerror = null; this.src = 'assets/no_photo.png'"/>
+      </div>
+    </div>
+    <div class="modal-footer infobox-footer">
+      <div class="input-append">
+        <input class="location-search-bar span10 typeahead location-search-typeahead" type="text">
+        <a class="location-search-button btn">Buscar</a>
+      </div>
+    </div>
+  </div>
+
+</script>
