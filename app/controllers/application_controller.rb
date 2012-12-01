@@ -88,12 +88,6 @@ class ApplicationController < ActionController::Base
     render :json => { 'autocomplete' => plucked }
   end
 
-  def parcelas_by_seccion
-    seccion = params[:seccion]
-    geometries = ParcelasGeometry.where("seccion = '#{seccion}'").limit(100)
-    render :json => add_geo_json_header(geometries)
-  end
-
   def parcelas_by_category
     cat = params[:category].upcase
     limit = params[:limit].to_i
@@ -118,13 +112,5 @@ class ApplicationController < ActionController::Base
     json_response['features'] = geometries.as_json(:include => :parcelas_data)
     json_response
   end
-
-  def add_geo_json_header2 geometries
-    json_response = {}
-    json_response['type'] = 'FeatureCollection'
-    json_response['features'] = geometries.as_json()
-    json_response
-  end
-
 
 end
