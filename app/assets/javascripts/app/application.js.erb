@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function () {
 
     _.templateSettings = {
         interpolate: /\{\{\=(.+?)\}\}/g,
@@ -17,14 +17,14 @@ $(document).ready(function(){
 
     var exploreFlag = getURLParameter("explore");
 
-    if(exploreFlag === "true"){
+    if (exploreFlag === "true"){
         $('#introduction-modal').modal('show');
         $('#introduction-modal').on('shown', function() {
             $('button.close').focus();
         });
     }
 
-    $('html').ajaxError(function(){
+    $('html').ajaxError(function () {
         $('#loading').hide();
         $('.navbar-search').show();
         StatusBar.showErrorMessage("Ooops, hubo un error en la comunicación con el servidor. Proba de nuevo más tarde.");

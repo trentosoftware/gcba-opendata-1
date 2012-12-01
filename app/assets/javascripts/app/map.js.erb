@@ -1,13 +1,11 @@
 <% url = Parcelas::Application.routes.url_helpers %>
-
 var Map = function(){
+
+    var mapObject;
 
     var buenosAiresLocation = new google.maps.LatLng(window.bsasApp.lat, window.bsasApp.long),
         searchLimit = 200,
         resultBounds;
-//    var buenosAiresLocation = new google.maps.LatLng(-34.662445791586556, -58.44481076406247),
-//            searchLimit = 200;
-
 
     var getEndpointWithQuery,
         drawParcelasOverGoogleMap,
@@ -35,8 +33,7 @@ var Map = function(){
         searchMarker,
         openedBox;
 
-    var currentZoomLevel = 12,
-        currentMapCenter = buenosAiresLocation;
+    var currentZoomLevel = 12;
 
     var idleSkipped = false,
         isMapDragging = false;
@@ -46,8 +43,6 @@ var Map = function(){
         getIsMapDragging,
         setIsMapDragging,
         getMapCenter,
-        setCurrentMapCenter,
-        getCurrentMapCenter,
         getCurrentZoomLevel,
         setCurrentZoomLevel;
 
@@ -120,7 +115,7 @@ var Map = function(){
         boxText.innerHTML = html;
 
         temporalMarker = new google.maps.Marker({
-            map: window.__map,
+            map: mapObject,
             position: latLong,
             visible: false
         });
@@ -133,7 +128,6 @@ var Map = function(){
             boxStyle: { background: "url('assets/infoBox/tipbox.gif') no-repeat"
                 ,opacity: 0.85
                 ,width: "500px" },
-            closeBoxMargin: "10px 2px 2px 2px",
             closeBoxURL: "assets/infoBox/close.gif",
             infoBoxClearance: new google.maps.Size(1, 1),
             isHidden: false,
@@ -144,7 +138,7 @@ var Map = function(){
         }
 
         openedBox = new InfoBox(myOptions);
-        openedBox.open(window.__map, temporalMarker);
+        openedBox.open(mapObject, temporalMarker);
 
         google.maps.event.addListener(openedBox, 'domready', function() {
             $("a.carousel-control.left").click(function() {
@@ -168,7 +162,7 @@ var Map = function(){
         }
 
         searchMarker = new google.maps.Marker({
-            map: window.__map,
+            map: mapObject,
             position: position,
             zIndex: 150
         });
@@ -209,7 +203,7 @@ var Map = function(){
     createMap = function(){
         var $map = $("#map");
 
-        window.__map = new google.maps.Map($map[0], {
+        mapObject = new google.maps.Map($map[0], {
             zoom: getCurrentZoomLevel(),
             minZoom: 12,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -221,35 +215,35 @@ var Map = function(){
             overviewMapControl: false
         });
 
-        google.maps.event.addListener(window.__map, 'idle', function() {
+        google.maps.event.addListener(mapObject, 'idle', function() {
             if (getIsMapDragging()) {
                 setIdleSkipped(true);
                 return;
             }
 
             setIdleSkipped(false);
-            mapViewPortChanged(window.__map);
+            mapViewPortChanged(mapObject);
         });
 
-        google.maps.event.addListener(window.__map, 'dragstart', function() {
+        google.maps.event.addListener(mapObject, 'dragstart', function() {
             setIsMapDragging(true);
         });
 
-        google.maps.event.addListener(window.__map, 'dragend', function() {
+        google.maps.event.addListener(mapObject, 'dragend', function() {
             setIsMapDragging(false);
             if (getIdleSkipped() == true) {
 
-                mapViewPortChanged(window.__map);
+                mapViewPortChanged(mapObject);
                 setIdleSkipped(false);
             }
         });
 
-        google.maps.event.addListener(window.__map, 'bounds_changed', function() {
+        google.maps.event.addListener(mapObject, 'bounds_changed', function() {
             setIdleSkipped(false);
         });
 
 
-        google.maps.event.addDomListener(window.__map, 'click', function(data) {
+        google.maps.event.addDomListener(mapObject, 'click', function(data) {
             removeOpenedInfobox();
 
             if(shiftPressed){
@@ -323,29 +317,18 @@ var Map = function(){
         overlay.onRemove = removePreviousDrawing;
 
 
-        window.__map.fitBounds(resultBounds);
-        overlay.setMap(window.__map);
-        google.maps.event.trigger(window.__map, 'resize');
+        mapObject.fitBounds(resultBounds);
+        overlay.setMap(mapObject);
+        google.maps.event.trigger(mapObject, 'resize');
     }
 
     mapViewPortChanged = function(map){
-        var centerLatLong = map.getCenter();
         var zoomLevel = map.getZoom();
-
-        setCurrentMapCenter(centerLatLong);
         setCurrentZoomLevel(zoomLevel);
     };
 
     setCurrentZoomLevel = function(zoomLevel){
         currentZoomLevel = zoomLevel;
-    }
-
-    setCurrentMapCenter = function(center){
-        currentMapCenter = center;
-    }
-
-    getCurrentMapCenter = function(){
-        return currentMapCenter;
     }
 
     getCurrentZoomLevel = function(){
@@ -412,7 +395,7 @@ var Map = function(){
 
     return {
         init : function(){
-            if(window.__map == undefined){
+            if(mapObject == undefined){
                 createMap();
                 this.search(window.bsasApp.cat, true, window.bsasApp.lat, window.bsasApp.long);
             }
